@@ -46,3 +46,5 @@ def web_search(state: WebSearchState, config: RunnableConfig):
 
     llm = get_llm(config)
     web_search_llm = llm.bind_tools([web_search_tool])
+
+    response = web_search_tool.invoke(prompt)
