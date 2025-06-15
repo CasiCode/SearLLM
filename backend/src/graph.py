@@ -36,8 +36,6 @@ def generate_query(state: OverallState, config: RunnableConfig):
 
 
 def web_search(state: WebSearchState, config: RunnableConfig):
-    configuration = Configuration.from_runnable_config(config)
-
     prompt = PromptLoader.get_prompt('web_searcher.md')
     formatted_prompt = prompt.format(
         current_date=get_current_date,
