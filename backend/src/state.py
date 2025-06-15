@@ -17,5 +17,6 @@ class OverallState(TypedDict):
 
 
 class WebSearchState(TypedDict):
+    messages: Annotated[list, add_messages]
     search_query: str
     id: str

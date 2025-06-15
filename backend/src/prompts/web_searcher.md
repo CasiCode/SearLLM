@@ -1,4 +1,4 @@
-Conduct targeted DuckDuckGo Searches to gather the most recent, credible information on "{search_query}" and synthesize it into a verifiable text artifact.
+Conduct targeted web searches using a special tool given to you to gather the most recent, credible information on "{search_query}" and synthesize it into a verifiable text artifact.
 
 Instructions:
 - Query should ensure that the most current information is gathered. The current date is {current_date}.
