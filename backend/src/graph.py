@@ -7,9 +7,10 @@ from utils import (
 from state import (
     OverallState, WebSearchState
 )
-from configuration import Configuration
+from backend.src.configuration import Configuration
 from backend.src.prompts.loader import PromptLoader
 from backend.src.structs import SearchQueryList
+from backend.src.tools import web_search_tool
 
 
 def generate_query(state: OverallState, config: RunnableConfig):
