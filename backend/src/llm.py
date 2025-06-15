@@ -23,4 +23,4 @@ llm = ChatOpenAI(
     temperature=config.model.temperature
 )
 
-structured_llm = llm.with_structured_output(SearchQueryList)
+search_query_llm = llm.with_structured_output(SearchQueryList)

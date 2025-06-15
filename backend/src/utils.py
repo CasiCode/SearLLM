@@ -1,4 +1,5 @@
 from typing import List
+from datetime import datetime
 
 from box import Box
 import yaml
@@ -6,6 +7,10 @@ import yaml
 from langchain_core.messages import (
     AnyMessage, HumanMessage, AIMessage
 )
+
+
+def get_current_date():
+    return datetime.now().strftime('%B/%d/%Y')
 
 
 def get_config():
