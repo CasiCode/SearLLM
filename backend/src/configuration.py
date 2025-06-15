@@ -12,7 +12,7 @@ class Configuration(BaseModel):
     )
 
     temperature: float = Field(
-        default=0.5
+        default=0
     )
 
     number_of_initial_queries: int = Field(

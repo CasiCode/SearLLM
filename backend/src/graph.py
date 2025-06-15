@@ -28,7 +28,8 @@ def generate_query(state: OverallState, config: RunnableConfig):
         number_queries=state.get('initial_search_query_count')
     )
 
-    search_query_llm = get_llm(config, SearchQueryList)
+    llm = get_llm(config)
+    search_query_llm = llm.with_structured_output(SearchQueryList)
 
     result = search_query_llm.invoke(formatted_prompt)
     return {'query_list': result.query}
@@ -42,3 +43,6 @@ def web_search(state: WebSearchState, config: RunnableConfig):
         current_date=get_current_date,
         search_query=state['search_query']
     )
+
+    llm = get_llm(config)
+    web_search_llm = llm.bind_tools([web_search_tool])

@@ -1,8 +1,6 @@
 import os
-from typing_extensions import Optional
 
 from dotenv import load_dotenv
-from pydantic import BaseModel
 
 from langchain_openai.chat_models import ChatOpenAI
 from langchain_core.runnables import RunnableConfig
@@ -12,7 +10,9 @@ from backend.src.configuration import Configuration
 
 load_dotenv()
 
-def get_llm(config: RunnableConfig, output_structure: Optional[BaseModel] = None):
+# Might be a better practice to return just an LLM
+# and structure output \ bind tools externally
+def get_llm(config: RunnableConfig):
     configuration = Configuration.from_runnable_config(config)
 
     if os.getenv('OPENROUTER_API_KEY') is None:
@@ -26,8 +26,4 @@ def get_llm(config: RunnableConfig, output_structure: Optional[BaseModel] = None
         model_name=configuration.model,
         temperature=configuration.temperature
     )
-
-    if output_structure is not None:
-        return llm.with_structured_output(output_structure)
-    else:
-        return llm
+    return llm
