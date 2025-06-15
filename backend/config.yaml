@@ -1,3 +1,6 @@
 model:
   name: openai/gpt-4.1-nano
   temperature: 0
+
+state:
+  number_of_initial_queries: 3
