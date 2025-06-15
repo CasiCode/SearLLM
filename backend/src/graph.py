@@ -4,10 +4,12 @@ from llm import get_llm
 from utils import (
     get_research_topic, get_current_date
 )
-from state import OverallState
+from state import (
+    OverallState, WebSearchState
+)
 from configuration import Configuration
 from backend.src.prompts.loader import PromptLoader
-from tools import SearchQueryList
+from backend.src.structs import SearchQueryList
 
 
 def generate_query(state: OverallState, config: RunnableConfig):
@@ -31,5 +33,11 @@ def generate_query(state: OverallState, config: RunnableConfig):
     return {'query_list': result.query}
 
 
-def web_search(state: OverallState):
-    pass
+def web_search(state: WebSearchState, config: RunnableConfig):
+    configuration = Configuration.from_runnable_config(config)
+
+    prompt = PromptLoader.get_prompt('web_searcher.md')
+    formatted_prompt = prompt.format(
+        current_date=get_current_date,
+        search_query=state['search_query']
+    )

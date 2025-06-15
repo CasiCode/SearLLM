@@ -14,3 +14,8 @@ class OverallState(TypedDict):
     max_research_loops: int
     research_loops_count: int
     reasoning_model: str
+
+
+class WebSearchState(TypedDict):
+    search_query: str
+    id: str
