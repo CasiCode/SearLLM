@@ -1,26 +1,33 @@
 import os
+from typing_extensions import Optional
+
 from dotenv import load_dotenv
+from pydantic import BaseModel
 
 from langchain_openai.chat_models import ChatOpenAI
+from langchain_core.runnables import RunnableConfig
 
-from backend.src.utils import get_config
-from backend.src.tools import SearchQueryList
+from backend.src.configuration import Configuration
 
-
-config = get_config()
 
 load_dotenv()
 
-if os.environ.get('OPENROUTER_API_KEY') is None:
-    raise ValueError('OPENROUTER_API_KEY is not set')
-if os.environ.get('OPENROUTER_BASE_URL') is None:
-    raise ValueError('OPENROUTER_BASE_URL is not set')
+def get_llm(config: RunnableConfig, output_structure: Optional[BaseModel] = None):
+    configuration = Configuration.from_runnable_config(config)
 
-llm = ChatOpenAI(
-    openai_api_key=os.environ.get('OPENROUTER_API_KEY'),
-    openai_api_base=os.environ.get('OPENROUTER_BASE_URL'),
-    model_name=config.model.name,
-    temperature=config.model.temperature
-)
+    if os.getenv('OPENROUTER_API_KEY') is None:
+        raise ValueError('OPENROUTER_API_KEY is not set')
+    if os.getenv('OPENROUTER_BASE_URL') is None:
+        raise ValueError('OPENROUTER_BASE_URL is not set')
 
-search_query_llm = llm.with_structured_output(SearchQueryList)
+    llm = ChatOpenAI(
+        openai_api_key=os.getenv('OPENROUTER_API_KEY'),
+        openai_api_base=os.getenv('OPENROUTER_BASE_URL'),
+        model_name=configuration.model,
+        temperature=configuration.temperature
+    )
+
+    if output_structure is not None:
+        return llm.with_structured_output(output_structure)
+    else:
+        return llm

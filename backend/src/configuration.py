@@ -7,12 +7,12 @@ from langchain_core.runnables import RunnableConfig
 
 
 class Configuration(BaseModel):
-    query_generator_model:str = Field(
+    model:str = Field(
         default='openai/gpt-4.1-nano'
     )
 
-    query_generator_temperature: int = Field(
-        default=0
+    temperature: float = Field(
+        default=0.5
     )
 
     number_of_initial_queries: int = Field(
