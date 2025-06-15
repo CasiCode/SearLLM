@@ -6,7 +6,7 @@ from utils import (
 )
 from state import OverallState
 from configuration import Configuration
-from prompts.laoder import PromptLoader
+from backend.src.prompts.loader import PromptLoader
 from tools import SearchQueryList
 
 
