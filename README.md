@@ -1,1 +1,1 @@
-# selfreflecting-rag
+# selfreflecting-rag, work in progress
