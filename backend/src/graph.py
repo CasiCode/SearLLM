@@ -48,3 +48,16 @@ def web_search(state: WebSearchState, config: RunnableConfig):
     web_search_llm = llm.bind_tools([web_search_tool])
 
     response = web_search_llm.invoke(formatted_prompt)
+
+    recent_tool_msgs = []
+    for message in reversed(state['messages']):
+        if message.type == 'tool':
+            recent_tool_msgs.append(message)
+        else:
+            break
+    tool_msgs = recent_tool_msgs[::-1]
+
+    artifacts = []
+    for tool_msg in tool_msgs:
+        if tool_msgs.artifact is not None:
+            artifacts.extend(tool_msg.artifact)
