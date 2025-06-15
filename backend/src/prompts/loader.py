@@ -8,7 +8,7 @@ class PromptLoader:
     def filename(self):
         return self._filename
 
-    def get_prompt(self) -> str:
+    def load_prompt(self) -> str:
         try:
             with open(self._filename, 'r', encoding='utf-8') as f:
                 return f.read()

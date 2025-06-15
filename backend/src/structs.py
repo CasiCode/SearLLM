@@ -10,3 +10,9 @@ class SearchQueryList(BaseModel):
     rationale: str = Field(
         description='A brief explanation of why this queries are relevant to the research topic.'
     )
+
+
+class ConductedSearchResults(BaseModel):
+    text: str = Field(
+        description='Verifiable text artifact. Well-written summary or report based on the search findings'
+    )
