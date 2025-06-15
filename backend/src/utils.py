@@ -1,6 +1,7 @@
 from typing import List
 from datetime import datetime
 
+# Deprecated, use runnableconfig instead
 from box import Box
 import yaml
 
@@ -14,6 +15,7 @@ def get_current_date():
 
 
 def get_config():
+    '''deprecated, use runnable config instead'''
     with open('../config.yaml', 'r') as f:
         config_dict = yaml.safe_load(f)
     return Box(config_dict)
