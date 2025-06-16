@@ -12,7 +12,7 @@ class PromptLoader:
         try:
             with open(self._filename, "r", encoding="utf-8") as f:
                 return f.read()
-        except Exception as e:
+        except OSError:
             warnings.warn(
                 message="File not found, check the provided filname. Empty prompt loaded.",
                 category=RuntimeWarning,
