@@ -1,6 +1,9 @@
 from langchain_core.messages import SystemMessage
 from langchain_core.runnables import RunnableConfig
 
+from langgraph.graph import StateGraph, END
+from langgraph.prebuilt import ToolNode
+
 from backend.src.agent.llm import get_llm
 from backend.src.agent.state import OverallState, WebSearchState
 from backend.src.agent.tools import web_search_tool
@@ -45,8 +48,9 @@ def web_search(state: WebSearchState, config: RunnableConfig):
     return {"messages": [response]}
 
 
-# Might be done with ONE singular node with structured output and bound tools
-def process_search_results(state: WebSearchState, config: RunnableConfig):
+def process_search_results(
+    state: WebSearchState, config: RunnableConfig
+) -> OverallState:
     recent_tool_msgs = []
     for message in reversed(state["messages"]):
         if message.type == "tool" and message.artifact is not None:
@@ -61,5 +65,35 @@ def process_search_results(state: WebSearchState, config: RunnableConfig):
 
     llm = get_llm(config)
     processor_llm = llm.with_structured_output(ConductedSearchResults)
-
     response = processor_llm.invoke(prompt)
+
+    return {"final_response": response}
+
+
+def should_continue(state: OverallState):
+    last_message = state["messages"][-1]
+    if not last_message.tool_calls:
+        return "process"
+    else:
+        return "continue"
+
+
+workflow = StateGraph(OverallState)
+
+workflow.add_node("generate_query", generate_query)
+workflow.add_node("web_search", web_search)
+workflow.add_node("web_search_tools", ToolNode([web_search_tool]))
+workflow.add_node("process_search_results", process_search_results)
+
+workflow.set_entry_point("generate_query")
+
+workflow.add_conditional_edges(
+    "generate_query",
+    should_continue,
+    {"continue": "web_search", "process": "process_seach_results"},
+)
+
+workflow.add_edge("web_seach_tools", "generate_query")
+workflow.add_edge("process_search_results", END)
+
+graph = workflow.compile()

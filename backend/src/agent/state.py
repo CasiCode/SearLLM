@@ -4,6 +4,8 @@ from typing import TypedDict
 from langgraph.graph import add_messages
 from typing_extensions import Annotated
 
+from structs import ConductedSearchResults
+
 
 class OverallState(TypedDict):
     messages: Annotated[list, add_messages]
@@ -14,9 +16,9 @@ class OverallState(TypedDict):
     max_research_loops: int
     research_loops_count: int
     reasoning_model: str
+    final_response: ConductedSearchResults
 
 
 class WebSearchState(TypedDict):
     messages: Annotated[list, add_messages]
     search_query: str
-    id: str
