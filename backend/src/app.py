@@ -1,6 +1,6 @@
 from typing import Callable, Optional
 
-from fastapi import FastAPI, Request, Depends
+from fastapi import Depends, FastAPI, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -35,8 +35,6 @@ class OutputMessage(BaseModel):
     session_id: str
 
 
-# Обработчик запросов
-# По сути, обертка над _process_func, обрабатывающая исключения
 class RequestHandler:
     def __init__(self):
         self._process_func: Optional[Callable] = None
