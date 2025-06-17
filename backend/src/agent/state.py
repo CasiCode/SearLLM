@@ -1,10 +1,9 @@
 import operator
-from typing import TypedDict
+from typing import List, TypedDict
 
 from langgraph.graph import add_messages
-from typing_extensions import Annotated
-
 from structs import ConductedSearchResults
+from typing_extensions import Annotated
 
 
 class OverallState(TypedDict):
@@ -19,6 +18,15 @@ class OverallState(TypedDict):
     final_response: ConductedSearchResults
 
 
+class Query(TypedDict):
+    query: str
+    rationale: str
+
+
+class QueryGenerationState(TypedDict):
+    query_list: List[Query]
+
+
 class WebSearchState(TypedDict):
-    messages: Annotated[list, add_messages]
     search_query: str
+    id: int

@@ -1,11 +1,11 @@
 from langchain_core.messages import SystemMessage
 from langchain_core.runnables import RunnableConfig
-
-from langgraph.graph import StateGraph, END
+from langgraph.graph import END, StateGraph
 from langgraph.prebuilt import ToolNode
+from langgraph.types import Send
 
 from backend.src.agent.llm import get_llm
-from backend.src.agent.state import OverallState, WebSearchState
+from backend.src.agent.state import OverallState, QueryGenerationState, WebSearchState
 from backend.src.agent.tools import web_search_tool
 from backend.src.agent.utils import get_current_date, get_research_topic
 from backend.src.configuration import Configuration
@@ -33,6 +33,13 @@ def generate_query(state: OverallState, config: RunnableConfig):
 
     result = search_query_llm.invoke(formatted_prompt)
     return {"query_list": result.query}
+
+
+def continue_web_search(state: QueryGenerationState):
+    return [
+        Send("web_search", {"search_query": query, "id": int(idx)})
+        for idx, query in enumerate(state["query_list"])
+    ]
 
 
 def web_search(state: WebSearchState, config: RunnableConfig):
