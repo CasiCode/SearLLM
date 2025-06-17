@@ -51,6 +51,8 @@ def continue_web_search(state: QueryGenerationState):
     ]
 
 
+# TODO: review and work on websearch node structure
+# * We pretty much don't need this three nodes, only two: websearcher and output formatter
 def web_search(state: WebSearchState, config: RunnableConfig):
     prompt = PromptLoader.get_prompt("web_searcher.md")
     formatted_prompt = prompt.format(
@@ -64,7 +66,7 @@ def web_search(state: WebSearchState, config: RunnableConfig):
     return {"messages": [response]}
 
 
-# Do we need it?
+# ? Do we need it?
 def should_continue(state: OverallState):
     last_message = state["messages"][-1]
     if not last_message.tool_calls:
@@ -139,6 +141,11 @@ def evaluate_research(state: ReflectionState, config: RunnableConfig) -> Overall
         ]
 
 
+# TODO: Write the thing
+def finalize_answer(state: OverallState, config: RunnableConfig):
+    pass
+
+
 workflow = StateGraph(OverallState)
 
 workflow.add_node("generate_query", generate_query)
@@ -160,6 +167,7 @@ workflow.add_edge("process_search_results", END)
 graph = workflow.compile()
 
 
+# ? the response structure will most surely change later when implementing frontend
 def process_input_message(session_id: str, input_message: str, config: RunnableConfig):
     """
     Processes a message catched through the API.

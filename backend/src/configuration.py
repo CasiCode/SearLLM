@@ -13,6 +13,8 @@ class Configuration(BaseModel):
 
     number_of_initial_queries: int = Field(default=3)
 
+    max_research_loops: int = Field(default=3)
+
     # Might be better to add none fields for secrets
     @classmethod
     def from_runnable_config(
