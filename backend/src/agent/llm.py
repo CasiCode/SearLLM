@@ -9,8 +9,6 @@ from backend.src.configuration import Configuration
 load_dotenv()
 
 
-# Might be a better practice to return just an LLM
-# and structure output \ bind tools externally
 def get_llm(config: RunnableConfig):
     configuration = Configuration.from_runnable_config(config)
 
