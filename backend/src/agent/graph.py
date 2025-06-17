@@ -78,6 +78,46 @@ def should_continue(state: OverallState):
         return "continue"
 
 
+def process_input_message(session_id: str, input_message: str, config: RunnableConfig):
+    """
+    Processes a message catched through the API.
+
+    Args:
+      session_id.
+      input_message.
+
+    Returns:
+      model answer, sources, session_id. Aligns with pydantic-model for output messages.
+    """
+
+    response = graph.invoke(
+        {"messages": [{"role": "user", "content": input_message}]},
+        stream_mode="values",
+        config=config,
+    )
+
+    src = []
+    if response.get("context") and len(response["context"]) > 0:
+        for doc in response["context"]:
+            if isinstance(doc, dict):
+                src.append({"source": doc["link"], "snippet": doc["snippet"]})
+            else:
+                src.append(
+                    {
+                        "source": "unknown",
+                        "snippet": f"Unexpected search data recieved: {type(doc)}",
+                    }
+                )
+
+    return {
+        "message": response["messages"][-1].content
+        if response.get("messages")
+        else "Oops, we couldn't proccess your message, sorry!",
+        "source_documents": src,
+        "session_id": session_id,
+    }
+
+
 workflow = StateGraph(OverallState)
 
 workflow.add_node("generate_query", generate_query)
