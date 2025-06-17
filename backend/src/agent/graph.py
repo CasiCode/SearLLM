@@ -5,12 +5,21 @@ from langgraph.prebuilt import ToolNode
 from langgraph.types import Send
 
 from backend.src.agent.llm import get_llm
-from backend.src.agent.state import OverallState, QueryGenerationState, WebSearchState
+from backend.src.agent.state import (
+    OverallState,
+    QueryGenerationState,
+    WebSearchState,
+    ReflectionState,
+)
 from backend.src.agent.tools import web_search_tool
 from backend.src.agent.utils import get_current_date, get_research_topic
 from backend.src.configuration import Configuration
 from backend.src.prompts.loader import PromptLoader
-from backend.src.structs import ConductedSearchResults, SearchQueryList
+from backend.src.structs import (
+    ConductedSearchResults,
+    SearchQueryList,
+    ReflectionResults,
+)
 
 
 def generate_query(state: OverallState, config: RunnableConfig):
@@ -77,6 +86,31 @@ def process_search_results(
     return {"final_response": response}
 
 
+def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
+    state["research_loops_count"] = state.get("research_loops_count", 0) + 1
+
+    current_date = get_current_date()
+    prompt_template = PromptLoader.load_prompt("reflector.md")
+    formatted_prompt = prompt_template.format(
+        current_date=current_date,
+        research_topic=get_research_topic(state["messages"]),
+        summaries="\n\n---\n\n".join(state["web_research_result"]),
+    )
+
+    llm = get_llm(config)
+    reflector_llm = llm.with_structured_output(ReflectionResults)
+    response = reflector_llm.invoke(formatted_prompt)
+
+    return {
+        "is_sufficient": response.is_sufficient,
+        "knowledge_gap": response.knowledge_gap,
+        "follow_up_queries": response.follow_up_queries,
+        "research_loops_count": state["research_loops_count"],
+        "number_of_ran_queries": len(state["search_query"]),
+    }
+
+
+# Do we need it?
 def should_continue(state: OverallState):
     last_message = state["messages"][-1]
     if not last_message.tool_calls:

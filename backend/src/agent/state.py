@@ -30,3 +30,11 @@ class QueryGenerationState(TypedDict):
 class WebSearchState(TypedDict):
     search_query: str
     id: int
+
+
+class ReflectionState(TypedDict):
+    is_sufficient: bool
+    knowledge_gap: str
+    follow_up_queries: Annotated[list, operator.add]
+    research_loops_count: int
+    number_of_ran_queries: int
