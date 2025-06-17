@@ -53,6 +53,8 @@ def continue_web_search(state: QueryGenerationState):
 
 # TODO: review and work on websearch node structure
 # * We pretty much don't need this three nodes, only two: websearcher and output formatter
+# ? How will the proccessor behave on multiple searches tho?
+# * Seems like the desired pipeline is web_search => summary ---> process_search_results => structured_output
 def web_search(state: WebSearchState, config: RunnableConfig):
     prompt = PromptLoader.get_prompt("web_searcher.md")
     formatted_prompt = prompt.format(
@@ -66,7 +68,7 @@ def web_search(state: WebSearchState, config: RunnableConfig):
     return {"messages": [response]}
 
 
-# ? Do we need it?
+# ? Do we need it? And what is 'continue' actually? Why don't we just route to web_search again?
 def should_continue(state: OverallState):
     last_message = state["messages"][-1]
     if not last_message.tool_calls:
