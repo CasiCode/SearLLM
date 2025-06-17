@@ -64,6 +64,15 @@ def web_search(state: WebSearchState, config: RunnableConfig):
     return {"messages": [response]}
 
 
+# Do we need it?
+def should_continue(state: OverallState):
+    last_message = state["messages"][-1]
+    if not last_message.tool_calls:
+        return "process"
+    else:
+        return "continue"
+
+
 def process_search_results(
     state: WebSearchState, config: RunnableConfig
 ) -> OverallState:
@@ -110,13 +119,45 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
     }
 
 
-# Do we need it?
-def should_continue(state: OverallState):
-    last_message = state["messages"][-1]
-    if not last_message.tool_calls:
-        return "process"
+def evaluate_research(state: ReflectionState, config: RunnableConfig) -> OverallState:
+    configuration = Configuration.from_runnable_config(config)
+
+    max_research_loops = configuration.max_research_loops
+
+    if state["is_sufficient"] or state["research_loops_count"] >= max_research_loops:
+        return "finalize_answer"
     else:
-        return "continue"
+        return [
+            Send(
+                "web_search",
+                {
+                    "search_query": query,
+                    "id": state["number_of_ran_queries"] + int(idx),
+                },
+            )
+            for idx, query in enumerate(state["follow_up_queries"])
+        ]
+
+
+workflow = StateGraph(OverallState)
+
+workflow.add_node("generate_query", generate_query)
+workflow.add_node("web_search", web_search)
+workflow.add_node("web_search_tools", ToolNode([web_search_tool]))
+workflow.add_node("process_search_results", process_search_results)
+
+workflow.set_entry_point("generate_query")
+
+workflow.add_conditional_edges(
+    "generate_query",
+    should_continue,
+    {"continue": "web_search", "process": "process_seach_results"},
+)
+
+workflow.add_edge("web_seach_tools", "generate_query")
+workflow.add_edge("process_search_results", END)
+
+graph = workflow.compile()
 
 
 def process_input_message(session_id: str, input_message: str, config: RunnableConfig):
@@ -157,24 +198,3 @@ def process_input_message(session_id: str, input_message: str, config: RunnableC
         "source_documents": src,
         "session_id": session_id,
     }
-
-
-workflow = StateGraph(OverallState)
-
-workflow.add_node("generate_query", generate_query)
-workflow.add_node("web_search", web_search)
-workflow.add_node("web_search_tools", ToolNode([web_search_tool]))
-workflow.add_node("process_search_results", process_search_results)
-
-workflow.set_entry_point("generate_query")
-
-workflow.add_conditional_edges(
-    "generate_query",
-    should_continue,
-    {"continue": "web_search", "process": "process_seach_results"},
-)
-
-workflow.add_edge("web_seach_tools", "generate_query")
-workflow.add_edge("process_search_results", END)
-
-graph = workflow.compile()
