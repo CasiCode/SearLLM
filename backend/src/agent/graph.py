@@ -22,6 +22,9 @@ from backend.src.structs import (
 )
 
 
+# TODO: Add memory
+
+
 def generate_query(state: OverallState, config: RunnableConfig):
     configuration = Configuration.from_runnable_config(config)
     research_topic = get_research_topic(state["messages"])
@@ -51,7 +54,6 @@ def initialize_web_search(state: QueryGenerationState):
     ]
 
 
-# TODO: add memory
 def web_search(state: WebSearchState, config: RunnableConfig):
     prompt = PromptLoader.get_prompt("./prompts/web_searcher.md")
     formatted_prompt = prompt.format(
@@ -73,7 +75,6 @@ def should_continue(state: OverallState):
         return "continue"
 
 
-# ? How will the proccessor behave on multiple searches tho? -> The state is unique for each web_search_call, so no worries
 def process_search_results(
     state: WebSearchState, config: RunnableConfig
 ) -> OverallState:
@@ -93,7 +94,7 @@ def process_search_results(
     processor_llm = llm.with_structured_output(ConductedSearchResults)
     response = processor_llm.invoke(prompt)
 
-    return {"final_response": response}
+    return {"web_search_result": [response]}
 
 
 def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
