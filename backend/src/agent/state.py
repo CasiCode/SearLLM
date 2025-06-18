@@ -28,6 +28,7 @@ class QueryGenerationState(TypedDict):
 
 
 class WebSearchState(TypedDict):
+    messages: Annotated[list, add_messages]
     search_query: str
     id: int
 

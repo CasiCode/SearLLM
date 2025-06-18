@@ -14,7 +14,7 @@ from backend.src.agent.state import (
 from backend.src.agent.tools import web_search_tool
 from backend.src.agent.utils import get_current_date, get_research_topic
 from backend.src.configuration import Configuration
-from backend.src.prompts.loader import PromptLoader
+from backend.src.agent.prompts.loader import PromptLoader
 from backend.src.structs import (
     ConductedSearchResults,
     SearchQueryList,
@@ -29,7 +29,7 @@ def generate_query(state: OverallState, config: RunnableConfig):
     if state.get("initial_search_query_count") is None:
         state["initial_search_query_count"] = configuration.number_of_initial_queries
 
-    prompt = PromptLoader.load_prompt("query_writer.md")
+    prompt = PromptLoader.load_prompt("./prompts/query_writer.md")
     current_date = get_current_date()
     formatted_prompt = prompt.format(
         current_date=current_date,
@@ -44,19 +44,16 @@ def generate_query(state: OverallState, config: RunnableConfig):
     return {"query_list": result.query}
 
 
-def continue_web_search(state: QueryGenerationState):
+def initialize_web_search(state: QueryGenerationState):
     return [
         Send("web_search", {"search_query": query, "id": int(idx)})
         for idx, query in enumerate(state["query_list"])
     ]
 
 
-# TODO: review and work on websearch node structure
-# * We pretty much don't need this three nodes, only two: websearcher and output formatter
-# ? How will the proccessor behave on multiple searches tho?
-# * Seems like the desired pipeline is web_search => summary ---> process_search_results => structured_output
+# TODO: add memory
 def web_search(state: WebSearchState, config: RunnableConfig):
-    prompt = PromptLoader.get_prompt("web_searcher.md")
+    prompt = PromptLoader.get_prompt("./prompts/web_searcher.md")
     formatted_prompt = prompt.format(
         current_date=get_current_date, search_query=state["search_query"]
     )
@@ -68,7 +65,6 @@ def web_search(state: WebSearchState, config: RunnableConfig):
     return {"messages": [response]}
 
 
-# ? Do we need it? And what is 'continue' actually? Why don't we just route to web_search again?
 def should_continue(state: OverallState):
     last_message = state["messages"][-1]
     if not last_message.tool_calls:
@@ -77,6 +73,7 @@ def should_continue(state: OverallState):
         return "continue"
 
 
+# ? How will the proccessor behave on multiple searches tho? -> The state is unique for each web_search_call, so no worries
 def process_search_results(
     state: WebSearchState, config: RunnableConfig
 ) -> OverallState:
@@ -88,7 +85,7 @@ def process_search_results(
             break
     tool_msgs = recent_tool_msgs[::-1]
 
-    prompt_template = PromptLoader.load_prompt("search_result_proccessor.md")
+    prompt_template = PromptLoader.load_prompt("./prompts/search_result_proccessor.md")
     system_message_content = prompt_template.format(search_query=state["search_query"])
     prompt = [SystemMessage(system_message_content)] + tool_msgs
 
@@ -103,7 +100,7 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
     state["research_loops_count"] = state.get("research_loops_count", 0) + 1
 
     current_date = get_current_date()
-    prompt_template = PromptLoader.load_prompt("reflector.md")
+    prompt_template = PromptLoader.load_prompt("./prompts/reflector.md")
     formatted_prompt = prompt_template.format(
         current_date=current_date,
         research_topic=get_research_topic(state["messages"]),
@@ -148,6 +145,7 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
     pass
 
 
+# TODO: Change the graph structure
 workflow = StateGraph(OverallState)
 
 workflow.add_node("generate_query", generate_query)

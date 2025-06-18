@@ -16,6 +16,7 @@ class ConductedSearchResults(BaseModel):
     text: str = Field(
         description="Verifiable text artifact. Well-written summary or report based on the search findings"
     )
+    sources: List[str] = Field(description="A list of gathered sources")
 
 
 class ReflectionResults(BaseModel):
