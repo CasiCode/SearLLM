@@ -1,6 +1,6 @@
 from langchain_core.messages import SystemMessage, AIMessage
 from langchain_core.runnables import RunnableConfig
-from langgraph.graph import StateGraph
+from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Send
 
@@ -86,7 +86,7 @@ def process_search_results(
     processor_llm = llm.with_structured_output(ConductedSearchResults)
     response = processor_llm.invoke(prompt)
 
-    return {"web_search_result": [response]}
+    return {"web_search_result": [response]}  # ? OverallState sources_gathered unused
 
 
 def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
@@ -167,15 +167,26 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
     }
 
 
-# TODO: Change the graph structure, add nodes and edges
-workflow = StateGraph(OverallState)
+workflow = StateGraph(state_schema=OverallState, config_schema=Configuration)
 
 workflow.add_node("generate_query", generate_query)
 workflow.add_node("web_search", web_search)
 workflow.add_node("web_search_tools", ToolNode([web_search_tool]))
 workflow.add_node("process_search_results", process_search_results)
+workflow.add_node("reflection", reflection)
+workflow.add_node("evaluation", evaluate_research)
+workflow.add_node("finalize_answer", finalize_answer)
 
 workflow.set_entry_point("generate_query")
+
+workflow.add_conditional_edges("generate_query", initialize_web_search, ["web_search"])
+workflow.add_edge("web_search", "web_search_tools")
+workflow.add_edge("web_search_tools", "process_search_results")
+workflow.add_edge("process_search_results", "reflection")
+workflow.add_conditional_edges(
+    "reflection", evaluate_research, ["web_search", "finalize_answer"]
+)
+workflow.add_edge("finalize_answer", END)
 
 graph = workflow.compile()
 
