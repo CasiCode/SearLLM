@@ -1,6 +1,6 @@
-from langchain_core.messages import SystemMessage
+from langchain_core.messages import SystemMessage, AIMessage
 from langchain_core.runnables import RunnableConfig
-from langgraph.graph import END, StateGraph
+from langgraph.graph import StateGraph
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Send
 
@@ -67,14 +67,6 @@ def web_search(state: WebSearchState, config: RunnableConfig):
     return {"messages": [response]}
 
 
-def should_continue(state: OverallState):
-    last_message = state["messages"][-1]
-    if not last_message.tool_calls:
-        return "process"
-    else:
-        return "continue"
-
-
 def process_search_results(
     state: WebSearchState, config: RunnableConfig
 ) -> OverallState:
@@ -102,10 +94,17 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
 
     current_date = get_current_date()
     prompt_template = PromptLoader.load_prompt("./prompts/reflector.md")
+
+    summaries = state["web_research_result"]
+    summaries_as_text = [
+        "\n\nSources:\n".join(summary["text"], "\n".join(summary["sources"]))
+        for summary in summaries
+    ]
+
     formatted_prompt = prompt_template.format(
         current_date=current_date,
         research_topic=get_research_topic(state["messages"]),
-        summaries="\n\n---\n\n".join(state["web_research_result"]),
+        summaries="\n\n---\n\n".join(summaries_as_text),
     )
 
     llm = get_llm(config)
@@ -141,12 +140,34 @@ def evaluate_research(state: ReflectionState, config: RunnableConfig) -> Overall
         ]
 
 
-# TODO: Write the thing
 def finalize_answer(state: OverallState, config: RunnableConfig):
-    pass
+    current_date = get_current_date()
+    prompt_template = PromptLoader.load_prompt("./prompts/answerer.md")
+
+    summaries = state["web_research_result"]
+    summaries_as_text = [
+        "\n\nSources:\n".join(summary["text"], "\n".join(summary["sources"]))
+        for summary in summaries
+    ]
+
+    formatted_prompt = prompt_template.format(
+        current_date=current_date,
+        research_topic=get_research_topic(state["messages"]),
+        summaries="\n\n---\n\n".join(summaries_as_text),
+    )
+
+    llm = get_llm(config)
+    response = llm.invoke(formatted_prompt)
+
+    unique_sources = {source for summary in summaries for source in summary["sources"]}
+
+    return {
+        "messages": [AIMessage(content=response.content)],
+        "sources_gathered": unique_sources,
+    }
 
 
-# TODO: Change the graph structure
+# TODO: Change the graph structure, add nodes and edges
 workflow = StateGraph(OverallState)
 
 workflow.add_node("generate_query", generate_query)
@@ -155,15 +176,6 @@ workflow.add_node("web_search_tools", ToolNode([web_search_tool]))
 workflow.add_node("process_search_results", process_search_results)
 
 workflow.set_entry_point("generate_query")
-
-workflow.add_conditional_edges(
-    "generate_query",
-    should_continue,
-    {"continue": "web_search", "process": "process_seach_results"},
-)
-
-workflow.add_edge("web_seach_tools", "generate_query")
-workflow.add_edge("process_search_results", END)
 
 graph = workflow.compile()
 
