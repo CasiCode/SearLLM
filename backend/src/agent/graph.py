@@ -211,15 +211,15 @@ def process_input_message(session_id: str, input_message: str, config: RunnableC
     )
 
     src = []
-    if response.get("context") and len(response["context"]) > 0:
-        for doc in response["context"]:
-            if isinstance(doc, dict):
-                src.append({"source": doc["link"], "snippet": doc["snippet"]})
+    if response.get("sources_gathered") and len(response["sources_gathered"]) > 0:
+        for source in response["sources_gathered"]:
+            if isinstance(source, dict):
+                src.append({"source": source["link"], "snippet": source["snippet"]})
             else:
                 src.append(
                     {
                         "source": "unknown",
-                        "snippet": f"Unexpected search data recieved: {type(doc)}",
+                        "snippet": f"Unexpected search data recieved: {type(source)}",
                     }
                 )
 
