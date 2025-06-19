@@ -11,7 +11,7 @@ from backend.src.agent.state import (
     WebSearchState,
     ReflectionState,
 )
-from backend.src.agent.tools import web_search_tool
+from backend.src.agent.tools import searx
 from backend.src.agent.utils import get_current_date, get_research_topic
 from backend.src.configuration import Configuration
 from backend.src.agent.prompts.loader import PromptLoader
@@ -61,7 +61,7 @@ def web_search(state: WebSearchState, config: RunnableConfig):
     )
 
     llm = get_llm(config)
-    web_search_llm = llm.bind_tools([web_search_tool])
+    web_search_llm = llm.bind_tools([searx])
 
     response = web_search_llm.invoke(formatted_prompt)
     return {"messages": [response]}
@@ -171,7 +171,7 @@ workflow = StateGraph(state_schema=OverallState, config_schema=Configuration)
 
 workflow.add_node("generate_query", generate_query)
 workflow.add_node("web_search", web_search)
-workflow.add_node("web_search_tools", ToolNode([web_search_tool]))
+workflow.add_node("web_search_tools", ToolNode([searx]))
 workflow.add_node("process_search_results", process_search_results)
 workflow.add_node("reflection", reflection)
 workflow.add_node("evaluation", evaluate_research)
