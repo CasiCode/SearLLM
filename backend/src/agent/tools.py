@@ -1,4 +1,4 @@
-from langchain_community.tools import DuckDuckGoSearchResults
+from langchain_community.utilities import SearxSearchWrapper
 
 
-web_search_tool = DuckDuckGoSearchResults()
+searx = SearxSearchWrapper(searx_host="http://127.0.0.1:8888")
