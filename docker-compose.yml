@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  langgraph:
+    build: .
+    ports:
+      - "8000:8000"
+
+  searxng:
+    image: searxng/searxng:latest
+    ports:
+      - "8888:8080"
+    volumes:
+      - ./searxng-settings.yml:/etc/searxng/settings.yml
+    environment:
+      - BASE_URL=http://localhost:8888
