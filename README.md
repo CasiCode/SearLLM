@@ -8,7 +8,7 @@ This project demonstrates an application using a LangGraph-powered backend agent
 
 The core of the backend is a LangGraph agent defined in `backend/src/agent/graph.py`. It follows these steps:
 
-<img src="./agent-diagram.png" title="Agent Flow" alt="Agent Flow" width="50%">
+<img src="./agent-diagram.png" title="Agent Flow" alt="Agent Flow" width="75%">
 
 1.  **Generate Initial Queries:** Based on your input, it generates a set of initial search queries using an OpenAI GPT model.
 2.  **Web Research:** For each query, it uses the Gemini model with a local instanse of SearXNG host to find relevant web pages.
