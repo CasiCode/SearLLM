@@ -15,7 +15,6 @@ class Configuration(BaseModel):
 
     max_research_loops: int = Field(default=3)
 
-    # Might be better to add none fields for secrets
     @classmethod
     def from_runnable_config(
         cls, config: Optional[RunnableConfig] = None
