@@ -1,17 +1,29 @@
 import warnings
+from typing import Dict, List
 
 from langchain_community.utilities import SearxSearchWrapper
 from langchain_core.tools import tool
 from structs import SearchArgs
 
 # TODO: Make an LLM able to utilize tool arguments smarter
+# TODO: Rewrite searcher prompt to constrain min and max num_results
 
 
 searx = SearxSearchWrapper(searx_host="http://127.0.0.1:8888")
 
 
 @tool(args_schema=SearchArgs)
-def search(query: str, num_results: int):
+def search(query: str, num_results: int) -> List[Dict]:
+    """
+    Use this tool to get the results of a general web search.
+
+    Args:
+        query: The target query in a text format. This exact query will be passed to web-search.
+        num_results: The number of results to be returned by the tool.
+
+    Returns:
+        A list of dictionaries with these exact keys: snippet, title, link, engines, category
+    """
     if num_results < 1:
         warnings.warn(
             message=f"num_results set to {num_results}",
