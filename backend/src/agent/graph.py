@@ -25,7 +25,7 @@ from backend.src.structs import (
 # TODO: Add memory
 
 
-def generate_query(state: OverallState, config: RunnableConfig):
+def generate_queries(state: OverallState, config: RunnableConfig):
     configuration = Configuration.from_runnable_config(config)
     research_topic = get_research_topic(state["messages"])
 
@@ -169,7 +169,7 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
 
 workflow = StateGraph(state_schema=OverallState, config_schema=Configuration)
 
-workflow.add_node("generate_query", generate_query)
+workflow.add_node("generate_query", generate_queries)
 workflow.add_node("web_search", web_search)
 workflow.add_node("web_search_tools", ToolNode([search]))
 workflow.add_node("process_search_results", process_search_results)
