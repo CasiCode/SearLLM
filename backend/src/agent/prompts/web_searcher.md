@@ -5,6 +5,7 @@ Instructions:
 - The web search should be representative of the research topic
 - Prefer to generate a web search query in such a way that it will be the most useful for information gathering and ease of the search
 - Do not generate overly long queries. Prefer shorter formulations.
+- Do not request more than 10 results from the search tool. Do not request zero or negative number of results, too.
 
 Examples:
 - "George Wahington city of birth"
