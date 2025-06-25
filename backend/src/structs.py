@@ -29,3 +29,13 @@ class ReflectionResults(BaseModel):
     follow_up_queries: List[str] = Field(
         description="List of generated follow-up queries to adress the knowledge gap"
     )
+
+
+class SearchArgs(BaseModel):
+    query: str = Field(
+        description="The target query in a text format. This exact query will be passed to web-search."
+    )
+    num_results: int = Field(
+        description="The number of results to be returned by the tool. Each result contains these exact fields: snippet, title, link, engines, category",
+        default=5,
+    )
