@@ -3,7 +3,7 @@ from typing import Dict, List
 
 from langchain_community.utilities import SearxSearchWrapper
 from langchain_core.tools import tool
-from structs import SearchArgs
+from backend.src.structs import SearchArgs
 
 # TODO: Make an LLM able to utilize tool arguments smarter
 # TODO: Rewrite searcher prompt to constrain min and max num_results
