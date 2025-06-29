@@ -12,5 +12,4 @@ RUN pip install --upgrade pip \
 
 EXPOSE 8888
 
-CMD ["/bin/sh", "-c", \
-    "uvicorn backend.src.app:app --host 0.0.0.0 --port 8080"]
+CMD ["/bin/sh", "-c", "uvicorn backend.src.app:app --host 0.0.0.0 --port 8080"]
