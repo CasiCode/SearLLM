@@ -2,7 +2,7 @@ import operator
 from typing import List, TypedDict
 
 from langgraph.graph import add_messages
-from structs import ConductedSearchResults
+from backend.src.structs import ConductedSearchResults
 from typing_extensions import Annotated
 
 
