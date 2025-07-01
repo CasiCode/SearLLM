@@ -12,5 +12,3 @@ query = {
 }
 response_json = requests.post("api-url/query", json=query)
 response = OutputMessage.model_validate_json(response_json)
-
-# можно пробовать получать ответ не через API, а напрямую от langgraph, но мне нужно подумать над тем, насколько это резонно
