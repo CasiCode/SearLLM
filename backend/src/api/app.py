@@ -57,8 +57,10 @@ def external_api_exception_handler(request: Request, exc: ExternalAPIException):
     )
 
 
-@app.post("/chat", response_model=OutputMessage)
-def ask_question(input: InputMessage, handler: RequestHandler = Depends(get_handler)):
+@app.post("/query", response_model=OutputMessage)
+async def ask_question(
+    input: InputMessage, handler: RequestHandler = Depends(get_handler)
+):
     response = handler.process_request(input.session_id, input.message)
     return OutputMessage(
         message=response["message"],

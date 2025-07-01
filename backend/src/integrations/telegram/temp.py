@@ -6,6 +6,6 @@ from src.api.structs import OutputMessage
 # минимум кода, чтобы получить соответствующий этой модели json ответ от api:
 import requests
 
-response = requests.post("api-url/post", "запрос к api")
+response = requests.post("api-url/query", "запрос к api")
 
 # можно пробовать получать ответ не через API, а напрямую от langgraph, но мне нужно подумать над тем, насколько это резонно
