@@ -8,7 +8,7 @@ import requests
 
 query = {
     "session_id": "abc123",
-    "message": "В каких областях Neoflex обладает экспертизой?",
+    "message": "Какое второе имя у Барака Обамы?",
 }
 response_json = requests.post("api-url/query", json=query)
 response = OutputMessage.model_validate_json(response_json)
