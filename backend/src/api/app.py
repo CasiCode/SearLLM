@@ -2,37 +2,10 @@ from typing import Callable, Optional
 
 from fastapi import Depends, FastAPI, Request
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
 
 from backend.src.agent.graph import process_input_message
-
-
-class LocalAPIException(Exception):
-    def __init__(self, details: str):
-        self.status_code = 503
-        self.details = details
-
-
-class ExternalAPIException(Exception):
-    def __init__(self, details: str):
-        self.status_code = 421
-        self.details = details
-
-
-class InputMessage(BaseModel):
-    session_id: str
-    message: str
-
-
-class SourceDocument(BaseModel):
-    source: str
-    snippet: str
-
-
-class OutputMessage(BaseModel):
-    message: str
-    source_documents: list[SourceDocument]
-    session_id: str
+from backend.src.api.exceptions import ExternalAPIException, LocalAPIException
+from backend.src.api.structs import InputMessage, OutputMessage
 
 
 class RequestHandler:
