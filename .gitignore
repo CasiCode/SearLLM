@@ -30,3 +30,5 @@ environment.yml
 caddy
 srv
 searxng/uwsgi.ini
+
+backend.egg-info
