@@ -9,7 +9,7 @@ def get_config(path: str) -> Box:
     Returns config as object
 
     arguments:
-        - path: path to config.yml
+        path: path to config.yml
     returns:
         Box object holding config
     """
