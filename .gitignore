@@ -26,3 +26,7 @@ venv/
 env/
 
 environment.yml
+
+caddy
+srv
+searxng/uwsgi.ini
