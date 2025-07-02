@@ -1,10 +1,10 @@
 # Добавил этот файл только чтобы создать ноду на гите. Можешь свободно его удалять после того, как добавишь в папку что-то еще.
 
 # это pydantic модель выходного сообщения
-from src.api.structs import OutputMessage
+from backend.src.api.structs import OutputMessage
 
 # чтобы подгрузить конфиг
-from src.utils import get_config
+from backend.src.utils import get_config
 
 config = get_config("../../api/config.yml")
 
