@@ -11,6 +11,6 @@ query = {
     "message": "Какое второе имя у Барака Обамы?",
 }
 
-API_URL = "127.0.0.0:8888"
-response_json = requests.post(f"{API_URL}/query", json=query)
+API_URL = "127.0.0.0:8080"  # может измениться
+response_json = requests.post(f"{API_URL}/dev", json=query)
 response = OutputMessage.model_validate_json(response_json)

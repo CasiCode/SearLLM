@@ -10,6 +10,6 @@ COPY . ./
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
-EXPOSE 8888
+EXPOSE 8080
 
-CMD ["/bin/sh", "-c", "uvicorn backend.src.app:app --host 0.0.0.0 --port 8080"]
+CMD ["/bin/sh", "-c", "uvicorn backend.src.api.app:app --host 0.0.0.0 --port 8080"]

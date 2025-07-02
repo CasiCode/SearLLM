@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 
 from backend.src.agent.graph import process_input_message
 from backend.src.api.exceptions import ExternalAPIException, LocalAPIException
-from backend.src.api.structs import InputMessage, OutputMessage
+from backend.src.api.structs import InputMessage, OutputMessage, SourceDocument
 
 
 class RequestHandler:
@@ -66,4 +66,16 @@ async def ask_question(
         message=response["message"],
         source_documents=response["source_documents"],
         session_id=response["session_id"],
+    )
+
+
+# ! DEVELOPMENT-ONLY ENDPOINT
+@app.post("/dev", response_model=OutputMessage)
+async def response(input: InputMessage):
+    return OutputMessage(
+        message="This is a dev message, yaaaay!",
+        source_documents=[
+            SourceDocument(source="this is a source", snippet="...some snippet...")
+        ],
+        session_id=input["session_id"],
     )
