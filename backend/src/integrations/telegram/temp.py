@@ -10,5 +10,7 @@ query = {
     "session_id": "abc123",
     "message": "Какое второе имя у Барака Обамы?",
 }
-response_json = requests.post("api-url/query", json=query)
+
+API_URL = "127.0.0.0:8888"
+response_json = requests.post(f"{API_URL}/query", json=query)
 response = OutputMessage.model_validate_json(response_json)
