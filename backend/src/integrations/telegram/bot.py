@@ -40,7 +40,7 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         "session_id": "abc123",
         "message": query,
     }
-    response_json = requests.post(f"{api_url}/dev", json=query)
+    response_json = requests.post(f"{api_url}/dev", json=query_json)
     response = OutputMessage.model_validate_json(response_json)
 
     await update.inline_query.answer(response.message)
