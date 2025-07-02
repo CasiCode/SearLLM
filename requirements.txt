@@ -9,3 +9,5 @@ python-dotenv
 pyyaml
 
 python-box
+
+python-telegram-bot
