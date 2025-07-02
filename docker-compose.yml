@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   caddy:
@@ -59,3 +59,12 @@ services:
     build: .
     ports:
       - "8000:8000"
+
+networks:
+  searxng:
+
+volumes:
+  caddy-data:
+  caddy-config:
+  valkey-data2:
+  searxng-data:
