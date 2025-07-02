@@ -3,6 +3,14 @@
 # это pydantic модель выходного сообщения
 from src.api.structs import OutputMessage
 
+# чтобы подгрузить конфиг
+from src.utils import get_config
+
+config = get_config("../../api/config.yml")
+
+# конфигов может быть много по разным путям, но утилита подгружает ЛЮБОЙ
+# ты можешь написать и свой yml конфиг для своего модуля
+
 # минимум кода, чтобы получить соответствующий этой модели json ответ от api:
 import requests
 
@@ -11,6 +19,6 @@ query = {
     "message": "Какое второе имя у Барака Обамы?",
 }
 
-API_URL = "127.0.0.0:8080"  # может измениться
-response_json = requests.post(f"{API_URL}/dev", json=query)
+api_url = f"{config.host}:{str(config.port)}"
+response_json = requests.post(f"{api_url}/dev", json=query)
 response = OutputMessage.model_validate_json(response_json)

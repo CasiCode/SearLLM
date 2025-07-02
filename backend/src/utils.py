@@ -1,0 +1,21 @@
+import warnings
+
+import yaml
+from box import Box
+
+
+def get_config(path: str) -> Box:
+    """
+    Returns config as object
+
+    arguments:
+        - path: path to config.yml
+    returns:
+        Box object holding config
+    """
+    try:
+        with open(path, "r") as f:
+            config_dict = yaml.safe_load(f)
+        return Box(config_dict)
+    except Exception as e:
+        warnings.warn(message=f"Oops, error occured! {e}", stacklevel=3)
