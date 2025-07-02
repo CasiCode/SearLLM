@@ -16,7 +16,6 @@ __pycache__/
 **/.DS_Store
 
 .env
-.env.*
 *.sqlite3
 
 .vscode/
