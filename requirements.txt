@@ -11,3 +11,5 @@ pyyaml
 python-box
 
 python-telegram-bot
+
+-e .
