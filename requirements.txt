@@ -11,3 +11,6 @@ pyyaml
 python-box
 
 python-telegram-bot
+
+setuptools
+-e .
