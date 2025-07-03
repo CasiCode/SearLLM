@@ -13,4 +13,4 @@ python-box
 python-telegram-bot
 
 setuptools
--e ./backend
+-e ./backend/.
