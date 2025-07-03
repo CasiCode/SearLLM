@@ -4,8 +4,8 @@ from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Send
 
-from backend.src.backend.agent.llm import get_llm
-from backend.src.backend.agent.state import (
+from backend.agent.llm import get_llm
+from backend.agent.state import (
     OverallState,
     QueryGenerationState,
     WebSearchState,
