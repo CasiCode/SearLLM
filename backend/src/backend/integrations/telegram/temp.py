@@ -22,3 +22,12 @@ query = {
 api_url = f"{config.host}:{str(config.port)}"
 response_json = requests.post(f"{api_url}/dev", json=query)
 response = OutputMessage.model_validate_json(response_json)
+
+
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+
+super_secret_api_key = os.getenv("TELEGRAM_BOT_API_KEY")
