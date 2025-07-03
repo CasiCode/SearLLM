@@ -1,5 +1,8 @@
 import logging
+import os
 
+# import requests
+from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import (
     Application,
@@ -8,6 +11,13 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
+
+# from backend.api.structs import OutputMessage
+from backend.utils import get_config
+
+
+load_dotenv()
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 
 # *Не ебу, как работает лоигрование, спизжено
@@ -31,18 +41,10 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     await update.message.reply_text("Help!")
 
 
-from backend.api.structs import OutputMessage
-from backend.utils import get_config
-import requests
+api_config = get_config("api/config.yml")
+api_url = f"{api_config.host}:{str(api_config.port)}"
 
-# config_api = get_config("../../api/config.yml")
-# api_url = f"{config_api.host}:{str(config_api.port)}"
-
-# config_bot = get_config("./config.yml")
-
-# *config.yml is not used yet
-search_command = "searx"
-bot_tag = "SearXTG_bot"
+bot_config = get_config("integrations/telegram/config.yml")
 
 
 # *So far in Russian
@@ -51,13 +53,13 @@ async def searx_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     session_id = update.update_id
 
     # Update.message.text includes the command itself (/searx@SearXTG_bot or /searx)
-    message = message.replace(f"/{search_command}@{bot_tag}", "")
-    message = message.replace(f"/{search_command}", "")
+    message = message.replace(f"/{bot_config.search_command}@{bot_config.bot_tag}", "")
+    message = message.replace(f"/{bot_config.search_command}", "")
     # If there are only spaces after the command, they are not passed.
+    message = message.strip()
     if len(message) == 0:
         await update.message.reply_text("Вы не ввели запрос")
         return
-    message = message.lstrip()
 
     """
     query = {
@@ -81,20 +83,12 @@ async def chat_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     await update.message.reply_text(f"На запрос {message} В интернете найдено ЭТО")
 
 
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-
-token = os.getenv("TELEGRAM_BOT_TOKEN")
-
-
 def main() -> None:
-    application = Application.builder().token(token).build()
+    application = Application.builder().token(TOKEN).build()
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
-    application.add_handler(CommandHandler(search_command, searx_command))
+    application.add_handler(CommandHandler(bot_config.search_command, searx_command))
 
     application.add_handler(
         MessageHandler(

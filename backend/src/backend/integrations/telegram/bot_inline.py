@@ -1,23 +1,22 @@
 import logging
-
+import os
 from uuid import uuid4
+
+from dotenv import load_dotenv
 from telegram import InlineQueryResultArticle, InputTextMessageContent, Update
 from telegram.ext import (
     Application,
-    InlineQueryHandler,
     ChosenInlineResultHandler,
     CommandHandler,
     ContextTypes,
+    InlineQueryHandler,
     MessageHandler,
     filters,
 )
 
-from dotenv import load_dotenv
-import os
 
 load_dotenv()
-
-token = os.getenv("TELEGRAM_BOT_TOKEN")
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 # Enable logging
 logging.basicConfig(
@@ -82,7 +81,7 @@ async def chosen_result(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 def main() -> None:
     """Start the bot."""
     # Create the Application and pass it your bot's token.
-    application = Application.builder().token(token).build()
+    application = Application.builder().token(TOKEN).build()
 
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler("start", start))
