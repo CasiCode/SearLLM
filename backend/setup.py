@@ -2,14 +2,11 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name="src",
+    name="backend",
     version="0.1.0",
-    packages=find_packages(where="src"),
+    packages=find_packages(where="backend"),
     package_dir={"": "src"},
     install_requires=[
-        "wheel",
-        "bar",
-        "greek",
         "langchain-community",
         "langgraph",
         "langchain[openai]",
