@@ -26,4 +26,6 @@ env/
 
 environment.yml
 
-backend.egg-info
+backend.egg-info/
+**/backend.egg-info/
+*backend.egg-info*

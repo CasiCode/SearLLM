@@ -2,7 +2,7 @@ import argparse
 
 from langchain_core.messages import HumanMessage
 
-from backend.src.agent.graph import graph
+from backend.agent.graph import graph
 
 
 def main() -> None:

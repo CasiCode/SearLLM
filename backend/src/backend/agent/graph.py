@@ -4,18 +4,18 @@ from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Send
 
-from backend.src.agent.llm import get_llm
-from backend.src.agent.state import (
+from backend.agent.llm import get_llm
+from backend.agent.state import (
     OverallState,
     QueryGenerationState,
     WebSearchState,
     ReflectionState,
 )
-from backend.src.agent.tools import search
-from backend.src.agent.utils import get_current_date, get_research_topic
-from backend.src.configuration import Configuration
-from backend.src.agent.prompts.loader import PromptLoader
-from backend.src.structs import (
+from backend.agent.tools import search
+from backend.agent.utils import get_current_date, get_research_topic
+from backend.agent.configuration import Configuration
+from backend.agent.prompts.loader import PromptLoader
+from backend.agent.structs import (
     ConductedSearchResults,
     SearchQueryList,
     ReflectionResults,

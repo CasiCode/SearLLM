@@ -31,4 +31,6 @@ caddy
 srv
 searxng/uwsgi.ini
 
-backend.egg-info
+backend.egg-info/
+**/backend.egg-info/
+*backend.egg-info*
