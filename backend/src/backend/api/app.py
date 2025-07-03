@@ -1,10 +1,10 @@
 from fastapi import Depends, FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from backend.src.agent.graph import process_input_message
-from backend.src.api.exceptions import ExternalAPIException, LocalAPIException
-from backend.src.api.structs import InputMessage, OutputMessage, SourceDocument
-from backend.src.api.request_handler import RequestHandler
+from backend.src.backend.agent.graph import process_input_message
+from backend.src.backend.api.exceptions import ExternalAPIException, LocalAPIException
+from backend.src.backend.api.structs import InputMessage, OutputMessage, SourceDocument
+from backend.src.backend.api.request_handler import RequestHandler
 
 
 app = FastAPI()

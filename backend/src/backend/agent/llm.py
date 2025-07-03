@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from langchain_core.runnables import RunnableConfig
 from langchain_openai.chat_models import ChatOpenAI
 
-from backend.src.configuration import Configuration
+from backend.src.backend.agent.configuration import Configuration
 
 load_dotenv()
 
