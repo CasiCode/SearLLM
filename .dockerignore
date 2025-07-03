@@ -25,5 +25,3 @@ venv/
 env/
 
 environment.yml
-
-backend.egg-info
