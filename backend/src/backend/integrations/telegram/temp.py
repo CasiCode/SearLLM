@@ -6,7 +6,7 @@ from backend.api.structs import OutputMessage
 # чтобы подгрузить конфиг
 from backend.utils import get_config
 
-config = get_config("../../api/config.yml")
+config = get_config("api/config.yml")
 
 # конфигов может быть много по разным путям, но утилита подгружает ЛЮБОЙ
 # ты можешь написать и свой yml конфиг для своего модуля

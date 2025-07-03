@@ -1,12 +1,7 @@
-from .handlers import (
-    start,
-    help_command,
-    searx_command,
-    chat_question,
-)
-
 import logging
+import os
 
+from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import (
     Application,
@@ -15,18 +10,19 @@ from telegram.ext import (
     filters,
 )
 
+from backend.integrations.telegram.bot.handlers import (
+    chat_question,
+    help_command,
+    searx_command,
+    start,
+)
 from backend.utils import get_config
 
-from dotenv import load_dotenv
-import os
 
 load_dotenv()
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
-token = os.getenv("TELEGRAM_BOT_TOKEN")
-
-# config_bot = get_config("../../config.yml")
-# *config.yml is not used yet
-search_command = "searx"
+bot_config = get_config("integrations/telegram/config.yml")
 
 
 # *Не ебу, как работает лоигрование, спизжено
@@ -40,11 +36,11 @@ logger = logging.getLogger(__name__)
 
 
 def main() -> None:
-    application = Application.builder().token(token).build()
+    application = Application.builder().token(TOKEN).build()
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
-    application.add_handler(CommandHandler(search_command, searx_command))
+    application.add_handler(CommandHandler(bot_config.search_command, searx_command))
 
     application.add_handler(
         MessageHandler(
