@@ -1,10 +1,10 @@
 # Добавил этот файл только чтобы создать ноду на гите. Можешь свободно его удалять после того, как добавишь в папку что-то еще.
 
 # это pydantic модель выходного сообщения
-from backend.src.backend.api.structs import OutputMessage
+from backend.api.structs import OutputMessage
 
 # чтобы подгрузить конфиг
-from backend.src.backend.utils import get_config
+from backend.utils import get_config
 
 config = get_config("../../api/config.yml")
 
@@ -22,3 +22,12 @@ query = {
 api_url = f"{config.host}:{str(config.port)}"
 response_json = requests.post(f"{api_url}/dev", json=query)
 response = OutputMessage.model_validate_json(response_json)
+
+
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+
+super_secret_api_key = os.getenv("TELEGRAM_BOT_API_KEY")

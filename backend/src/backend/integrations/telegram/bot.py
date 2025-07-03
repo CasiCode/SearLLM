@@ -10,16 +10,6 @@ from telegram.ext import (
 )
 
 
-from backend.api.structs import OutputMessage
-from backend.utils import get_config
-import requests
-
-# config = get_config("backend/src/backend/api/config.yml")
-# api_url = f"{config.host}:{str(config.port)}"
-
-
-search_command = "searx"
-
 # *Не ебу, как работает лоигрование, спизжено
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -41,22 +31,33 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     await update.message.reply_text("Help!")
 
 
+from backend.api.structs import OutputMessage
+from backend.utils import get_config
+import requests
+
+# config_api = get_config("../../api/config.yml")
+# api_url = f"{config_api.host}:{str(config_api.port)}"
+
+# config_bot = get_config("./config.yml")
+
+# *config.yml is not used yet
+search_command = "searx"
+bot_tag = "SearXTG_bot"
+
+
 # *So far in Russian
 async def searx_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     message = update.message.text
     session_id = update.update_id
-    # Update.message.text includes the command itself
-    # *message = message[len("/" + search_command) + 1 :]
-    # *This option does not work in the group due to the format "/searx@SearXTG_bot".
-    # *It would be possible to make two separate handlers and two functions. Shit?
 
-    # *Telegram does not transmit spaces if there were no other characters in the message
-    position_s = message.find(" ")
-    if position_s == -1:
+    # Update.message.text includes the command itself (/searx@SearXTG_bot or /searx)
+    message = message.replace(f"/{search_command}@{bot_tag}", "")
+    message = message.replace(f"/{search_command}", "")
+    # If there are only spaces after the command, they are not passed.
+    if len(message) == 0:
         await update.message.reply_text("Вы не ввели запрос")
         return
-
-    message = message[position_s + 1 :]
+    message = message.lstrip()
 
     """
     query = {
@@ -74,13 +75,18 @@ async def searx_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         await update.message.reply_text(f"На запрос {message} Произошла ошибка")
 
 
-async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def chat_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     message = update.message.text
     # *The implementation will be the same as that of the searx_command
     await update.message.reply_text(f"На запрос {message} В интернете найдено ЭТО")
 
 
-token = "8033838222:AAHwXHZgM5mEUfG-YVFzZ9I3za9kyfNrWyA"
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+token = os.getenv("TELEGRAM_BOT_TOKEN")
 
 
 def main() -> None:
@@ -91,7 +97,9 @@ def main() -> None:
     application.add_handler(CommandHandler(search_command, searx_command))
 
     application.add_handler(
-        MessageHandler(filters.TEXT & ~filters.COMMAND & filters.ChatType.PRIVATE, echo)
+        MessageHandler(
+            filters.TEXT & ~filters.COMMAND & filters.ChatType.PRIVATE, chat_question
+        )
     )
 
     # Run the bot until the user presses Ctrl-C

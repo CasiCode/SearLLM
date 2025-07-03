@@ -12,7 +12,12 @@ from telegram.ext import (
     filters,
 )
 
-token = "8033838222:AAHwXHZgM5mEUfG-YVFzZ9I3za9kyfNrWyA"
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+token = os.getenv("TELEGRAM_BOT_TOKEN")
 
 # Enable logging
 logging.basicConfig(
@@ -72,7 +77,6 @@ async def chosen_result(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     result = update.chosen_inline_result
     user_input = result.query
     logger.info(f"Пользователь выбрал: {user_input}")
-    await update.message.reply_text(update.message.text)
 
 
 def main() -> None:
