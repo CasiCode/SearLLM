@@ -1,1 +1,1 @@
-from backend.src.structs import SearchQueryList
+from backend.structs import SearchQueryList
