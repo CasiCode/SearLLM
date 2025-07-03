@@ -1,3 +1,3 @@
-from backend.src.agent.graph import graph
+from backend.agent.graph import graph
 
 __all__ = ["graph"]

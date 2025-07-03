@@ -11,11 +11,11 @@ from backend.src.backend.agent.state import (
     WebSearchState,
     ReflectionState,
 )
-from backend.src.backend.agent.tools import search
-from backend.src.backend.agent.utils import get_current_date, get_research_topic
-from backend.src.backend.agent.configuration import Configuration
-from backend.src.backend.agent.prompts.loader import PromptLoader
-from backend.src.backend.agent.structs import (
+from backend.agent.tools import search
+from backend.agent.utils import get_current_date, get_research_topic
+from backend.agent.configuration import Configuration
+from backend.agent.prompts.loader import PromptLoader
+from backend.agent.structs import (
     ConductedSearchResults,
     SearchQueryList,
     ReflectionResults,
