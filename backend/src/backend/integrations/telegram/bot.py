@@ -42,7 +42,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 
 api_config = get_config("api/config.yml")
-api_url = f"{api_config.host}:{str(api_config.port)}"
+api_url = f"{api_config.api.host}:{str(api_config.api.port)}"
 
 bot_config = get_config("integrations/telegram/config.yml")
 
@@ -53,8 +53,10 @@ async def searx_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     session_id = update.update_id
 
     # Update.message.text includes the command itself (/searx@SearXTG_bot or /searx)
-    message = message.replace(f"/{bot_config.search_command}@{bot_config.bot_tag}", "")
-    message = message.replace(f"/{bot_config.search_command}", "")
+    message = message.replace(
+        f"/{bot_config.bot.search_command}@{bot_config.bot.bot_tag}", ""
+    )
+    message = message.replace(f"/{bot_config.bot.search_command}", "")
     # If there are only spaces after the command, they are not passed.
     message = message.strip()
     if len(message) == 0:
@@ -88,7 +90,9 @@ def main() -> None:
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
-    application.add_handler(CommandHandler(bot_config.search_command, searx_command))
+    application.add_handler(
+        CommandHandler(bot_config.bot.search_command, searx_command)
+    )
 
     application.add_handler(
         MessageHandler(

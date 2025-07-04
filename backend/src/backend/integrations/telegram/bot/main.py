@@ -40,7 +40,9 @@ def main() -> None:
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
-    application.add_handler(CommandHandler(bot_config.search_command, searx_command))
+    application.add_handler(
+        CommandHandler(bot_config.bot.search_command, searx_command)
+    )
 
     application.add_handler(
         MessageHandler(

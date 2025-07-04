@@ -8,7 +8,7 @@ from backend.utils import get_config
 
 
 api_config = get_config("api/config.yml")
-api_url = f"{api_config.host}:{str(api_config.port)}"
+api_url = f"{api_config.api.host}:{str(api_config.api.port)}"
 
 bot_config = get_config("integrations/telegram/config.yml")
 
@@ -19,8 +19,10 @@ async def searx_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     session_id = update.update_id
 
     # Update.message.text includes the command itself (/searx@SearXTG_bot or /searx)
-    message = message.replace(f"/{bot_config.search_command}@{bot_config.bot_tag}", "")
-    message = message.replace(f"/{bot_config.search_command}", "")
+    message = message.replace(
+        f"/{bot_config.bot.search_command}@{bot_config.bot.bot_tag}", ""
+    )
+    message = message.replace(f"/{bot_config.bot.search_command}", "")
     # If there are only spaces after the command, they are not passed.
     if len(message) == 0:
         await update.message.reply_text("Вы не ввели запрос")
