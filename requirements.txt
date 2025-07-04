@@ -2,6 +2,7 @@ langchain-community
 langgraph
 langchain[openai]
 langchain-core
+tiktoken
 fastapi
 uvicorn
 pydantic
