@@ -20,7 +20,7 @@ query = {
     "message": "Какое второе имя у Барака Обамы?",
 }
 
-api_url = f"{config.host}:{str(config.port)}"
+api_url = f"{config.api.host}:{str(config.api.port)}"
 response_json = requests.post(f"{api_url}/dev", json=query)
 response = OutputMessage.model_validate_json(response_json)
 

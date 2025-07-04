@@ -11,6 +11,8 @@ pyyaml
 
 python-box
 
+sqlalchemy
+
 python-telegram-bot
 
 setuptools

@@ -34,3 +34,6 @@ searxng/uwsgi.ini
 backend.egg-info/
 **/backend.egg-info/
 *backend.egg-info*
+
+app.db
+**/app.db
