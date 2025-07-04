@@ -16,6 +16,7 @@ import requests
 
 query = {
     "session_id": "abc123",
+    "user_id": 123,
     "message": "Какое второе имя у Барака Обамы?",
 }
 
