@@ -22,6 +22,19 @@ class InsufficientTokensException(Exception):
         self.details = details
 
 
+class InvalidKeyException(Exception):
+    def __init__(self, details: str):
+        self.status_code = 401
+        self.details = details
+
+
+async def invalid_key_exception_handler(request: Request, exc: InvalidKeyException):
+    return JSONResponse(
+        status_code=401,
+        content={"message": "Oops! You used a wrong API KEY..."},
+    )
+
+
 async def database_exception_handler(request: Request, exc: SQLAlchemyError):
     return JSONResponse(
         status_code=500,
@@ -29,7 +42,9 @@ async def database_exception_handler(request: Request, exc: SQLAlchemyError):
     )
 
 
-async def insufficient_tokens_error(request: Request, exc: InsufficientTokensException):
+async def insufficient_tokens_handler(
+    request: Request, exc: InsufficientTokensException
+):
     return JSONResponse(
         status_code=exc.status_code,
         content={
@@ -56,3 +71,6 @@ async def external_api_exception_handler(request: Request, exc: ExternalAPIExcep
 def setup_exception_handlers(app: FastAPI):
     app.add_exception_handler(LocalAPIException, local_api_exception_handler)
     app.add_exception_handler(ExternalAPIException, external_api_exception_handler)
+    app.add_exception_handler(InvalidKeyException, invalid_key_exception_handler)
+    app.add_exception_handler(SQLAlchemyError, database_exception_handler)
+    app.add_exception_handler(InsufficientTokensException, insufficient_tokens_handler)
