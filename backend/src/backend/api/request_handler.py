@@ -1,6 +1,6 @@
 from typing import Callable, Optional
 
-from backend.api.exceptions import ExternalAPIException, LocalAPIException
+from backend.api.core.exceptions import ExternalAPIException, LocalAPIException
 
 
 class RequestHandler:
