@@ -9,7 +9,7 @@ from backend.agent.structs import SearchArgs
 # TODO: Make an LLM able to utilize tool arguments smarter
 # TODO: Rewrite searcher prompt to constrain min and max num_results
 
-
+# ! MUST BE IN CONFIG
 searx = SearxSearchWrapper(searx_host="http://127.0.0.1:8888")
 
 

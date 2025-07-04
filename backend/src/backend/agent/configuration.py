@@ -7,7 +7,8 @@ from typing_extensions import Optional
 
 
 class Configuration(BaseModel):
-    model: str = Field(default="openai/gpt-4.1-nano")
+    model_adress: str = Field(default="openai/gpt-4.1-nano")
+    model_name: str = Field(default="gpt-4.1-nano")
 
     temperature: float = Field(default=0)
 

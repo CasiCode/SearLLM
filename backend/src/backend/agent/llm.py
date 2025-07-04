@@ -20,7 +20,7 @@ def get_llm(config: RunnableConfig):
     llm = ChatOpenAI(
         openai_api_key=os.getenv("OPENROUTER_API_KEY"),
         openai_api_base=os.getenv("OPENROUTER_BASE_URL"),
-        model_name=configuration.model,
+        model_name=configuration.model_adress,
         temperature=configuration.temperature,
     )
     return llm
