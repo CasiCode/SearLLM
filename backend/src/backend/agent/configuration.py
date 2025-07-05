@@ -24,6 +24,7 @@ class Configuration(BaseModel):
             config["configurable"] if config and "configurable" in config else {}
         )
 
+        # TODO: Add env variables for dict keys
         raw_values = Dict[str, Any] = {
             name: os.getenv(name.upper(), configurable.get(name))
             for name in cls.model_fields.keys()
