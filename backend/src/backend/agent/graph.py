@@ -22,9 +22,6 @@ from backend.agent.structs import (
 )
 
 
-# TODO: Add memory
-
-
 def generate_queries(state: OverallState, config: RunnableConfig):
     configuration = Configuration.from_runnable_config(config)
     research_topic = get_research_topic(state["messages"])
@@ -32,12 +29,12 @@ def generate_queries(state: OverallState, config: RunnableConfig):
     if state.get("initial_search_query_count") is None:
         state["initial_search_query_count"] = configuration.number_of_initial_queries
 
-    prompt = PromptLoader.load_prompt("./prompts/query_writer.md")
+    prompt = PromptLoader.load_prompt("query_writer.md")
     current_date = get_current_date()
     formatted_prompt = prompt.format(
         current_date=current_date,
         research_topic=research_topic,
-        number_queries=state.get("initial_search_query_count"),
+        number_queries=state.get("initial_search_query_count"),  # ! Might be a bug
     )
 
     llm = get_llm(config)
@@ -55,7 +52,7 @@ def initialize_web_search(state: QueryGenerationState):
 
 
 def web_search(state: WebSearchState, config: RunnableConfig):
-    prompt = PromptLoader.get_prompt("./prompts/web_searcher.md")
+    prompt = PromptLoader.load_prompt("web_searcher.md")
     formatted_prompt = prompt.format(
         current_date=get_current_date, search_query=state["search_query"]
     )
@@ -67,6 +64,7 @@ def web_search(state: WebSearchState, config: RunnableConfig):
     return {"messages": [response]}
 
 
+# TODO: Make model gather sources from tool messages and put them in response
 def process_search_results(
     state: WebSearchState, config: RunnableConfig
 ) -> OverallState:
@@ -78,7 +76,7 @@ def process_search_results(
             break
     tool_msgs = recent_tool_msgs[::-1]
 
-    prompt_template = PromptLoader.load_prompt("./prompts/search_result_proccessor.md")
+    prompt_template = PromptLoader.load_prompt("search_result_proccessor.md")
     system_message_content = prompt_template.format(search_query=state["search_query"])
     prompt = [SystemMessage(system_message_content)] + tool_msgs
 
@@ -86,14 +84,14 @@ def process_search_results(
     processor_llm = llm.with_structured_output(ConductedSearchResults)
     response = processor_llm.invoke(prompt)
 
-    return {"web_search_result": [response]}  # ? OverallState sources_gathered unused
+    return {"web_research_result": [response]}
 
 
 def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
     state["research_loops_count"] = state.get("research_loops_count", 0) + 1
 
     current_date = get_current_date()
-    prompt_template = PromptLoader.load_prompt("./prompts/reflector.md")
+    prompt_template = PromptLoader.load_prompt("reflector.md")
 
     summaries = state["web_research_result"]
     summaries_as_text = [
@@ -142,7 +140,7 @@ def evaluate_research(state: ReflectionState, config: RunnableConfig) -> Overall
 
 def finalize_answer(state: OverallState, config: RunnableConfig):
     current_date = get_current_date()
-    prompt_template = PromptLoader.load_prompt("./prompts/answerer.md")
+    prompt_template = PromptLoader.load_prompt("answerer.md")
 
     summaries = state["web_research_result"]
     summaries_as_text = [
@@ -193,16 +191,19 @@ graph = workflow.compile()
 
 # ! How to even register it in API if it has config in args?
 # ? the response structure will most surely change later when implementing frontend
-def process_input_message(session_id: str, input_message: str, config: RunnableConfig):
+def process_input_message(
+    session_id: str, user_id: int, input_message: str, config: RunnableConfig
+):
     """
     Processes a message catched through the API.
 
     Args:
-      session_id.
-      input_message.
+      session_id - id of current session.
+      user_ud - id of user which issued a query
+      input_message - query message.
 
     Returns:
-      model answer, sources, session_id. Aligns with pydantic-model for output messages.
+      model answer, sources, session_id, user_id. Aligns with pydantic-model for output messages.
     """
 
     response = graph.invoke(
@@ -230,4 +231,5 @@ def process_input_message(session_id: str, input_message: str, config: RunnableC
         else "Oops, we couldn't proccess your message, sorry!",
         "source_documents": src,
         "session_id": session_id,
+        "user_id": user_id,
     }
