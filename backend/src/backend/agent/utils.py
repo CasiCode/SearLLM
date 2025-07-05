@@ -28,6 +28,7 @@ def get_research_topic(msgs: List[AnyMessage]) -> str:
         return topic
 
 
+# TODO: Incorporate in graph and\or API to count user tokens
 def num_tokens_from_messages(messages, config: RunnableConfig) -> int:
     configuration = Configuration.from_runnable_config(config)
 
