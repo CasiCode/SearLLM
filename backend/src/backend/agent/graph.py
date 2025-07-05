@@ -189,7 +189,6 @@ workflow.add_edge("finalize_answer", END)
 graph = workflow.compile()
 
 
-# ! How to even register it in API if it has config in args?
 # ? the response structure will most surely change later when implementing frontend
 def process_input_message(
     session_id: str, user_id: int, input_message: str, config: RunnableConfig
