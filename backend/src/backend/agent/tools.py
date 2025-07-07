@@ -5,13 +5,15 @@ from langchain_community.utilities import SearxSearchWrapper
 from langchain_core.tools import tool
 
 from backend.agent.structs import SearchArgs
-
-# TODO: Make an LLM able to utilize tool arguments smarter
-# TODO: Rewrite searcher prompt to constrain min and max num_results
+from backend.utils import get_config
 
 
+config = get_config("config.py")
+
+
+searx_host = f"{config.searx.host}:{str(config.searx.port)}"
 # TODO: Check if this line changes with new app architecture
-searx = SearxSearchWrapper(searx_host="http://127.0.0.1:8888")  # ! MUST BE IN CONFIG
+searx = SearxSearchWrapper(searx_host=searx_host)
 
 
 @tool(args_schema=SearchArgs)
