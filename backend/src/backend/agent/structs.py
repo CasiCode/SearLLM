@@ -7,11 +7,6 @@ class SearchQueryList(BaseModel):
     query: List[str] = Field(
         description="A list of search queries to be used for web research"
     )
-    # ! Is this even used? It uses tokens for sure
-    # * No, not used at all
-    rationale: str = Field(
-        description="A brief explanation of why this queries are relevant to the research topic."
-    )
 
 
 class ConductedSearchResults(BaseModel):
@@ -24,10 +19,6 @@ class ConductedSearchResults(BaseModel):
 class ReflectionResults(BaseModel):
     is_sufficient: bool = Field(
         description="Boolean flag showing if the input summary is sufficient"
-    )
-    # ! Now this is not used again, but uses tokens. A lot
-    knowledge_gap: str = Field(
-        description="Text description of what specific imformation is either missing or needs clarification"
     )
     follow_up_queries: List[str] = Field(
         description="List of generated follow-up queries to adress the knowledge gap"
