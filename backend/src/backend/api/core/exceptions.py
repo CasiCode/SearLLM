@@ -1,7 +1,23 @@
+from typing import Optional, Any
+
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from sqlalchemy.exc import SQLAlchemyError
+
+
+class APIError(Exception):
+    def __init__(
+        self,
+        status_code: Optional[int] = None,
+        details: Optional[str] = None,
+        response: Optional[Any] = None,
+    ):
+        self.status_code = status_code
+        self.details = (details,)
+        self.response = response
+
+        super().__init__(self.message)
 
 
 class LocalAPIException(Exception):
@@ -28,10 +44,16 @@ class InvalidKeyException(Exception):
         self.details = details
 
 
+class BlockedIPException(Exception):
+    def __init__(self, details: str):
+        self.status_code = 403
+        self.details = details
+
+
 async def invalid_key_exception_handler(request: Request, exc: InvalidKeyException):
     return JSONResponse(
         status_code=401,
-        content={"message": "Oops! You used a wrong API KEY..."},
+        content={"message": f"Oops! You used a wrong API KEY... {exc.details or ''}"},
     )
 
 
@@ -48,7 +70,18 @@ async def insufficient_tokens_handler(
     return JSONResponse(
         status_code=exc.status_code,
         content={
-            "message": f"Oops! Seems like you don't have enough tokens... {exc.details}"
+            "message": f"Oops! Seems like you don't have enough tokens... {exc.details or ''}"
+        },
+    )
+
+
+async def blocked_ip_exception_handler(
+    request: Request, exc: InsufficientTokensException
+):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "message": f"Oops! Seems like your IP is blocked... {exc.details or ''}"
         },
     )
 
@@ -56,7 +89,7 @@ async def insufficient_tokens_handler(
 async def local_api_exception_handler(request: Request, exc: LocalAPIException):
     return JSONResponse(
         status_code=exc.status_code,
-        content={"message": f"Oops! Local API did something... {exc.details}"},
+        content={"message": f"Oops! Local API did something... {exc.details or ''}"},
     )
 
 
@@ -64,7 +97,7 @@ async def external_api_exception_handler(request: Request, exc: ExternalAPIExcep
     status_code = exc.status_code
     return JSONResponse(
         status_code=status_code,
-        content={"message": f"Oops! External API did something... {exc.details}"},
+        content={"message": f"Oops! External API did something... {exc.details or ''}"},
     )
 
 
@@ -74,3 +107,4 @@ def setup_exception_handlers(app: FastAPI):
     app.add_exception_handler(InvalidKeyException, invalid_key_exception_handler)
     app.add_exception_handler(SQLAlchemyError, database_exception_handler)
     app.add_exception_handler(InsufficientTokensException, insufficient_tokens_handler)
+    app.add_exception_handler(BlockedIPException, blocked_ip_exception_handler)
