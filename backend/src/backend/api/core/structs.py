@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class InputMessage(BaseModel):
     session_id: str
-    user_id: str
+    user_id: int
     message: int
 
 
