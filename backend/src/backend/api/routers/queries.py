@@ -2,10 +2,10 @@ from fastapi import Depends, APIRouter
 
 from sqlalchemy.orm import Session
 
-from backend.api.structs import InputMessage, OutputMessage, SourceDocument
-from backend.api.request_handler import RequestHandler
+from backend.api.core.structs import InputMessage, OutputMessage, SourceDocument
+from backend.api.core.request_handler import RequestHandler
 from backend.api.services.query_service import QueryService
-from backend.api.dependencies import get_db
+from backend.api.core.dependencies import get_db
 
 from backend.agent.graph import process_input_message
 
