@@ -6,7 +6,12 @@ from backend.agent.structs import ConductedSearchResults
 from typing_extensions import Annotated
 
 
-class OverallState(TypedDict):
+class BaseState(TypedDict):
+    input_tokens_used: Annotated[int, operator.add]
+    output_tokens_used: Annotated[int, operator.add]
+
+
+class OverallState(BaseState):
     messages: Annotated[list, add_messages]
     search_query: Annotated[list, operator.add]
     web_research_result: Annotated[list, operator.add]
@@ -20,22 +25,22 @@ class OverallState(TypedDict):
     final_response: ConductedSearchResults
 
 
-class Query(TypedDict):
+class Query(BaseState):
     query: str
     rationale: str
 
 
-class QueryGenerationState(TypedDict):
+class QueryGenerationState(BaseState):
     query_list: List[Query]
 
 
-class WebSearchState(TypedDict):
+class WebSearchState(BaseState):
     messages: Annotated[list, add_messages]
     search_query: str
     id: int
 
 
-class ReflectionState(TypedDict):
+class ReflectionState(BaseState):
     is_sufficient: bool
     knowledge_gap: str
     follow_up_queries: Annotated[list, operator.add]
