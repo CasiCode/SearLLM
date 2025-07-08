@@ -1,7 +1,6 @@
 import logging
 import os
 
-# import requests
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import (
@@ -12,12 +11,16 @@ from telegram.ext import (
     filters,
 )
 
-# from backend.api.structs import OutputMessage
+from pydantic import ValidationError
+
+from backend.api.core.structs import OutputMessage
 from backend.utils import get_config
+from backend.api.client import APIClient
 
 
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+API_KEY = os.getenv("SEARXTG_API_KEY")
 
 
 # *Не ебу, как работает лоигрование, спизжено
@@ -44,6 +47,8 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 api_config = get_config("api/config.yml")
 api_url = f"{api_config.api.host}:{str(api_config.api.port)}"
 
+api_client = APIClient(base_url=api_url, api_key=API_KEY)
+
 bot_config = get_config("integrations/telegram/config.yml")
 
 
@@ -63,20 +68,26 @@ async def searx_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         await update.message.reply_text("Вы не ввели запрос")
         return
 
-    """
     query = {
         "session_id": update.update_id,
         "message": message,
+        "user_id": update.effective_user.id,
     }
 
-    response_json = requests.post(f"{api_url}/dev", json=query)
-    response = OutputMessage.model_validate_json(response_json)
-    """
-
-    if session_id == session_id:  # *session_id == response.session_id
-        await update.message.reply_text(f"На запрос {message} В интернете найдено ЭТО")
-    else:
-        await update.message.reply_text(f"На запрос {message} Произошла ошибка")
+    response_json = await api_client.post(f"{api_url}/dev", data=query)
+    try:
+        response = OutputMessage.model_validate_json(response_json)
+        if session_id == response.session_id:
+            await update.message.reply_text(
+                f"На запрос {message} В интернете найдено ЭТО: {response.message}"
+            )
+        else:
+            await update.message.reply_text(
+                f"На запрос {message} Произошла ошибка"
+            )  # TODO: Change error handling
+    except ValidationError as e:
+        logger.warning(msg=f"Error validating the API response: {e}", stacklevel=3)
+        update.message.reply_text("При обработке запроса произошла ошибка.")
 
 
 async def chat_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
