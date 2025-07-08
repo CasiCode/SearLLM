@@ -31,5 +31,5 @@ query = {
 
 # функция, в которой совершается запрос к API должна быть асинхронной
 async def main():
-    response_json = await client.post(f"{api_url}/dev", json=query)
+    response_json = await client.post(f"{api_url}/dev", data=query)
     return OutputMessage.model_validate_json(response_json)
