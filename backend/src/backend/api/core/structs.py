@@ -17,3 +17,5 @@ class OutputMessage(BaseModel):
     source_documents: list[SourceDocument]
     session_id: str
     user_id: int
+    input_tokens_used: int
+    output_tokens_used: int
