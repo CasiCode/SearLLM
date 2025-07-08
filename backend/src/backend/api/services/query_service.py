@@ -21,23 +21,30 @@ class QueryService:
 
         query = Query.create(self.db, input.message)
 
-        if user.tokens_used >= user.token_limit:
+        if user.input_tokens_used >= user.input_token_limit:
             raise InsufficientTokensException(
-                details=f"User {input.user_id} has reached their token limit."
+                details=f"User {input.user_id} has reached their input token limit."
             )
-
-        user.queries_done += 1
-        self.db.refresh(user)
+        if user.output_tokens_used >= user.output_token_limit:
+            raise InsufficientTokensException(
+                details=f"User {input.user_id} has reached their output token limit."
+            )
 
         response = self.handler.process_request(
             input.session_id, input.user_id, input.message
         )
 
+        user.queries_done += 1
+        user.input_tokens_used += response["input_tokens_used"]
+        user.output_tokens_used += response["output_tokens_used"]
+        self.db.refresh(user)
+
         Response.create(
             self.db,
             query_id=query.id,
-            tokens_used=response["tokens_used"],
             text=response["message"],
+            input_tokens_used=response["input_tokens_used"],
+            output_tokens_used=response["output_tokens_used"],
         )
 
         self.db.commit()
