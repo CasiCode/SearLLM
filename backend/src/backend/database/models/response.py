@@ -18,7 +18,8 @@ class Response(Base):
     )
     made_at = Column(DateTime, default=datetime.datetime.now(), nullable=False)
 
-    tokens_used = Column(Integer, default=0, nullable=False)
+    input_tokens_used = Column(Integer, default=0, nullable=False)
+    output_tokens_used = Column(Integer, default=0, nullable=False)
     text = Column(String, default="", nullable=False)
 
     def __repr__(self):
@@ -26,9 +27,19 @@ class Response(Base):
 
     @classmethod
     def create(
-        cls, db: Session, query_id: int, tokens_used: int, text: str
+        cls,
+        db: Session,
+        query_id: int,
+        input_tokens_used: int,
+        output_tokens_used: int,
+        text: str,
     ):  # TODO: Calculate optimal ammount, add to config
-        new_response = cls(query_id=query_id, tokens_used=tokens_used, text=text)
+        new_response = cls(
+            query_id=query_id,
+            input_tokens_used=input_tokens_used,
+            output_tokens_used=output_tokens_used,
+            text=text,
+        )
         db.add(new_response)
         db.commit()
         db.refresh(new_response)
