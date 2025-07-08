@@ -1,4 +1,5 @@
 import warnings
+from typing import Dict, Any
 
 from datetime import datetime
 from typing import List
@@ -26,6 +27,15 @@ def get_research_topic(msgs: List[AnyMessage]) -> str:
             elif isinstance(msg, AIMessage):
                 topic += f"Assistant: {msg.content.strip()}\n"
         return topic
+
+
+def get_token_usage(chat_response: Dict[str, Any]) -> Dict[str, Any]:
+    usage = chat_response.additional_kwargs.get("token_usage", {})
+    return {
+        "prompt_tokens": usage.get("prompt_tokens", 0),
+        "completion_tokens": usage.get("completion_tokens", 0),
+        "total_tokens": usage.get("total_tokens", 0),
+    }
 
 
 # TODO: Incorporate in graph and\or API to count user tokens
