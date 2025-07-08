@@ -24,3 +24,5 @@ def get_config(path: str) -> Box:
         return Box(config_dict)
     except Exception as e:
         warnings.warn(message=f"Oops, error occured! {e}", stacklevel=3)
+
+        # ! Should raise an error instead
