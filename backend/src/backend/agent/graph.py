@@ -1,3 +1,8 @@
+import os
+import logging
+
+import yaml
+
 from langchain_core.messages import SystemMessage, AIMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import StateGraph, END
@@ -20,6 +25,18 @@ from backend.agent.structs import (
     SearchQueryList,
     ReflectionResults,
 )
+from backend.agent.utils import get_token_usage
+
+
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+)
+logging.getLogger("httpx").setLevel(logging.WARNING)
+
+logger = logging.getLogger(__name__)
+
+
+DIRNAME = os.path.dirname(__file__)
 
 
 def generate_queries(state: OverallState, config: RunnableConfig):
@@ -40,8 +57,13 @@ def generate_queries(state: OverallState, config: RunnableConfig):
     llm = get_llm(config)
     search_query_llm = llm.with_structured_output(SearchQueryList)
 
-    result = search_query_llm.invoke(formatted_prompt)
-    return {"query_list": result.query}
+    response = search_query_llm.invoke(formatted_prompt)
+    token_usage = get_token_usage(response)
+    return {
+        "query_list": response.query,
+        "input_tokens_used": token_usage["prompt_tokens"],
+        "output_tokens_used": token_usage["completion_tokens"],
+    }
 
 
 def initialize_web_search(state: QueryGenerationState):
@@ -61,7 +83,12 @@ def web_search(state: WebSearchState, config: RunnableConfig):
     web_search_llm = llm.bind_tools([search])
 
     response = web_search_llm.invoke(formatted_prompt)
-    return {"messages": [response]}
+    token_usage = get_token_usage(response)
+    return {
+        "messages": [response],
+        "input_tokens_used": token_usage["prompt_tokens"],
+        "output_tokens_used": token_usage["completion_tokens"],
+    }
 
 
 # TODO: Make model gather sources from tool messages and put them in response
@@ -83,8 +110,13 @@ def process_search_results(
     llm = get_llm(config)
     processor_llm = llm.with_structured_output(ConductedSearchResults)
     response = processor_llm.invoke(prompt)
+    token_usage = get_token_usage(response)
 
-    return {"web_research_result": [response]}
+    return {
+        "web_research_result": [response],
+        "input_tokens_used": token_usage["prompt_tokens"],
+        "output_tokens_used": token_usage["completion_tokens"],
+    }
 
 
 def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
@@ -108,6 +140,7 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
     llm = get_llm(config)
     reflector_llm = llm.with_structured_output(ReflectionResults)
     response = reflector_llm.invoke(formatted_prompt)
+    token_usage = get_token_usage(response)
 
     return {
         "is_sufficient": response.is_sufficient,
@@ -115,6 +148,8 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
         "follow_up_queries": response.follow_up_queries,
         "research_loops_count": state["research_loops_count"],
         "number_of_ran_queries": len(state["search_query"]),
+        "input_tokens_used": token_usage["prompt_tokens"],
+        "output_tokens_used": token_usage["completion_tokens"],
     }
 
 
@@ -156,12 +191,15 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
 
     llm = get_llm(config)
     response = llm.invoke(formatted_prompt)
+    token_usage = get_token_usage(response)
 
     unique_sources = {source for summary in summaries for source in summary["sources"]}
 
     return {
         "messages": [AIMessage(content=response.content)],
         "sources_gathered": unique_sources,
+        "input_tokens_used": token_usage["prompt_tokens"],
+        "output_tokens_used": token_usage["completion_tokens"],
     }
 
 
@@ -186,13 +224,13 @@ workflow.add_conditional_edges(
 )
 workflow.add_edge("finalize_answer", END)
 
-graph = workflow.compile()
+graph = (
+    workflow.compile()
+)  # ? Might be a good idea to move compilation to process_input_message
 
 
 # ? the response structure will most surely change later when implementing frontend
-def process_input_message(
-    session_id: str, user_id: int, input_message: str, config: RunnableConfig
-):
+def process_input_message(session_id: str, user_id: int, input_message: str):
     """
     Processes a message catched through the API.
 
@@ -204,6 +242,20 @@ def process_input_message(
     Returns:
       model answer, sources, session_id, user_id. Aligns with pydantic-model for output messages.
     """
+
+    # TODO: add logic: yml -> RunnableConfig
+
+    abs_path = os.path.join(DIRNAME, "config.yml")
+    config_dict = {}
+    try:
+        with open(abs_path, "r") as f:
+            config_dict = yaml.safe_load(f) or {}
+    except Exception as e:
+        logger.warning(
+            f"Config file not found, loading empty config. {e}", stacklevel=3
+        )
+
+    config = RunnableConfig(configurable=config_dict.get("configurable", {}))
 
     response = graph.invoke(
         {"messages": [{"role": "user", "content": input_message}]},
@@ -231,4 +283,6 @@ def process_input_message(
         "source_documents": src,
         "session_id": session_id,
         "user_id": user_id,
+        "input_tokens_used": response["input_tokens_used"],
+        "output_tokens_used": response["output_tokens_used"],
     }
