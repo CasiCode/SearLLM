@@ -75,19 +75,24 @@ async def searx_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     }
 
     response_json = await api_client.post(f"{api_url}/dev", data=query)
-    try:
-        response = OutputMessage.model_validate_json(response_json)
-        if session_id == response.session_id:
-            await update.message.reply_text(
-                f"На запрос {message} В интернете найдено ЭТО: {response.message}"
-            )
-        else:
-            await update.message.reply_text(
-                f"На запрос {message} Произошла ошибка"
-            )  # TODO: Change error handling
-    except ValidationError as e:
-        logger.warning(msg=f"Error validating the API response: {e}", stacklevel=3)
-        update.message.reply_text("При обработке запроса произошла ошибка.")
+    if response_json is None:
+        update.message.reply_text(
+            "При обработке запроса произошла ошибка. Превышен лимит запросов."
+        )
+    else:
+        try:
+            response = OutputMessage.model_validate_json(response_json)
+            if session_id == response.session_id:
+                await update.message.reply_text(
+                    f"На запрос {message} В интернете найдено ЭТО: {response.message}"
+                )
+            else:
+                await update.message.reply_text(
+                    f"На запрос {message} Произошла ошибка"
+                )  # TODO: Change error handling
+        except ValidationError as e:
+            logger.warning(msg=f"Error validating the API response: {e}", stacklevel=3)
+            update.message.reply_text("При обработке запроса произошла ошибка.")
 
 
 async def chat_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
