@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import Depends, APIRouter
 
 from sqlalchemy.orm import Session
@@ -6,8 +8,18 @@ from backend.api.core.structs import InputMessage, OutputMessage, SourceDocument
 from backend.api.core.request_handler import RequestHandler
 from backend.api.services.query_service import QueryService
 from backend.api.core.dependencies import get_db
+from backend.api.core.exceptions import InsufficientTokensException
 
 from backend.agent.graph import process_input_message
+
+
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+)
+
+logging.getLogger("httpx").setLevel(logging.WARNING)
+
+logger = logging.getLogger(__name__)
 
 
 request_handler = RequestHandler()
@@ -27,7 +39,12 @@ async def ask_question(
     db: Session = Depends(get_db),
 ):
     service = QueryService(handler=handler, db=db)
-    return service.create_query(user_id=input["user_id"], query=input["message"])
+
+    try:
+        return service.create_query(user_id=input["user_id"], query=input["message"])
+    except InsufficientTokensException as e:
+        logger.warning(f"Error while creating a query: {e.details}", stacklevel=3)
+        return None
 
 
 # ! DEVELOPMENT-ONLY ENDPOINT
