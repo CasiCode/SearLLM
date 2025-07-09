@@ -23,7 +23,6 @@ TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 API_KEY = os.getenv("SEARXTG_API_KEY")
 
 
-# *Не ебу, как работает лоигрование, спизжено
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
