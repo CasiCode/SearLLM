@@ -1,6 +1,6 @@
 api:
-  host: '127.0.0.1'
-  port: 8888
+  host: 'http://127.0.0.1'
+  port: 8000
 
 service_key_manager:
   max_attempts: 5
