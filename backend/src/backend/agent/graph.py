@@ -127,7 +127,7 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
 
     summaries = state["web_research_result"]
     summaries_as_text = [
-        "\n\nSources:\n".join(summary["text"], "\n".join(summary["sources"]))
+        summary["text"] + "\n\nSources:\n" + "\n".join(summary["sources"])
         for summary in summaries
     ]
 
@@ -160,17 +160,16 @@ def evaluate_research(state: ReflectionState, config: RunnableConfig) -> Overall
 
     if state["is_sufficient"] or state["research_loops_count"] >= max_research_loops:
         return "finalize_answer"
-    else:
-        return [
-            Send(
-                "web_search",
-                {
-                    "search_query": query,
-                    "id": state["number_of_ran_queries"] + int(idx),
-                },
-            )
-            for idx, query in enumerate(state["follow_up_queries"])
-        ]
+    return [
+        Send(
+            "web_search",
+            {
+                "search_query": query,
+                "id": state["number_of_ran_queries"] + int(idx),
+            },
+        )
+        for idx, query in enumerate(state["follow_up_queries"])
+    ]
 
 
 def finalize_answer(state: OverallState, config: RunnableConfig):
@@ -179,7 +178,7 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
 
     summaries = state["web_research_result"]
     summaries_as_text = [
-        "\n\nSources:\n".join(summary["text"], "\n".join(summary["sources"]))
+        summary["text"] + "\n\nSources:\n" + "\n".join(summary["sources"])
         for summary in summaries
     ]
 
@@ -243,14 +242,12 @@ def process_input_message(session_id: str, user_id: int, input_message: str):
       model answer, sources, session_id, user_id. Aligns with pydantic-model for output messages.
     """
 
-    # TODO: add logic: yml -> RunnableConfig
-
     abs_path = os.path.join(DIRNAME, "config.yml")
     config_dict = {}
     try:
-        with open(abs_path, "r") as f:
+        with open(abs_path, "r", encoding="utf-8") as f:
             config_dict = yaml.safe_load(f) or {}
-    except Exception as e:
+    except OSError as e:
         logger.warning(
             f"Config file not found, loading empty config. {e}", stacklevel=3
         )
