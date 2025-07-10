@@ -56,6 +56,8 @@ async def response(input: InputMessage):
         source_documents=[
             SourceDocument(source="this is a source", snippet="...some snippet...")
         ],
-        session_id=input["session_id"],
-        user_id=input["user_id"],
+        session_id=input.session_id,
+        user_id=input.user_id,
+        input_tokens_used=77,
+        output_tokens_used=777,
     )
