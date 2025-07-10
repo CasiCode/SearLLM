@@ -8,11 +8,10 @@ from backend.agent.structs import SearchArgs
 from backend.utils import get_config
 
 
-config = get_config("config.py")
+config = get_config("config.yml")
 
 
 searx_host = f"{config.searx.host}:{str(config.searx.port)}"
-# TODO: Check if this line changes with new app architecture
 searx = SearxSearchWrapper(searx_host=searx_host)
 
 
