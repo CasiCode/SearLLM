@@ -44,12 +44,6 @@ class InvalidKeyException(Exception):
         self.details = details
 
 
-class BlockedIPException(Exception):
-    def __init__(self, details: str):
-        self.status_code = 403
-        self.details = details
-
-
 async def invalid_key_exception_handler(request: Request, exc: InvalidKeyException):
     return JSONResponse(
         status_code=401,
@@ -75,17 +69,6 @@ async def insufficient_tokens_handler(
     )
 
 
-async def blocked_ip_exception_handler(
-    request: Request, exc: InsufficientTokensException
-):
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={
-            "message": f"Oops! Seems like your IP is blocked... {exc.details or ''}"
-        },
-    )
-
-
 async def local_api_exception_handler(request: Request, exc: LocalAPIException):
     return JSONResponse(
         status_code=exc.status_code,
@@ -107,4 +90,3 @@ def setup_exception_handlers(app: FastAPI):
     app.add_exception_handler(InvalidKeyException, invalid_key_exception_handler)
     app.add_exception_handler(SQLAlchemyError, database_exception_handler)
     app.add_exception_handler(InsufficientTokensException, insufficient_tokens_handler)
-    app.add_exception_handler(BlockedIPException, blocked_ip_exception_handler)
