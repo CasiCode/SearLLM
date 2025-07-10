@@ -14,10 +14,8 @@ class APIError(Exception):
         response: Optional[Any] = None,
     ):
         self.status_code = status_code
-        self.details = (details,)
+        self.details = details
         self.response = response
-
-        super().__init__(self.message)
 
 
 class LocalAPIException(Exception):
