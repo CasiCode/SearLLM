@@ -6,21 +6,21 @@ from typing import Dict, Optional
 from aiohttp import ClientSession, ClientTimeout, ClientError
 
 from backend.api.core.exceptions import APIError
+from backend.api.security.runtime_auth import get_service_token_header
 
 logger = logging.getLogger(__name__)
 
 
 class APIClient:
-    def __init__(self, base_url: str, api_key: str, timeout: int = 10):
+    def __init__(self, base_url: str, timeout: int = 10):
         self.base_url = base_url.rstrip("/")
-        self.api_key = api_key
         self.timeout = ClientTimeout(total=timeout)
-        self.session = Optional[ClientSession] = None
+        self.session: Optional[ClientSession] = None
 
         self.headers = {
-            "SearXTG-API-key": self.api_key,
             "Content-Type": "application/json",
         }
+        self.headers.update(get_service_token_header())
 
     async def create_session(self):
         if self.session is None:
@@ -57,6 +57,7 @@ class APIClient:
                 url=url,
                 json=payload,
                 params=params,
+                headers=self.headers,
             ) as response:
                 logger.debug(
                     "API Request",
@@ -87,7 +88,9 @@ class APIClient:
             )
 
             raise APIError(
-                status_code=getattr(e.response, "status_code", None),
+                status_code=getattr(e.response, "status_code", None)
+                if hasattr(e, "response")
+                else None,
                 details=f"Oops! Request failed: {e}",
                 response=getattr(e, "response", None),
             )
