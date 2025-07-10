@@ -6,7 +6,6 @@ from fastapi import Depends
 from fastapi.security import APIKeyHeader
 
 from backend.api.core.exceptions import InvalidKeyException
-from backend.security.utils import generate_service_token
 
 load_dotenv()
 
@@ -17,7 +16,7 @@ token_header = APIKeyHeader(name=TOKEN_HEADER_NAME, auto_error=False)
 
 class RuntimeAuth:
     def __init__(self):
-        self.__token = generate_service_token(prefix="st")
+        self.__token = os.getenv("SEARXTG_API_TOKEN")
 
     def get_token(self) -> str:
         return self.__token
@@ -36,4 +35,4 @@ def require_api_token(token: str = Depends(token_header)):
 
 
 def get_service_token_header() -> Dict[str, str]:
-    return {TOKEN_HEADER_NAME: auth.get_token()}
+    return {TOKEN_HEADER_NAME: os.getenv("SEARXTG_API_TOKEN")}
