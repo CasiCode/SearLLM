@@ -6,9 +6,10 @@ from sqlalchemy.orm import Session
 
 from backend.api.core.structs import InputMessage, OutputMessage, SourceDocument
 from backend.api.core.request_handler import RequestHandler
-from backend.api.services.query_service import QueryService
-from backend.api.core.dependencies import get_db
 from backend.api.core.exceptions import InsufficientTokensException
+from backend.api.services.query_service import QueryService
+from backend.api.security.runtime_auth import require_api_token
+from backend.database.base import get_db
 
 from backend.agent.graph import process_input_message
 
@@ -25,7 +26,7 @@ logger = logging.getLogger(__name__)
 request_handler = RequestHandler()
 request_handler.set_process_function(process_input_message)
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(require_api_token)])
 
 
 def get_handler():
