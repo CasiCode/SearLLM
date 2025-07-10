@@ -5,11 +5,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /workspace
 
+COPY requirements.txt ./
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
 COPY . ./
 
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
-
-EXPOSE 8080
-
-CMD ["/bin/sh", "-c", "uvicorn backend.src.api.app:app --host 0.0.0.0 --port 8000"]
+CMD [ "uvicorn", "backend.src.api.app:app", "--host", "0.0.0.0", "--port", "8000" ]

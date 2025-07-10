@@ -55,10 +55,10 @@ services:
         max-size: "1m"
         max-file: "1"
 
-  langgraph:
+  app:
     build: .
-    ports:
-      - "8000:8000"
+    networks:
+      - searxng
 
 networks:
   searxng:
