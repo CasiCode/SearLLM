@@ -249,7 +249,7 @@ def process_input_message(session_id: str, user_id: int, input_message: str):
             config_dict = yaml.safe_load(f) or {}
     except OSError as e:
         logger.warning(
-            f"Config file not found, loading empty config. {e}", stacklevel=3
+            "Config file not found, loading empty config. %e", e, stacklevel=3
         )
 
     config = RunnableConfig(configurable=config_dict.get("configurable", {}))
