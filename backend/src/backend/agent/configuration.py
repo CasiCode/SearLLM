@@ -3,7 +3,7 @@ from typing import Any, Dict
 
 from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel, Field
-from typing_extensions import Optional
+from typing import Optional
 
 
 class Configuration(BaseModel):
@@ -25,7 +25,7 @@ class Configuration(BaseModel):
         )
 
         # TODO: Add env variables for dict keys
-        raw_values = Dict[str, Any] = {
+        raw_values: Dict[str, Any] = {
             name: os.getenv(name.upper(), configurable.get(name))
             for name in cls.model_fields.keys()
         }
