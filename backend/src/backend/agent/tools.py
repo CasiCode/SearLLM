@@ -1,3 +1,5 @@
+"""Agent tools"""
+
 import warnings
 from typing import Dict, List
 
@@ -11,8 +13,8 @@ from backend.utils import get_config
 config = get_config("config.yml")
 
 
-searx_host = f"{config.searx.host}:{str(config.searx.port)}"
-searx = SearxSearchWrapper(searx_host=searx_host)
+SEARX_HOST = f"{config.searx.host}:{str(config.searx.port)}"
+searx = SearxSearchWrapper(searx_host=SEARX_HOST)
 
 
 @tool(args_schema=SearchArgs)
