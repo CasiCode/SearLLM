@@ -1,3 +1,5 @@
+"""Main app script, runs the FastAPI service via Uvicorn"""
+
 from fastapi import FastAPI
 
 from backend.api.core.exceptions import setup_exception_handlers
