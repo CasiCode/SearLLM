@@ -44,11 +44,18 @@ class Configuration(BaseModel):
     def from_runnable_config(
         cls, config: Optional[RunnableConfig] = None
     ) -> "Configuration":
+        """
+        Imports RunnableConfig instance into the instance of Configuration,
+        sets environmental variables as default
+
+        Parameters:
+            config (Optional[RunnableConfig]): A decimal integer
+        """
+
         configurable = (
             config["configurable"] if config and "configurable" in config else {}
         )
 
-        # TODO: Add env variables for dict keys
         raw_values: Dict[str, Any] = {
             name: os.getenv(name.upper(), configurable.get(name))
             for name in cls.model_fields.keys()
