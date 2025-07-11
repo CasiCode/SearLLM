@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 
 class Configuration(BaseModel):
-    """Configuration
+    """Base model for graph configuration
 
     Attributes
     ----------
