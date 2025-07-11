@@ -40,7 +40,7 @@ def get_handler():
 
 @router.post("/query", response_model=OutputMessage)
 async def ask_question(
-    input: InputMessage,
+    input_message: InputMessage,
     handler: RequestHandler = Depends(get_handler),
     db: Session = Depends(get_db),
 ):
@@ -53,14 +53,14 @@ async def ask_question(
     service = QueryService(handler=handler, db=db)
 
     try:
-        return service.create_query(input=input)
+        return service.create_query(input=input_message)
     except InsufficientTokensException as e:
         logger.warning("Error while creating a query: %s", e.details, stacklevel=3)
         return None
 
 
 @router.post("/dev", response_model=OutputMessage)
-async def response(input: InputMessage):
+async def response(input_message: InputMessage):
     """
     Development-only API router. Emmits fake responses for incoming queries
 
@@ -72,8 +72,8 @@ async def response(input: InputMessage):
         source_documents=[
             SourceDocument(source="this is a source", snippet="...some snippet...")
         ],
-        session_id=input.session_id,
-        user_id=input.user_id,
+        session_id=input_message.session_id,
+        user_id=input_message.user_id,
         input_tokens_used=77,
         output_tokens_used=777,
     )
