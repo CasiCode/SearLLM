@@ -13,25 +13,25 @@ class QueryService:
         self.db = db
         self.handler = handler
 
-    def create_query(self, input: InputMessage):
-        user = self.db.query(User).get(input.user_id)
+    def create_query(self, input_message: InputMessage):
+        user = self.db.query(User).get(input_message.user_id)
 
         if not user:
-            user = User.create(self.db, id=input.user_id)
+            user = User.create(self.db, id=input_message.user_id)
 
-        query = Query.create(self.db, input.message)
+        query = Query.create(self.db, input_message.message)
 
         if user.input_tokens_used >= user.input_token_limit:
             raise InsufficientTokensException(
-                details=f"User {input.user_id} has reached their input token limit."
+                details=f"User {input_message.user_id} has reached their input token limit."
             )
         if user.output_tokens_used >= user.output_token_limit:
             raise InsufficientTokensException(
-                details=f"User {input.user_id} has reached their output token limit."
+                details=f"User {input_message.user_id} has reached their output token limit."
             )
 
         response = self.handler.process_request(
-            input.session_id, input.user_id, input.message
+            input_message.session_id, input_message.user_id, input_message.message
         )
 
         user.queries_done += 1
