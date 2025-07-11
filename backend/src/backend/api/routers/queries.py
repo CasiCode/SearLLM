@@ -1,3 +1,5 @@
+"""API Routers processing user queries"""
+
 import logging
 
 from fastapi import Depends, APIRouter
@@ -30,6 +32,9 @@ router = APIRouter(dependencies=[Depends(require_api_token)])
 
 
 def get_handler():
+    """
+    Dependency injection for a RequestHandler
+    """
     return request_handler
 
 
@@ -39,18 +44,29 @@ async def ask_question(
     handler: RequestHandler = Depends(get_handler),
     db: Session = Depends(get_db),
 ):
+    """
+    Main API router. Creates queries from http requests via QueryService
+
+    Parameters:
+        input (InputMessage): InputMessage formatted from the request
+    """
     service = QueryService(handler=handler, db=db)
 
     try:
-        return service.create_query(user_id=input["user_id"], query=input["message"])
+        return service.create_query(input=input)
     except InsufficientTokensException as e:
-        logger.warning(f"Error while creating a query: {e.details}", stacklevel=3)
+        logger.warning("Error while creating a query: %s", e.details, stacklevel=3)
         return None
 
 
-# ! DEVELOPMENT-ONLY ENDPOINT
 @router.post("/dev", response_model=OutputMessage)
 async def response(input: InputMessage):
+    """
+    Development-only API router. Emmits fake responses for incoming queries
+
+    Parameters:
+        input (InputMessage): InputMessage formatted from the request
+    """
     return OutputMessage(
         message="This is a dev message, yaaaay!",
         source_documents=[
