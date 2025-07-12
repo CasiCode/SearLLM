@@ -19,9 +19,6 @@ class PromptLoader:
 
     Methods
     ----------
-    __init__(filename):
-        constructor
-
     filename():
         filename property getter
 
@@ -42,7 +39,7 @@ class PromptLoader:
         """
         Returns prompt as string.
 
-        returns:
+        Returns:
             String read from the prompt file
         """
         abs_path = os.path.join(DIRNAME, self._filename)
