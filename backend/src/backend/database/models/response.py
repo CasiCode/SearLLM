@@ -16,16 +16,22 @@ class Response(Base):
         nullable=False,
         index=True,
     )
-    made_at = Column(DateTime, default=datetime.datetime.now(), nullable=False)
+    made_at = Column(
+        DateTime, default=datetime.datetime.now(datetime.timezone.utc), nullable=False
+    )
 
     input_tokens_used = Column(Integer, default=0, nullable=False)
     output_tokens_used = Column(Integer, default=0, nullable=False)
     text = Column(String, default="", nullable=False)
 
     def __repr__(self):
-        return f"<Response(id={self.id}, query_id={self.query_id}, made_at={self.made_at}, tokens_used={self.tokens_used}, text={self.text})>"
+        return (
+            f"<Response(id={self.id}, query_id={self.query_id}, "
+            f"made_at={self.made_at}, input_tokens_used={self.input_tokens_used}, "
+            f"output_tokens_used={self.output_tokens_used}, text={self.text})>"
+        )
 
-    @classmethod
+    @classmethod  # pylint: disable=too-many-arguments, too-many-positional-arguments
     def create(
         cls,
         db: Session,
@@ -33,7 +39,7 @@ class Response(Base):
         input_tokens_used: int,
         output_tokens_used: int,
         text: str,
-    ):  # TODO: Calculate optimal ammount, add to config
+    ):
         new_response = cls(
             query_id=query_id,
             input_tokens_used=input_tokens_used,
