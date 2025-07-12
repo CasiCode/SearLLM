@@ -1,3 +1,5 @@
+"""Contains the logic for LLM's used in the graph"""
+
 import os
 
 from dotenv import load_dotenv
@@ -9,7 +11,16 @@ from backend.agent.configuration import Configuration
 load_dotenv()
 
 
-def get_llm(config: RunnableConfig):
+def get_llm(config: RunnableConfig) -> ChatOpenAI:
+    """
+    Returns an Openrouter-provided LLM with specified configuration
+
+    Args:
+      config (RunnableConfig): LLM configuration to be used as its parameters
+
+    Returns:
+      ChatOpenAI instance
+    """
     configuration = Configuration.from_runnable_config(config)
 
     if os.getenv("OPENROUTER_API_KEY") is None:
