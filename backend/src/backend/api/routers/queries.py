@@ -53,7 +53,7 @@ async def ask_question(
     service = QueryService(handler=handler, db=db)
 
     try:
-        return service.create_query(input=input_message)
+        return service.create_query(input_message=input_message)
     except InsufficientTokensException as e:
         logger.warning("Error while creating a query: %s", e.details, stacklevel=3)
         return None
