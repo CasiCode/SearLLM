@@ -101,7 +101,9 @@ def num_tokens_from_messages(messages, config: RunnableConfig) -> int:
         tokens_per_name = 1
     else:
         raise NotImplementedError(
-            f"""num_tokens_from_messages() is not implemented for model {configuration.model_name}."""
+            f"""
+            num_tokens_from_messages() is not implemented for model {configuration.model_name}.
+            """
         )
 
     num_tokens = 0
