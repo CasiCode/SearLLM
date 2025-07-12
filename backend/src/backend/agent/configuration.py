@@ -49,7 +49,7 @@ class Configuration(BaseModel):
         sets environmental variables as default
 
         Parameters:
-            config (Optional[RunnableConfig]): A decimal integer
+            config (Optional[RunnableConfig]): RunnableConfig instance to import from
         """
 
         configurable = (
