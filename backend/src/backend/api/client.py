@@ -1,3 +1,5 @@
+"""Asyncronous API Client logic"""
+
 import datetime
 import json
 import logging
@@ -12,6 +14,30 @@ logger = logging.getLogger(__name__)
 
 
 class APIClient:
+    """API Client managing asyncronous http requests to routers
+
+    Attributes
+    ----------
+    base_url : str
+        Base API URL, should be set to the URL of API host
+    timeout : ClientTimeout
+        Timeout to be used when making requests
+    Session : Optional[ClientSession]
+        Async HTTP Session to be used by the Client
+
+    Methods
+    -------
+    create_session():
+        Explicitly creates a session for Client
+    close_session():
+        Explicitly closes a session
+    post(endpoint: str, data: Dict):
+        Makes a POST http request
+    get(endpoint: str, params: Optional[Dict] = None):
+        Makes a GET http request
+
+    """
+
     def __init__(self, base_url: str, timeout: int = 10):
         self.base_url = base_url.rstrip("/")
         self.timeout = ClientTimeout(total=timeout)
@@ -23,19 +49,23 @@ class APIClient:
         self.headers.update(get_service_token_header())
 
     async def create_session(self):
+        """Explicitly creates a session for Client"""
         if self.session is None:
             self.session = ClientSession(headers=self.headers, timeout=self.timeout)
 
     async def close_session(self):
+        """Explicitly closes a session for Client"""
         if self.session:
             await self.session.close()
             self.session = None
 
     async def __aenter__(self):
+        """Creates a session for Client in context manager"""
         await self.create_session()
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):  # ? Args not used
+        """Closes a session for Client in context manager"""
         await self.close_session()
 
     async def _make_request(
@@ -45,6 +75,15 @@ class APIClient:
         payload: Optional[Dict] = None,
         params: Optional[Dict] = None,
     ):
+        """
+        Makes a request to the API server
+
+        Parameters:
+            method (str): HTTP request method
+            endpoint (str): API endpoint to make a request on
+            payload (Optional[Dict]): Request data
+            params (Optional[Dict]): Additional parameters
+        """
         if self.session is None:
             await self.create_session()
 
@@ -96,7 +135,21 @@ class APIClient:
             ) from e
 
     async def post(self, endpoint: str, data: Dict) -> Dict:
+        """
+        Makes a POST request to the API server at base_url/endpoint
+
+        Parameters:
+            endpoint (str): API endpoint to make a request on
+            data (Dict): Request data
+        """
         return await self._make_request(method="POST", endpoint=endpoint, payload=data)
 
     async def get(self, endpoint: str, params: Optional[Dict] = None) -> Dict:
+        """
+        Makes a GET request to the API server at base_url/endpoint
+
+        Parameters:
+            endpoint (str): API endpoint to make a request on
+            params (Dict): GET parameters
+        """
         return await self._make_request(method="GET", endpoint=endpoint, params=params)
