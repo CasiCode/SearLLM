@@ -1,3 +1,5 @@
+"""Contains main Langgraph logic"""
+
 import os
 import logging
 
@@ -39,7 +41,19 @@ logger = logging.getLogger(__name__)
 DIRNAME = os.path.dirname(__file__)
 
 
-def generate_queries(state: OverallState, config: RunnableConfig):
+def generate_queries(
+    state: OverallState, config: RunnableConfig
+) -> QueryGenerationState:
+    """
+    Generates initial search queries for the target topic using LLM
+
+    Parameters:
+        state (OverallState): state of an according graph stream
+        config (RunnableConfig): graph config instance
+
+    Returns:
+        QueryGenerationState
+    """
     configuration = Configuration.from_runnable_config(config)
     research_topic = get_research_topic(state["messages"])
 
@@ -67,13 +81,29 @@ def generate_queries(state: OverallState, config: RunnableConfig):
 
 
 def initialize_web_search(state: QueryGenerationState):
+    """
+    Sends each generated query to a new context of a web_search node
+
+    Parameters:
+        state (QueryGenerationState): state of an according graph stream
+    """
     return [
         Send("web_search", {"search_query": query, "id": int(idx)})
         for idx, query in enumerate(state["query_list"])
     ]
 
 
-def web_search(state: WebSearchState, config: RunnableConfig):
+def web_search(state: WebSearchState, config: RunnableConfig) -> WebSearchState:
+    """
+    Generates tool-calls to search the web accoring to the given search query
+
+    Parameters:
+        state (WebSearchState): state of an according graph stream
+        config (RunnableConfig): graph config instance
+
+    Returns:
+        WebSearchState
+    """
     prompt = PromptLoader.load_prompt("web_searcher.md")
     formatted_prompt = prompt.format(
         current_date=get_current_date, search_query=state["search_query"]
@@ -95,6 +125,16 @@ def web_search(state: WebSearchState, config: RunnableConfig):
 def process_search_results(
     state: WebSearchState, config: RunnableConfig
 ) -> OverallState:
+    """
+    Processes incoming tool messages and summarizes them into a cohesive text
+
+    Parameters:
+        state (WebSearchState): state of an according graph stream
+        config (RunnableConfig): graph config instance
+
+    Returns:
+        OverallState
+    """
     recent_tool_msgs = []
     for message in reversed(state["messages"]):
         if message.type == "tool" and message.artifact is not None:
@@ -120,6 +160,17 @@ def process_search_results(
 
 
 def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
+    """
+    This node manages graph self-reflection and tries
+    to enrich the data with new queries if needed
+
+    Parameters:
+        state (OverallState): state of an according graph stream
+        config (RunnableConfig): graph config instance
+
+    Returns:
+        ReflectionState
+    """
     state["research_loops_count"] = state.get("research_loops_count", 0) + 1
 
     current_date = get_current_date()
@@ -154,6 +205,17 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
 
 
 def evaluate_research(state: ReflectionState, config: RunnableConfig) -> OverallState:
+    """
+    Evaluates if the found information is sufficient enough
+    to generate a final answer with
+
+    Parameters:
+        state (ReflectionState): state of an according graph stream
+        config (RunnableConfig): graph config instance
+
+    Returns:
+        OverallState
+    """
     configuration = Configuration.from_runnable_config(config)
 
     max_research_loops = configuration.max_research_loops
@@ -173,6 +235,16 @@ def evaluate_research(state: ReflectionState, config: RunnableConfig) -> Overall
 
 
 def finalize_answer(state: OverallState, config: RunnableConfig):
+    """
+    Generates the final graph answer
+
+    Parameters:
+        state (OverallState): state of an according graph stream
+        config (RunnableConfig): graph config instance
+
+    Returns:
+        json-like dictionary
+    """
     current_date = get_current_date()
     prompt_template = PromptLoader.load_prompt("answerer.md")
 
