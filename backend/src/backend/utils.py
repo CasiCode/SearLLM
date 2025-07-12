@@ -1,5 +1,4 @@
 import os
-import warnings
 
 import yaml
 from box import Box
@@ -18,11 +17,6 @@ def get_config(path: str) -> Box:
         Box object holding config
     """
     abs_path = os.path.join(DIRNAME, path)
-    try:
-        with open(abs_path, "r") as f:
-            config_dict = yaml.safe_load(f) or {}
+    with open(abs_path, "r") as f:
+        config_dict = yaml.safe_load(f) or {}
         return Box(config_dict)
-    except Exception as e:
-        warnings.warn(message=f"Oops, error occured! {e}", stacklevel=3)
-
-        # ! Should raise an error instead
