@@ -1,3 +1,5 @@
+"""Contains prompt-loading logic"""
+
 import warnings
 import os
 
@@ -6,6 +8,27 @@ DIRNAME = os.path.dirname(__file__)
 
 
 class PromptLoader:
+    """Prompt-loading class.
+
+    Expects .txt and .md, but can load from any utf-8 encoded file
+
+    Attributes
+    ----------
+    filename : str
+        prompt filename
+
+    Methods
+    ----------
+    __init__(filename):
+        constructor
+
+    filename():
+        filename property getter
+
+    load_prompt():
+        loads the prompt as string from the specified file
+    """
+
     def __init__(self, filename):
         self._filename = filename
 
