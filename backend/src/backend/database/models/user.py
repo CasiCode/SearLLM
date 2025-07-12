@@ -15,9 +15,13 @@ class User(Base):
     output_token_limit = Column(Integer, default=0, nullable=False)
 
     def __repr__(self):
-        return f"<User(id={self.id}, queries_done={self.queries_done}, tokens_used={self.tokens_used}), token_limit={self.token_limit}>"
+        return (
+            f"<User(id={self.id}, queries_done={self.queries_done}, "
+            f"input_tokens_used={self.input_tokens_used}, output_tokens_used={self.output_tokens_used}, "
+            f"input_token_limit={self.input_token_limit}, output_token_limit={self.output_token_limit}>"
+        )
 
-    @classmethod
+    @classmethod  # pylint: disable=too-many-arguments, too-many-positional-arguments
     def create(
         cls,
         db: Session,
