@@ -8,12 +8,10 @@ from backend.api.core.exceptions import ExternalAPIException, LocalAPIException
 
 
 class RequestHandler:
-    """RequestHandler
+    """Handles API requests and transmits them to Langgraph
 
     Methods
     -------
-    __init__(self):
-        Constructor
     set_process_function(func: Callable):
         Sets self._process_func to func.
     process_request(session_id: str, user_id: int, input_message: str, config: RunnableConfig):
@@ -21,10 +19,6 @@ class RequestHandler:
     """
 
     def __init__(self):
-        """
-        Constructor
-        """
-
         self._process_func: Optional[Callable] = None
 
     def set_process_function(self, func: Callable):

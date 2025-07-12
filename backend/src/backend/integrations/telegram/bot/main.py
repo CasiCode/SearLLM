@@ -25,13 +25,10 @@ TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 bot_config = get_config("integrations/telegram/config.yml")
 
 
-# *Не ебу, как работает лоигрование, спизжено
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
-
 logging.getLogger("httpx").setLevel(logging.WARNING)
-
 logger = logging.getLogger(__name__)
 
 
