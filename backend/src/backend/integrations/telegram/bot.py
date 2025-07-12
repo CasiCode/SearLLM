@@ -20,7 +20,6 @@ from backend.api.client import APIClient
 
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-API_KEY = os.getenv("SEARXTG_API_KEY")
 
 
 logging.basicConfig(
@@ -46,7 +45,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 api_config = get_config("api/config.yml")
 api_url = f"{api_config.api.host}:{str(api_config.api.port)}"
 
-api_client = APIClient(base_url=api_url, api_key=API_KEY)
+api_client = APIClient(base_url=api_url)
 
 bot_config = get_config("integrations/telegram/config.yml")
 
