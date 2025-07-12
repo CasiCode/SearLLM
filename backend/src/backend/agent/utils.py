@@ -59,7 +59,6 @@ def get_token_usage(chat_response: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-# TODO: Incorporate in graph and\or API to count user tokens
 def num_tokens_from_messages(messages, config: RunnableConfig) -> int:
     """
     Get the estimated token usage for given messages
