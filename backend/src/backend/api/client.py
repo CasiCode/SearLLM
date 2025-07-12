@@ -93,7 +93,7 @@ class APIClient:
                 else None,
                 details=f"Oops! Request failed: {e}",
                 response=getattr(e, "response", None),
-            )
+            ) from e
 
     async def post(self, endpoint: str, data: Dict) -> Dict:
         return await self._make_request(method="POST", endpoint=endpoint, payload=data)
