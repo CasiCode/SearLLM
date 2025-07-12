@@ -1,13 +1,6 @@
-import os
-
-from dotenv import load_dotenv
-
 from backend.api.client import APIClient
 from backend.api.core.structs import OutputMessage
 from backend.utils import get_config
-
-load_dotenv()
-API_KEY = os.getenv("SEARXTG_API_KEY")
 
 config = get_config("api/config.yml")
 API_URL = f"{config.api.host}:{str(config.api.port)}"
