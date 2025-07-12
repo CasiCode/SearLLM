@@ -60,7 +60,7 @@ def generate_queries(
     if state.get("initial_search_query_count") is None:
         state["initial_search_query_count"] = configuration.number_of_initial_queries
 
-    prompt = PromptLoader.load_prompt("query_writer.md")
+    prompt = PromptLoader("query_writer.md").load_prompt()
     current_date = get_current_date()
     formatted_prompt = prompt.format(
         current_date=current_date,
@@ -104,7 +104,7 @@ def web_search(state: WebSearchState, config: RunnableConfig) -> WebSearchState:
     Returns:
         WebSearchState
     """
-    prompt = PromptLoader.load_prompt("web_searcher.md")
+    prompt = PromptLoader("web_searcher.md").load_prompt()
     formatted_prompt = prompt.format(
         current_date=get_current_date, search_query=state["search_query"]
     )
@@ -143,7 +143,7 @@ def process_search_results(
             break
     tool_msgs = recent_tool_msgs[::-1]
 
-    prompt_template = PromptLoader.load_prompt("search_result_proccessor.md")
+    prompt_template = PromptLoader("search_result_proccessor.md").load_prompt()
     system_message_content = prompt_template.format(search_query=state["search_query"])
     prompt = [SystemMessage(system_message_content)] + tool_msgs
 
@@ -174,7 +174,7 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
     state["research_loops_count"] = state.get("research_loops_count", 0) + 1
 
     current_date = get_current_date()
-    prompt_template = PromptLoader.load_prompt("reflector.md")
+    prompt_template = PromptLoader("reflector.md").load_prompt()
 
     summaries = state["web_research_result"]
     summaries_as_text = [
@@ -246,7 +246,7 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
         json-like dictionary
     """
     current_date = get_current_date()
-    prompt_template = PromptLoader.load_prompt("answerer.md")
+    prompt_template = PromptLoader("answerer.md").load_prompt()
 
     summaries = state["web_research_result"]
     summaries_as_text = [
