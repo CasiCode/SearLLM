@@ -1,14 +1,14 @@
-# import requests
-
 from telegram import Update
 from telegram.ext import ContextTypes
 
-# from backend.api.structs import OutputMessage
 from backend.utils import get_config
+
+from backend.api.client import APIClient
+from backend.api.core.structs import OutputMessage
 
 
 api_config = get_config("api/config.yml")
-api_url = f"{api_config.api.host}:{str(api_config.api.port)}"
+API_URL = f"{api_config.api.host}:{str(api_config.api.port)}"
 
 bot_config = get_config("integrations/telegram/config.yml")
 
@@ -29,20 +29,21 @@ async def searx_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         return
     message = message.lstrip()
 
-    """
     query = {
         "session_id": update.update_id,
+        "user_ID": update.effective_user.id,
         "message": message,
     }
 
-    response_json = requests.post(f"{api_url}/dev", json=query)
-    response = OutputMessage.model_validate_json(response_json)
-    """
-
-    if session_id == session_id:  # *session_id == response.session_id
-        await update.message.reply_text(f"На запрос {message} В интернете найдено ЭТО")
-    else:
-        await update.message.reply_text(f"На запрос {message} Произошла ошибка")
+    async with APIClient(base_url=API_URL) as client:
+        response_json = await client.post("queries/dev", data=query)
+        response = OutputMessage(**response_json)
+        if session_id == response.session_id:
+            await update.message.reply_text(
+                f"На запрос {message} В интернете найдено ЭТО"
+            )
+        else:
+            await update.message.reply_text(f"На запрос {message} Произошла ошибка")
 
 
 async def chat_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
