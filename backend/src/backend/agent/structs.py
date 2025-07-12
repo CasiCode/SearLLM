@@ -29,6 +29,7 @@ class ConductedSearchResults(BaseModel):
         A list of gathered sources
     """
 
+    # pylint: disable=line-too-long
     text: str = Field(
         description="Verifiable text artifact. Well-written summary or report based on the search findings"
     )
@@ -65,6 +66,7 @@ class SearchArgs(BaseModel):
         The number of results to be returned by the tool
     """
 
+    # pylint: disable=line-too-long
     query: str = Field(
         description="The target query in a text format. This exact query will be passed to web-search."
     )
