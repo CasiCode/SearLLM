@@ -33,6 +33,9 @@ class PromptLoader:
         self._filename = filename
 
     def filename(self):
+        """
+        Returns the filename property
+        """
         return self._filename
 
     def load_prompt(self) -> str:
