@@ -43,6 +43,7 @@ class InvalidKeyException(Exception):
 
 
 async def invalid_key_exception_handler(request: Request, exc: InvalidKeyException):
+    # pylint: disable=unused-argument
     return JSONResponse(
         status_code=401,
         content={"message": f"Oops! You used a wrong API KEY... {exc.details or ''}"},
@@ -50,6 +51,7 @@ async def invalid_key_exception_handler(request: Request, exc: InvalidKeyExcepti
 
 
 async def database_exception_handler(request: Request, exc: SQLAlchemyError):
+    # pylint: disable=unused-argument
     return JSONResponse(
         status_code=500,
         content={"message": "Oops! Local database did something..."},
@@ -59,6 +61,7 @@ async def database_exception_handler(request: Request, exc: SQLAlchemyError):
 async def insufficient_tokens_handler(
     request: Request, exc: InsufficientTokensException
 ):
+    # pylint: disable=unused-argument
     return JSONResponse(
         status_code=exc.status_code,
         content={
@@ -68,6 +71,7 @@ async def insufficient_tokens_handler(
 
 
 async def local_api_exception_handler(request: Request, exc: LocalAPIException):
+    # pylint: disable=unused-argument
     return JSONResponse(
         status_code=exc.status_code,
         content={"message": f"Oops! Local API did something... {exc.details or ''}"},
@@ -75,6 +79,7 @@ async def local_api_exception_handler(request: Request, exc: LocalAPIException):
 
 
 async def external_api_exception_handler(request: Request, exc: ExternalAPIException):
+    # pylint: disable=unused-argument
     status_code = exc.status_code
     return JSONResponse(
         status_code=status_code,
