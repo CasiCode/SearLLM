@@ -30,9 +30,7 @@ class QueryService:
                 details=f"User {input_message.user_id} has reached their output token limit."
             )
 
-        response = self.handler.process_request(
-            input_message.session_id, input_message.user_id, input_message.message
-        )
+        response = self.handler.process_request(input_message.message)
 
         user.queries_done += 1
         user.input_tokens_used += response["input_tokens_used"]
@@ -52,6 +50,7 @@ class QueryService:
         return OutputMessage(
             message=response["message"],
             source_documents=response["source_documents"],
-            session_id=response["session_id"],
-            user_id=response["user_id"],
+            session_id=input_message.session_id,
+            input_tokens_used=response["input_tokens_used"],
+            output_tokens_used=response["output_tokens_used"],
         )
