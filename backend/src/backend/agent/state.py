@@ -129,7 +129,6 @@ class ReflectionState(BaseState):
     """
 
     is_sufficient: bool
-    knowledge_gap: str  # ? Not needed?
     follow_up_queries: Annotated[list, operator.add]
     research_loops_count: int
     number_of_ran_queries: int
