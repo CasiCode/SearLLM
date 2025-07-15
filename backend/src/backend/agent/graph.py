@@ -112,7 +112,7 @@ def web_search(state: WebSearchState, config: RunnableConfig) -> WebSearchState:
     )
 
     llm = get_llm(config)
-    web_search_llm = llm.bind_tools([search])
+    web_search_llm = llm.bind_tools([search], tool_choice="search")
 
     response = web_search_llm.invoke(formatted_prompt)
     token_usage = get_token_usage(response)
