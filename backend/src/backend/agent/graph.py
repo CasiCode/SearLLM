@@ -149,13 +149,25 @@ def process_search_results(
     prompt = [SystemMessage(system_message_content)] + tool_msgs
 
     llm = get_llm(config)
-    processor_llm = llm.with_structured_output(ConductedSearchResults)
+    processor_llm = llm.with_structured_output(ConductedSearchResults, include_raw=True)
+
     response = processor_llm.invoke(prompt)
-    token_usage = get_token_usage(response)
+    if response["parsing_error"] is not None:
+        logger.warning(
+            msg="Response returned a parsing error. Falling back to raw text.",
+            stacklevel=3,
+        )
+        summary = ConductedSearchResults(
+            text=response["raw"].text, sources=[]
+        )  # ? Might be .content
+    else:
+        summary = response["parsed"]
+
+    token_usage = get_token_usage(response["raw"])
 
     return {
-        "web_research_result": [response["text"]],
-        "sources_gathered": [response["sources"]],
+        "web_research_result": [summary.model_dump()] if summary else [],
+        "sources_gathered": summary.sources,
         "input_tokens_used": token_usage["prompt_tokens"],
         "output_tokens_used": token_usage["completion_tokens"],
     }
@@ -297,7 +309,6 @@ workflow.add_conditional_edges(
 workflow.add_edge("finalize_answer", END)
 
 
-# ? the response structure will most surely change later when implementing frontend
 def process_input_message(input_message: str):
     """
     Processes a message catched through the API.
