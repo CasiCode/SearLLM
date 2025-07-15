@@ -55,7 +55,9 @@ def generate_queries(
         QueryGenerationState
     """
     configuration = Configuration.from_runnable_config(config)
-    research_topic = get_research_topic(state["messages"])
+    research_topic = get_research_topic(
+        state["messages"]
+    )  # ! eats up a shit ton of tokens for sure
 
     if state.get("initial_search_query_count") is None:
         state["initial_search_query_count"] = configuration.number_of_initial_queries
@@ -65,7 +67,7 @@ def generate_queries(
     formatted_prompt = prompt.format(
         current_date=current_date,
         research_topic=research_topic,
-        number_queries=state.get("initial_search_query_count"),  # ! Might be a bug
+        number_queries=state.get("initial_search_query_count"),
     )
 
     llm = get_llm(config)
@@ -121,7 +123,6 @@ def web_search(state: WebSearchState, config: RunnableConfig) -> WebSearchState:
     }
 
 
-# TODO: Make model gather sources from tool messages and put them in response
 def process_search_results(
     state: WebSearchState, config: RunnableConfig
 ) -> OverallState:
@@ -153,7 +154,8 @@ def process_search_results(
     token_usage = get_token_usage(response)
 
     return {
-        "web_research_result": [response],
+        "web_research_result": [response["text"]],
+        "sources_gathered": [response["sources"]],
         "input_tokens_used": token_usage["prompt_tokens"],
         "output_tokens_used": token_usage["completion_tokens"],
     }
