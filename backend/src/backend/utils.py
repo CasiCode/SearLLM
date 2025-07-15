@@ -17,6 +17,6 @@ def get_config(path: str) -> Box:
         Box object holding config
     """
     abs_path = os.path.join(DIRNAME, path)
-    with open(abs_path, "r") as f:
+    with open(abs_path, "r", encoding="utf-8") as f:
         config_dict = yaml.safe_load(f) or {}
         return Box(config_dict)
