@@ -1,17 +1,14 @@
-Conduct targeted web-search using a special tool given to you. Gather the most recent, credible information on "{search_query}".
+Conduct targeted web-search using a special tool given to you. Gather the most recent, credible information on this topic: "{search_query}".
 
 Instructions:
-- The web search should ensure that the most current information is gathered. The current date is {current_date}.
-- The web search should be representative of the research topic
-- Prefer to generate a web search query in such a way that it will be the most useful for information gathering and ease of the search
+- The search query should ensure that the most current information is gathered. The current date is {current_date}.
+- The search query should be representative of the research topic.
+- Prefer to generate queries in such a way that they will be productive to search with.
 - Do not generate overly long queries. Prefer shorter formulations.
-- Do not request more than 10 results from the search tool. Do not request zero or negative number of results, too.
 
-Examples:
-- "George Wahington city of birth"
-- "FIFA world cup June 10 2025"
-- "Earth equator length in kilometers"
-- "American football and soccer difference"
+Example:
+Topic: "Jeff Bezos total net worth in US dollars 2025"
+Query for a tool call: "Jeff Bezos net worth USD 2025"
 
 Research Topic:
-{saerch_query}
+{search_query}
