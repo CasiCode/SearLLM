@@ -197,7 +197,6 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
 
     return {
         "is_sufficient": response.is_sufficient,
-        "knowledge_gap": response.knowledge_gap,
         "follow_up_queries": response.follow_up_queries,
         "research_loops_count": state["research_loops_count"],
         "number_of_ran_queries": len(state["search_query"]),
