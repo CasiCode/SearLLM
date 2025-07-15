@@ -204,12 +204,24 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
 
     llm = get_llm(config)
     reflector_llm = llm.with_structured_output(ReflectionResults)
+
     response = reflector_llm.invoke(formatted_prompt)
-    token_usage = get_token_usage(response)
+    if response["parsing_error"] is not None:
+        logger.warning(
+            msg="Response returned a parsing error. Falling back to raw text.",
+            stacklevel=3,
+        )
+        reflection = ReflectionResults(
+            is_sufficient=True, follow_up_queries=[]
+        )  # ? Might be better to construct a real flag and list from corrupted raw output
+    else:
+        reflection = response["parsed"]
+
+    token_usage = get_token_usage(response["raw"])
 
     return {
-        "is_sufficient": response.is_sufficient,
-        "follow_up_queries": response.follow_up_queries,
+        "is_sufficient": reflection.is_sufficient,
+        "follow_up_queries": reflection.follow_up_queries,
         "research_loops_count": state["research_loops_count"],
         "number_of_ran_queries": len(state["search_query"]),
         "input_tokens_used": token_usage["prompt_tokens"],
