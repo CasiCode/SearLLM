@@ -1,3 +1,4 @@
 searx:
   host: 'http://searxng'
   port: 8080
+  num_results: 5
