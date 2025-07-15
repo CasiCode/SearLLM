@@ -1,4 +1,4 @@
-You will be given with web search results with the most recent, credible information on "{search_query}". Synthesize given information into a verifiable text artifact.
+You will be given a list of web search results with the most recent, credible information on "{search_query}". Synthesize given information into a verifiable text artifact.
 
 Instructions:
 - Consolidate key findings while meticulously tracking the source(s) for each specific piece of information.
