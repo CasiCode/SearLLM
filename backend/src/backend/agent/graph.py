@@ -205,7 +205,7 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
     }
 
 
-def evaluate_research(state: ReflectionState, config: RunnableConfig) -> OverallState:
+def evaluate_research(state: ReflectionState, config: RunnableConfig):
     """
     Evaluates if the found information is sufficient enough
     to generate a final answer with
@@ -296,24 +296,21 @@ workflow.add_conditional_edges(
 )
 workflow.add_edge("finalize_answer", END)
 
-graph = (
-    workflow.compile()
-)  # ? Might be a good idea to move compilation to process_input_message
-
 
 # ? the response structure will most surely change later when implementing frontend
-def process_input_message(session_id: str, user_id: int, input_message: str):
+def process_input_message(input_message: str):
     """
     Processes a message catched through the API.
 
     Args:
       session_id - id of current session.
-      user_ud - id of user which issued a query
       input_message - query message.
 
     Returns:
       model answer, sources, session_id, user_id. Aligns with pydantic-model for output messages.
     """
+
+    graph = workflow.compile()
 
     abs_path = os.path.join(DIRNAME, "config.yml")
     config_dict = {}
@@ -351,8 +348,6 @@ def process_input_message(session_id: str, user_id: int, input_message: str):
         if response.get("messages")
         else "Oops, we couldn't proccess your message, sorry!",
         "source_documents": src,
-        "session_id": session_id,
-        "user_id": user_id,
         "input_tokens_used": response["input_tokens_used"],
         "output_tokens_used": response["output_tokens_used"],
     }
