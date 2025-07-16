@@ -51,7 +51,9 @@ def get_token_usage(chat_response: Dict[str, Any]) -> Dict[str, Any]:
       dict with these exact keys:
       prompt_tokens, completion_tokens, total_tokens
     """
-    usage = chat_response.additional_kwargs.get("token_usage", {})
+    usage = chat_response.additional_kwargs.get(
+        "token_usage", {}
+    )  # ai_msg.usage_metadata
     return {
         "prompt_tokens": usage.get("prompt_tokens", 0),
         "completion_tokens": usage.get("completion_tokens", 0),
