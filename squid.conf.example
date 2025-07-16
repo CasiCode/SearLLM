@@ -1,0 +1,5 @@
+http_port 3128
+
+cache_peer PASTE_IP_HERE parent PASTE_PORT_HERE 0 no-query login=login:password
+
+http_access allow all
