@@ -37,10 +37,7 @@ class RequestHandler:
         Processes incoming request and tries to run self._process_func on its data
 
         Parameters:
-            session_id (str): Request session id
-            user_id (int): id of the user who issued the request
             input_message (InputMessage): user message to be processed with langgraph
-            config (RunnableConfig): langgraph config
         """
 
         if self._process_func is None:
@@ -48,15 +45,18 @@ class RequestHandler:
 
         try:
             response = self._process_func(input_message)
+            """
             required_keys = {
                 "message",
-                "source_documents",
-                "session_id",
+                "sources_gathered",
                 "input_tokens_used",
                 "output_tokens_used",
             }
-            if not all(key in response for key in required_keys):
+            if not all(key in response.keys() for key in required_keys):
                 raise ExternalAPIException(details="Bad response format.")
+            """
             return response
         except Exception as e:
-            raise ExternalAPIException(f"Unexpected error: {str(e)}") from e
+            raise ExternalAPIException(
+                f"Unexpected error: {type(e).__name__} - {str(e)}"
+            ) from e
