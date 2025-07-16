@@ -16,7 +16,22 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "1m"
+        max-size: "10m"
+        max-file: "1"
+    
+  squid:
+    image: sameersbn/squid:latest
+    ports:
+      - "3128:3128"
+    volumes:
+      - ./squid.conf:/etc/squid/squid.conf
+    networks:
+      - searxng
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
         max-file: "1"
 
   redis:
@@ -31,7 +46,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "1m"
+        max-size: "10m"
         max-file: "1"
 
   searxng:
@@ -52,13 +67,18 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "1m"
+        max-size: "10m"
         max-file: "1"
 
   app:
     build: .
     networks:
       - searxng
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "1"
 
 networks:
   searxng:
