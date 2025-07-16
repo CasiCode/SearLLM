@@ -8,7 +8,6 @@ from sqlalchemy.orm import Session
 
 from backend.api.core.structs import InputMessage, OutputMessage, SourceDocument
 from backend.api.core.request_handler import RequestHandler
-from backend.api.core.exceptions import InsufficientTokensException
 from backend.api.services.query_service import QueryService
 from backend.api.security.runtime_auth import require_api_token
 from backend.database.base import get_db
@@ -19,7 +18,6 @@ from backend.agent.graph import process_input_message
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
-
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
@@ -54,9 +52,16 @@ async def ask_question(
 
     try:
         return service.create_query(input_message=input_message)
-    except InsufficientTokensException as e:
-        logger.warning("Error while creating a query: %s", e.details, stacklevel=3)
-        return None
+    except Exception as e:
+        logger.warning("Error while creating a query: %s", e, stacklevel=3)
+        return OutputMessage(
+            message=f"Error while creating a query: {e}",
+            source_documents=[],
+            session_id=input_message.session_id,
+            user_id=input_message.user_id,
+            input_tokens_used=0,
+            output_tokens_used=0,
+        )
 
 
 @router.post("/dev", response_model=OutputMessage)
@@ -67,10 +72,11 @@ async def response(input_message: InputMessage):
     Parameters:
         input (InputMessage): InputMessage formatted from the request
     """
+
     return OutputMessage(
         message="This is a dev message, yaaaay!",
         source_documents=[
-            SourceDocument(source="this is a source", snippet="...some snippet...")
+            SourceDocument(source="https://some-url.com", snippet="snippet")
         ],
         session_id=input_message.session_id,
         user_id=input_message.user_id,
