@@ -340,10 +340,8 @@ def process_input_message(input_message: str):
     try:
         with open(abs_path, "r", encoding="utf-8") as f:
             config_dict = yaml.safe_load(f) or {}
-    except OSError as e:
-        logger.warning(
-            "Config file not found, loading empty config. %e", e, stacklevel=3
-        )
+    except FileNotFoundError:
+        logger.warning("Config file not found, loading empty config.", stacklevel=1)
 
     config = RunnableConfig(configurable=config_dict.get("configurable", {}))
 
