@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Any, Dict, List
 
 import tiktoken
-from langchain_core.messages import AIMessage, AnyMessage, HumanMessage
+from langchain_core.messages import BaseMessage, AIMessage, AnyMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 
 from backend.agent.configuration import Configuration
@@ -40,20 +40,18 @@ def get_research_topic(msgs: List[AnyMessage]) -> str:
     return topic
 
 
-def get_token_usage(chat_response: Dict[str, Any]) -> Dict[str, Any]:
+def get_token_usage(chat_response: BaseMessage) -> Dict[str, Any]:
     """
     Get the precise token usage for an LLM call
 
     Args:
-      chat_response (Dict[str, Any]): LLM API response
+      chat_response (BaseMessage): LLM API response
 
     Returns:
       dict with these exact keys:
       prompt_tokens, completion_tokens, total_tokens
     """
-    usage = chat_response.additional_kwargs.get(
-        "token_usage", {}
-    )  # ai_msg.usage_metadata
+    usage = chat_response.usage_metadata
     return {
         "prompt_tokens": usage.get("prompt_tokens", 0),
         "completion_tokens": usage.get("completion_tokens", 0),
