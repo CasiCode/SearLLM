@@ -71,12 +71,26 @@ def generate_queries(
     )
 
     llm = get_llm(config)
-    search_query_llm = llm.with_structured_output(SearchQueryList)
+    search_query_llm = llm.with_structured_output(SearchQueryList, include_raw=True)
 
     response = search_query_llm.invoke(formatted_prompt)
-    token_usage = get_token_usage(response)
+    if response["parsing_error"] is not None:
+        logger.warning(
+            msg="Response returned a parsing error. Falling back to raw text.",
+            stacklevel=1,
+        )
+        query_list = SearchQueryList(
+            query=[response["raw"].text],
+        )  # ? Might be .content
+    else:
+        query_list = response["parsed"]
+
+    token_usage = get_token_usage(response["raw"])
+
+    logger.info("Queries generated successfully.")
+
     return {
-        "query_list": response.query,
+        "query_list": query_list.query,
         "input_tokens_used": token_usage["prompt_tokens"],
         "output_tokens_used": token_usage["completion_tokens"],
     }
@@ -116,6 +130,7 @@ def web_search(state: WebSearchState, config: RunnableConfig) -> WebSearchState:
 
     response = web_search_llm.invoke(formatted_prompt)
     token_usage = get_token_usage(response)
+    logger.info("Web search done successfully.")
     return {
         "messages": [response],
         "input_tokens_used": token_usage["prompt_tokens"],
@@ -155,7 +170,7 @@ def process_search_results(
     if response["parsing_error"] is not None:
         logger.warning(
             msg="Response returned a parsing error. Falling back to raw text.",
-            stacklevel=3,
+            stacklevel=1,
         )
         summary = ConductedSearchResults(
             text=response["raw"].text, sources=[]
@@ -165,6 +180,7 @@ def process_search_results(
 
     token_usage = get_token_usage(response["raw"])
 
+    logger.info("Processed the results successfully.")
     return {
         "web_research_result": [summary.model_dump()] if summary else [],
         "sources_gathered": summary.sources,
@@ -203,13 +219,13 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
     )
 
     llm = get_llm(config)
-    reflector_llm = llm.with_structured_output(ReflectionResults)
+    reflector_llm = llm.with_structured_output(ReflectionResults, include_raw=True)
 
     response = reflector_llm.invoke(formatted_prompt)
     if response["parsing_error"] is not None:
         logger.warning(
             msg="Response returned a parsing error. Falling back to raw text.",
-            stacklevel=3,
+            stacklevel=1,
         )
         reflection = ReflectionResults(
             is_sufficient=True, follow_up_queries=[]
@@ -219,6 +235,7 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
 
     token_usage = get_token_usage(response["raw"])
 
+    logger.info("Reflected on the response successfully.")
     return {
         "is_sufficient": reflection.is_sufficient,
         "follow_up_queries": reflection.follow_up_queries,
@@ -291,9 +308,11 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
 
     unique_sources = {source for summary in summaries for source in summary["sources"]}
 
+    logger.info("Answer finalized successfully.")
+
     return {
         "messages": [AIMessage(content=response.content)],
-        "sources_gathered": unique_sources,
+        "sources_gathered": list(unique_sources),
         "input_tokens_used": token_usage["prompt_tokens"],
         "output_tokens_used": token_usage["completion_tokens"],
     }
