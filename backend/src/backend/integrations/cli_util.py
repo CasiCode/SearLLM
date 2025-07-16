@@ -1,8 +1,9 @@
 import argparse
 
-from langchain_core.messages import HumanMessage
+# from langchain_core.messages import HumanMessage
 
-from backend.agent.graph import graph
+# from backend.agent.graph import graph
+# TODO: Rewrite the thing
 
 
 def main() -> None:
@@ -23,8 +24,9 @@ def main() -> None:
         default="openai/gpt-4.1-nano",
         help="LLM used to conduct the research",
     )
+    """
     args = parser.parse_args()
-
+    
     state = {
         "messages": [HumanMessage(content=args.question)],
         "number_of_initial_queries": args.initial_queries,
@@ -33,9 +35,10 @@ def main() -> None:
     }
 
     result = graph.invoke(state)
-    messages = result.get("messages", [])
-    if messages:
+     messages = result.get("messages", [])
+     if messages:
         print(messages[-1].content)
+    """
 
 
 if __name__ == "__main__":
