@@ -27,5 +27,4 @@ def search(query: str) -> List[Dict]:
     Returns:
         A list of dictionaries with these exact keys: snippet, title, link, engines, category
     """
-
     return searx.results(query=query, num_results=config.searx.num_results)

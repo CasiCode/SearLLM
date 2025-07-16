@@ -29,6 +29,9 @@ class ExternalAPIException(Exception):
         self.status_code = 421
         self.details = details
 
+    def __repr__(self):
+        return f"<ExternalAPIException(status_code={self.status_code}, details={self.details})>"
+
 
 class InsufficientTokensException(Exception):
     def __init__(self, details: str):
