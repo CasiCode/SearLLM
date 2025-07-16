@@ -27,6 +27,8 @@ env/
 
 environment.yml
 
+squid.conf
+
 caddy
 srv
 searxng/uwsgi.ini
