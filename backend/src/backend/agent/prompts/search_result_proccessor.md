@@ -15,10 +15,10 @@ Format:
 Response example:
 
 ```json
-{
+{{
     "text": "George Washington was a Founding Father and the first president of the United States, serving from 1789 to 1797. As commander of the Continental Army, Washington led Patriot forces to victory in the American Revolutionary War against the British Empire. He is commonly known as the Father of the Nation for his role in bringing about American independence.",
     "sources": ["https://en.wikipedia.org/wiki/George_Washington", "https://www.britannica.com/biography/George-Washington", "https://www.some-other-email.com/bio-of-washington"],
-}
+}}
 ```
 
 Research Topic:
