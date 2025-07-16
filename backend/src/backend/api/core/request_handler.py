@@ -2,9 +2,8 @@
 
 from typing import Callable, Optional
 
-from langchain_core.runnables import RunnableConfig
-
 from backend.api.core.exceptions import ExternalAPIException, LocalAPIException
+from backend.api.core.structs import InputMessage
 
 
 class RequestHandler:
@@ -33,16 +32,14 @@ class RequestHandler:
             raise ValueError("Process function must be callable")
         self._process_func = func
 
-    def process_request(
-        self, session_id: str, user_id: int, input_message: str, config: RunnableConfig
-    ):
+    def process_request(self, input_message: InputMessage):
         """
         Processes incoming request and tries to run self._process_func on its data
 
         Parameters:
             session_id (str): Request session id
             user_id (int): id of the user who issued the request
-            input_message (str): user message to be processed with langgraph
+            input_message (InputMessage): user message to be processed with langgraph
             config (RunnableConfig): langgraph config
         """
 
@@ -50,8 +47,14 @@ class RequestHandler:
             raise LocalAPIException(details="No process function registered on server.")
 
         try:
-            response = self._process_func(session_id, user_id, input_message, config)
-            required_keys = {"answer", "source_documents", "session_id"}
+            response = self._process_func(input_message)
+            required_keys = {
+                "message",
+                "source_documents",
+                "session_id",
+                "input_tokens_used",
+                "output_tokens_used",
+            }
             if not all(key in response for key in required_keys):
                 raise ExternalAPIException(details="Bad response format.")
             return response
