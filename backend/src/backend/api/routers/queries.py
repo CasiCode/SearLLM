@@ -1,6 +1,7 @@
 """API Routers processing user queries"""
 
 import logging
+from pprint import pformat
 
 from fastapi import Depends, APIRouter
 
@@ -51,7 +52,9 @@ async def ask_question(
     service = QueryService(handler=handler, db=db)
 
     try:
-        return service.create_query(input_message=input_message)
+        response = service.create_query(input_message=input_message)
+        logger.info(pformat(response.model_dump(), indent=4))
+        return response
     except Exception as e:
         logger.warning("Error while creating a query: %s", e, stacklevel=3)
         return OutputMessage(
