@@ -2,6 +2,7 @@
 
 from fastapi import FastAPI
 
+import backend.database.setup_db  # pylint: disable=unused-import
 from backend.api.core.exceptions import setup_exception_handlers
 from backend.api.routers import queries
 
