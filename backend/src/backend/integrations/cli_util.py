@@ -33,7 +33,7 @@ def main() -> None:
         "model_address": args.model_address,
     }
 
-    result = process_input_message(content=args.question, config=config)
+    result = process_input_message(input_message=args.question, config=config)
     print(result.get("message", ""))
 
 
