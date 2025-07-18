@@ -1,3 +1,5 @@
+"""A model for user queries"""
+
 import datetime
 
 from sqlalchemy import Column, Integer, String, DateTime

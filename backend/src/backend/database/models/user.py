@@ -1,3 +1,5 @@
+"""A model for users"""
+
 from sqlalchemy import Column, Integer
 from sqlalchemy.orm import Session
 

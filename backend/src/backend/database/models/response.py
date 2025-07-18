@@ -1,3 +1,5 @@
+"""A model for API responses"""
+
 import datetime
 
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
