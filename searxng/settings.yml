@@ -13,3 +13,6 @@ search:
     formats:
         - html
         - json
+engines:
+  - name: brave
+    disabled: true
