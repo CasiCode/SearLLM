@@ -7,7 +7,7 @@ from fastapi import Depends, APIRouter
 
 from sqlalchemy.orm import Session
 
-from backend.api.core.structs import InputMessage, OutputMessage, SourceDocument
+from backend.api.core.structs import InputMessage, OutputMessage
 from backend.api.core.request_handler import RequestHandler
 from backend.api.services.query_service import QueryService
 from backend.api.security.runtime_auth import require_api_token
@@ -78,9 +78,7 @@ async def response(input_message: InputMessage):
 
     return OutputMessage(
         message="This is a dev message, yaaaay!",
-        source_documents=[
-            SourceDocument(source="https://some-url.com", snippet="snippet")
-        ],
+        source_documents=["https://some-url.com"],
         session_id=input_message.session_id,
         user_id=input_message.user_id,
         input_tokens_used=77,
