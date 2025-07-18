@@ -1,6 +1,29 @@
-# Selfreflecting RAG
+# SearXTG
 
-This project demonstrates an application using a LangGraph-powered backend agent. The agent is designed to perform comprehensive research on a user's query by dynamically generating search terms, querying the web using SearXNG private instance, reflecting on the results to identify knowledge gaps, and iteratively refining its search until it can provide a well-supported answer with citations. This application serves as an example of building research-augmented conversational AI using LangGraph and OpenAI models.
+SearXTG is a backend application that conducts in-depth research on user queries by dynamically generating search terms, utilizing a private SearXNG instance to search the web, analyzing the results to identify knowledge gaps, and iteratively refining its searches until it can deliver a thoroughly supported answer with citations.
+
+## Architecture overview
+
+This application follows a hybrid multiservice architecture:
+
+- **Modular Monolith**:
+    The core of the application is a modular monolith, where related features are organized into distinct, well-encapsulated modules within a single codebase and deployment unit. This allows for clear separation of concerns and easier maintainability, while benefiting from the performance and simplicity of a monolithic deployment. All the modules are ready for standalone deployment as they are communicating via a middleware RESTful API powered by FastAPI framework.
+    The list of monolith modules includes:
+    - **api** - a monolith core. Acts as a middleware FastAPI service which orchestrates all the other modules.
+    - **agent** - a Langgraph powered agentic backend for question-answering.
+    - **database** - an SQLAlchemy powered database storing anonymized requests and responses and plain user data for token limit tracking.
+    - **integrations** - the application currently supports and focuses on the telegram bot integration to provide messager users with this tool.
+    - **security** - a collection of security utilities used in the application.
+
+
+- **Independent Services**:
+    In addition to the modular monolith, the system includes four independent services. These services are configured, deployed, and scaled separately from the monolith. They communicate with the monolith and, if necessary, with each other via HTTP/HTTPS RESTful APIs.
+    The list of independent services includes:
+    - **A private SearXNG instance** - a powerful open-source metasearch engine which aggregates results from various search services and databases.
+    - **Caddy** - used as a rate-limiting backward proxy for the searxng.
+    - **Squid** - used as a non-caching forward proxy to tunnel external API requests.
+    - **Redis\Valkey** - SearXNG dependency used for rate limiting and security measures.
+
 
 ## How the Backend Agent Works (High-Level)
 
