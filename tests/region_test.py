@@ -8,7 +8,6 @@ import pprint
 
 import httpx
 from dotenv import load_dotenv
-
 from models import Response
 
 load_dotenv()
@@ -29,7 +28,7 @@ def get_base_info():
 
 def get_proxy_info():
     """Gets basic regional information for running proxy"""
-    http_client = httpx.Client(proxy=os.getenv("PROXY_URL"))
+    http_client = httpx.Client(proxy=os.getenv("HTTP_PROXY_URL"))
 
     response = http_client.get("https://ipinfo.io/json")
     return clear_json_response(response.json())
