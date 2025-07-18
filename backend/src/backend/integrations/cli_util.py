@@ -1,3 +1,5 @@
+"""A CLI util integration"""
+
 import argparse
 
 from langchain_core.messages import HumanMessage
@@ -6,6 +8,18 @@ from backend.agent.graph import process_input_message
 
 
 def main() -> None:
+    """
+    Processes a command line query
+
+    Parameters (inline):
+        question (str): Research question
+        initial-queries (int): Number of initial search queries
+        max-loops (int): Maximum number of research loops
+        model_address (str): Full provider address of the LLM used to conduct the research
+
+    Returns:
+        json-like dictionary
+    """
     parser = argparse.ArgumentParser(description="Run the research agent")
     parser.add_argument("question", help="Research question")
     parser.add_argument(
@@ -21,7 +35,7 @@ def main() -> None:
         "--model_address",
         type=str,
         default="openai/gpt-4.1-nano",
-        help="LLM used to conduct the research",
+        help="Full provider address of the LLM used to conduct the research",
     )
 
     args = parser.parse_args()
