@@ -52,7 +52,6 @@ async def ask_question(
 
     try:
         response = service.create_query(input_message=input_message)
-        logger.info(pformat(response.model_dump(), indent=4))
         return response
     except Exception as e:
         logger.warning("Error while creating a query: %s", e, stacklevel=3)
