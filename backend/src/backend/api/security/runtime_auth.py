@@ -1,3 +1,5 @@
+"""Runtime authentification with API token"""
+
 import os
 from typing import Optional, Dict
 
