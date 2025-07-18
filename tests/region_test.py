@@ -29,8 +29,6 @@ def get_base_info():
 
 def get_proxy_info():
     """Gets basic regional information for running proxy"""
-    print(os.getenv("PROXY_URL"))
-
     http_client = httpx.Client(proxy=os.getenv("PROXY_URL"))
 
     response = http_client.get("https://ipinfo.io/json")
