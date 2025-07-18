@@ -15,5 +15,6 @@ sqlalchemy
 
 python-telegram-bot
 
+pre-commit
 setuptools
 -e ./backend/.
