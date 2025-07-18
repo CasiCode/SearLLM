@@ -9,11 +9,6 @@ class InputMessage(BaseModel):
     message: str
 
 
-class SourceDocument(BaseModel):  # ! Unused now, refactor the code to use list of str
-    source: str
-    snippet: str
-
-
 class OutputMessage(BaseModel):
     message: str
     source_documents: list[str]
