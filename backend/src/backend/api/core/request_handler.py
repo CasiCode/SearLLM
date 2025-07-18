@@ -44,18 +44,7 @@ class RequestHandler:
             raise LocalAPIException(details="No process function registered on server.")
 
         try:
-            response = self._process_func(input_message)
-            """
-            required_keys = {
-                "message",
-                "sources_gathered",
-                "input_tokens_used",
-                "output_tokens_used",
-            }
-            if not all(key in response.keys() for key in required_keys):
-                raise ExternalAPIException(details="Bad response format.")
-            """
-            return response
+            return self._process_func(input_message)
         except Exception as e:
             raise ExternalAPIException(
                 f"Unexpected error: {type(e).__name__} - {str(e)}"
