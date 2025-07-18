@@ -2,6 +2,7 @@
 
 import os
 import logging
+from typing import Optional
 
 import yaml
 
@@ -340,7 +341,7 @@ workflow.add_conditional_edges(
 workflow.add_edge("finalize_answer", END)
 
 
-def process_input_message(input_message: str):
+def process_input_message(input_message: str, config: Optional[dict[str, any]] = None):
     """
     Processes a message catched through the API.
 
@@ -356,11 +357,14 @@ def process_input_message(input_message: str):
 
     abs_path = os.path.join(DIRNAME, "config.yml")
     config_dict = {}
-    try:
-        with open(abs_path, "r", encoding="utf-8") as f:
-            config_dict = yaml.safe_load(f) or {}
-    except FileNotFoundError:
-        logger.warning("Config file not found, loading empty config.", stacklevel=1)
+    if config:
+        config_dict = config()
+    else:
+        try:
+            with open(abs_path, "r", encoding="utf-8") as f:
+                config_dict = yaml.safe_load(f) or {}
+        except FileNotFoundError:
+            logger.warning("Config file not found, loading empty config.", stacklevel=1)
 
     config = RunnableConfig(configurable=config_dict.get("configurable", {}))
 
