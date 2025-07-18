@@ -184,7 +184,6 @@ def process_search_results(
     logger.info("Processed the results successfully.")
     return {
         "web_research_result": [summary.model_dump()] if summary else [],
-        "sources_gathered": summary.sources,
         "input_tokens_used": token_usage["prompt_tokens"],
         "output_tokens_used": token_usage["completion_tokens"],
     }
