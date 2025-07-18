@@ -39,3 +39,5 @@ backend.egg-info/
 
 app.db
 **/app.db
+
+**/settings.yml.new
