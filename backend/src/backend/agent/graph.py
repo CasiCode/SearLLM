@@ -85,7 +85,7 @@ def generate_queries(
 
     token_usage = get_token_usage(response["raw"])
 
-    logger.info("Queries generated successfully.")
+    logger.info(f"Queries generated successfully. \n{query_list.query}")
 
     return {
         "query_list": query_list.query,
@@ -128,7 +128,7 @@ def web_search(state: WebSearchState, config: RunnableConfig) -> WebSearchState:
 
     response = web_search_llm.invoke(formatted_prompt)
     token_usage = get_token_usage(response)
-    logger.info("Web search done successfully.")
+    logger.info(f"Web search done successfully.\n{state['search_query']}")
     return {
         "messages": [response],
         "input_tokens_used": token_usage["prompt_tokens"],
@@ -178,7 +178,7 @@ def process_search_results(
 
     token_usage = get_token_usage(response["raw"])
 
-    logger.info("Processed the results successfully.")
+    logger.info(f"Processed the results successfully.\n{summary.model_dump()}")
     return {
         "web_research_result": [summary.model_dump()] if summary else [],
         "input_tokens_used": token_usage["prompt_tokens"],
@@ -308,7 +308,11 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
     logger.info("Answer finalized successfully.")
 
     return {
-        "messages": [AIMessage(content=response.content)],
+        "messages": [
+            AIMessage(
+                content=f"{response.content}\n\nContext length: {len(summaries)}\n\nContext{summaries_as_text}"
+            )
+        ],
         "sources_gathered": list(unique_sources),
         "input_tokens_used": token_usage["prompt_tokens"],
         "output_tokens_used": token_usage["completion_tokens"],
