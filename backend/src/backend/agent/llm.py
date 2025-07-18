@@ -8,6 +8,7 @@ from langchain_core.runnables import RunnableConfig
 from langchain_openai.chat_models import ChatOpenAI
 
 from backend.agent.configuration import Configuration
+from backend.utils import check_env_variables
 
 load_dotenv()
 
@@ -24,13 +25,7 @@ def get_llm(config: RunnableConfig) -> ChatOpenAI:
     """
     configuration = Configuration.from_runnable_config(config)
 
-    if os.getenv("OPENROUTER_API_KEY") is None:
-        raise ValueError("OPENROUTER_API_KEY is not set")
-    if os.getenv("OPENROUTER_BASE_URL") is None:
-        raise ValueError("OPENROUTER_BASE_URL is not set")
-    if os.getenv("PROXY_URL") is None:
-        raise ValueError("PROXY_URL is not set")
-    # TODO: Write util for env loading
+    check_env_variables(["OPENROUTER_API_KEY", "OPENROUTER_BASE_URL", "PROXY_URL"])
 
     llm = ChatOpenAI(
         openai_api_key=os.getenv("OPENROUTER_API_KEY"),
