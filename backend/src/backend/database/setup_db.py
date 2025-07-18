@@ -1,3 +1,5 @@
+"""Database setup script. Intended to run once on API start"""
+
 import logging
 
 from backend.database.models import user, query, response  # pylint: disable=unused-import
