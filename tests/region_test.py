@@ -4,11 +4,10 @@ Useful to check if the proxy is working correctly.
 """
 
 import os
-import httpx
 import pprint
 
+import httpx
 from dotenv import load_dotenv
-
 
 load_dotenv()
 
