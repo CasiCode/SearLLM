@@ -1,3 +1,5 @@
+"""Query manager. Creates, sends and adds to DB both the requests and the responses to the API"""
+
 from sqlalchemy.orm import Session
 
 from backend.database.models.user import User
