@@ -19,8 +19,10 @@ class User(Base):
     def __repr__(self):
         return (
             f"<User(id={self.id}, queries_done={self.queries_done}, "
-            f"input_tokens_used={self.input_tokens_used}, output_tokens_used={self.output_tokens_used}, "
-            f"input_token_limit={self.input_token_limit}, output_token_limit={self.output_token_limit}>"
+            f"input_tokens_used={self.input_tokens_used}, "
+            f"output_tokens_used={self.output_tokens_used}, "
+            f"input_token_limit={self.input_token_limit}, "
+            f"output_token_limit={self.output_token_limit}>"
         )
 
     @classmethod  # pylint: disable=too-many-arguments, too-many-positional-arguments
