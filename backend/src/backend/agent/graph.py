@@ -56,9 +56,7 @@ def generate_queries(
         QueryGenerationState
     """
     configuration = Configuration.from_runnable_config(config)
-    research_topic = get_research_topic(
-        state["messages"]
-    )  # ! eats up a shit ton of tokens for sure
+    research_topic = get_research_topic(state["messages"])
 
     if state.get("initial_search_query_count") is None:
         state["initial_search_query_count"] = configuration.number_of_initial_queries
