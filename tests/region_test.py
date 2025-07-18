@@ -9,7 +9,14 @@ import pprint
 import httpx
 from dotenv import load_dotenv
 
+from models import Response
+
 load_dotenv()
+
+
+def clear_json_response(response: dict[str, str]) -> dict[str, str]:
+    """Clears json response from garbage using a pydantic model"""
+    return Response(**response).model_dump()
 
 
 def get_base_info():
@@ -17,7 +24,7 @@ def get_base_info():
     http_client = httpx.Client()
 
     response = http_client.get("https://ipinfo.io/json")
-    return response.json()
+    return clear_json_response(response.json())
 
 
 def get_proxy_info():
@@ -27,7 +34,7 @@ def get_proxy_info():
     http_client = httpx.Client(proxy=os.getenv("PROXY_URL"))
 
     response = http_client.get("https://ipinfo.io/json")
-    return response.json()
+    return clear_json_response(response.json())
 
 
 if __name__ == "__main__":
