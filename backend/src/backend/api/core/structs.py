@@ -1,3 +1,5 @@
+"""Collection of base models used for service communication and HTTP validation"""
+
 from pydantic import BaseModel
 
 
