@@ -1,3 +1,5 @@
+"""Exceptions and exception handlers specific to the API"""
+
 from typing import Optional, Any
 
 from fastapi import FastAPI, Request
