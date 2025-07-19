@@ -85,7 +85,7 @@ def generate_queries(
 
     token_usage = get_token_usage(response["raw"])
 
-    logger.info(f"Queries generated successfully. \n{query_list.query}")
+    logger.info("Queries generated successfully. \n%s", query_list.query)
 
     return {
         "query_list": query_list.query,
@@ -128,9 +128,10 @@ def web_search(state: WebSearchState, config: RunnableConfig) -> WebSearchState:
 
     response = web_search_llm.invoke(formatted_prompt)
     token_usage = get_token_usage(response)
-    logger.info(f"Web search done successfully.\n{state['search_query']}")
+    logger.info("Web search done successfully.")
     return {
         "messages": [response],
+        "search_query": [state["search_query"]],
         "input_tokens_used": token_usage["prompt_tokens"],
         "output_tokens_used": token_usage["completion_tokens"],
     }
@@ -157,6 +158,8 @@ def process_search_results(
             break
     tool_msgs = recent_tool_msgs[::-1]
 
+    logger.info(f"Context: \n {tool_msgs}")  # ! FATAL BUG HERE
+
     prompt_template = PromptLoader("search_result_proccessor.md").load_prompt()
     system_message_content = prompt_template.format(search_query=state["search_query"])
     prompt = [SystemMessage(system_message_content)] + tool_msgs
@@ -178,7 +181,7 @@ def process_search_results(
 
     token_usage = get_token_usage(response["raw"])
 
-    logger.info(f"Processed the results successfully.\n{summary.model_dump()}")
+    logger.info("Processed the results successfully.\n%s", summary.model_dump())
     return {
         "web_research_result": [summary.model_dump()] if summary else [],
         "input_tokens_used": token_usage["prompt_tokens"],
@@ -308,11 +311,7 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
     logger.info("Answer finalized successfully.")
 
     return {
-        "messages": [
-            AIMessage(
-                content=f"{response.content}\n\nContext length: {len(summaries)}\n\nContext{summaries_as_text}"
-            )
-        ],
+        "messages": [AIMessage(content=response.content)],
         "sources_gathered": list(unique_sources),
         "input_tokens_used": token_usage["prompt_tokens"],
         "output_tokens_used": token_usage["completion_tokens"],
