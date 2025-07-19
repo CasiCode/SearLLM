@@ -28,10 +28,18 @@ class BaseAPIException(Exception):
         self.details = details
 
     def __repr__(self):
-        return f"<{self.__class__.__name__}(status_code={self.status_code}, details={self.details})>"
+        return (
+            f"<{self.__class__.__name__}"
+            f"(status_code={self.status_code}, "
+            f"details={self.details})>"
+        )
 
     def __str__(self):
-        return f"<{self.__class__.__name__}(status_code={self.status_code}, details={self.details})>"
+        return (
+            f"<{self.__class__.__name__}"
+            f"(status_code={self.status_code}, "
+            f"details={self.details})>"
+        )
 
 
 class LocalAPIException(BaseAPIException):
