@@ -21,6 +21,12 @@ class APIError(Exception):
 
 
 class BaseAPIException(Exception):
+    """Base class for API exceptions"""
+
+    def __init__(self, status_code: int, details: str):
+        self.status_code = status_code
+        self.details = details
+
     def __repr__(self):
         return f"<{self.__class__.__name__}(status_code={self.status_code}, details={self.details})>"
 
@@ -32,32 +38,28 @@ class LocalAPIException(BaseAPIException):
     """General local API exception"""
 
     def __init__(self, details: str):
-        self.status_code = 503
-        self.details = details
+        super().__init__(status_code=503, details=details)
 
 
 class ExternalAPIException(BaseAPIException):
     """General external API exception"""
 
     def __init__(self, details: str):
-        self.status_code = 421
-        self.details = details
+        super().__init__(status_code=421, details=details)
 
 
 class InsufficientTokensException(LocalAPIException):
     """Intended to be raised when there's not enough tokens to perform a query"""
 
     def __init__(self, details: str):
-        self.status_code = 403
-        self.details = details
+        super().__init__(status_code=403, details=details)
 
 
 class InvalidKeyException(LocalAPIException):
     """Intended to be raised when API tokens don't match"""
 
     def __init__(self, details: str):
-        self.status_code = 401
-        self.details = details
+        super().__init__(status_code=401, details=details)
 
 
 async def invalid_key_exception_handler(request: Request, exc: InvalidKeyException):
