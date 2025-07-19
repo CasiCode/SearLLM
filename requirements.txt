@@ -15,6 +15,7 @@ sqlalchemy
 
 python-telegram-bot
 
+pylint
 pre-commit
 setuptools
 -e ./backend/.
