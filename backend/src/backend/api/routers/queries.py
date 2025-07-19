@@ -1,7 +1,6 @@
 """API Routers processing user queries"""
 
 import logging
-from pprint import pformat
 
 from fastapi import Depends, APIRouter
 
