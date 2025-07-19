@@ -9,6 +9,8 @@ from sqlalchemy.exc import SQLAlchemyError
 
 
 class APIError(Exception):
+    """Base API Error class"""
+
     def __init__(
         self,
         status_code: Optional[int] = None,
@@ -45,14 +47,14 @@ class BaseAPIException(Exception):
 class LocalAPIException(BaseAPIException):
     """General local API exception"""
 
-    def __init__(self, details: str):
+    def __init__(self, status_code: int = 503, details: str = ""):
         super().__init__(status_code=503, details=details)
 
 
 class ExternalAPIException(BaseAPIException):
     """General external API exception"""
 
-    def __init__(self, details: str):
+    def __init__(self, status_code: int = 503, details: str = ""):
         super().__init__(status_code=421, details=details)
 
 
@@ -121,6 +123,7 @@ async def external_api_exception_handler(request: Request, exc: ExternalAPIExcep
 
 
 def setup_exception_handlers(app: FastAPI):
+    """Sets up all the exception handlers to the app"""
     app.add_exception_handler(LocalAPIException, local_api_exception_handler)
     app.add_exception_handler(ExternalAPIException, external_api_exception_handler)
     app.add_exception_handler(InvalidKeyException, invalid_key_exception_handler)
