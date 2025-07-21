@@ -18,21 +18,6 @@ services:
       options:
         max-size: "10m"
         max-file: "1"
-    
-  squid:
-    image: sameersbn/squid:latest
-    ports:
-      - "3128:3128"
-    volumes:
-      - ./squid.conf:/etc/squid/squid.conf
-    networks:
-      - searxng
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "1"
 
   redis:
     container_name: redis
