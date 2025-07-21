@@ -32,6 +32,6 @@ def get_llm(config: RunnableConfig) -> ChatOpenAI:
         openai_api_base=os.getenv("OPENROUTER_BASE_URL"),
         model_name=configuration.model_adress,
         temperature=configuration.temperature,
-        http_client=httpx.Client(proxy=os.getenv("HTTP_PROXY_URL")),
+        http_client=httpx.Client(proxy=os.getenv("SAFE_PROXY_URL")),
     )
     return llm
