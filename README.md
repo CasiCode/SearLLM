@@ -21,7 +21,6 @@ This application follows a hybrid multiservice architecture:
     The list of independent services includes:
     - **A private SearXNG instance** - a powerful open-source metasearch engine which aggregates results from various search services and databases.
     - **Caddy** - used as a rate-limiting backward proxy for the searxng.
-    - **Squid** - used as a non-caching forward proxy to tunnel external API requests.
     - **Redis\Valkey** - SearXNG dependency used for rate limiting and security measures.
 
 
