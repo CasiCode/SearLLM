@@ -35,3 +35,13 @@ The core of the backend is a LangGraph agent defined in `backend/src/agent/graph
 3.  **Reflection & Knowledge Gap Analysis:** The agent analyzes the search results to determine if the information is sufficient or if there are knowledge gaps. It uses the same model for this reflection process.
 4.  **Iterative Refinement:** If gaps are found or the information is insufficient, it generates follow-up queries and repeats the web research and reflection steps (up to a configured maximum number of loops).
 5.  **Finalize Answer:** Once the research is deemed sufficient, the agent synthesizes the gathered information into a coherent answer, including citations from the web sources, using the same OpenAI GPT model.
+
+
+## Getting started:
+
+To deploy and test the app you can simply run:
+```sh
+docker compose up --build
+
+docker exec -it <"app" container name> python ./tests/test.py
+```
