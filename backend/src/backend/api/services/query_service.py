@@ -1,5 +1,7 @@
 """Query manager. Creates, sends and adds to DB both the requests and the responses to the API"""
 
+import logging
+
 from sqlalchemy.orm import Session
 
 from backend.database.models.user import User
@@ -8,6 +10,13 @@ from backend.database.models.response import Response
 from backend.api.core.exceptions import InsufficientTokensException
 from backend.api.core.structs import InputMessage, OutputMessage
 from backend.api.core.request_handler import RequestHandler
+
+
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+)
+
+logger = logging.getLogger(__name__)
 
 
 class QueryService:
@@ -37,7 +46,6 @@ class QueryService:
         user.queries_done += 1
         user.input_tokens_used += response["input_tokens_used"]
         user.output_tokens_used += response["output_tokens_used"]
-        self.db.refresh(user)
 
         Response.create(
             self.db,
@@ -48,6 +56,7 @@ class QueryService:
         )
 
         self.db.commit()
+        logger.info("Updating user entry:\n%s", user)
 
         return OutputMessage(
             message=response["message"],
