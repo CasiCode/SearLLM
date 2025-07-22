@@ -2,18 +2,16 @@
 
 import logging
 
-from fastapi import Depends, APIRouter
-
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from backend.api.core.structs import InputMessage, OutputMessage
-from backend.api.core.request_handler import RequestHandler
-from backend.api.services.query_service import QueryService
-from backend.api.security.runtime_auth import require_api_token
-from backend.database.base import get_db
-
 from backend.agent.graph import process_input_message
-
+from backend.api.core.exceptions import InsufficientTokensException
+from backend.api.core.request_handler import RequestHandler
+from backend.api.core.structs import InputMessage, OutputMessage
+from backend.api.security.runtime_auth import require_api_token
+from backend.api.services.query_service import QueryService
+from backend.database.base import get_db
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -52,6 +50,18 @@ async def ask_question(
     try:
         response = service.create_query(input_message=input_message)
         return response
+    except InsufficientTokensException:
+        return OutputMessage(
+            message=(
+                "Sorry, we can't process your requests for now "
+                "- you have reached your token limit"
+            ),
+            source_documents=[],
+            session_id=input_message.session_id,
+            user_id=input_message.user_id,
+            input_tokens_used=0,
+            output_tokens_used=0,
+        )
     except Exception as e:
         logger.warning("Error while creating a query: %s", e, stacklevel=3)
         return OutputMessage(
