@@ -23,3 +23,6 @@ Response example:
 
 Research Topic:
 {search_query}
+
+Web search results:
+{web_search_results}
