@@ -85,7 +85,7 @@ def generate_queries(
 
     token_usage = get_token_usage(response["raw"])
 
-    logger.info("Queries generated successfully. \n%s", query_list.query)
+    logger.info("Queries generated successfully.\n%s", query_list.query)
 
     return {
         "query_list": query_list.query,
@@ -135,7 +135,7 @@ def web_search(state: WebSearchState, config: RunnableConfig) -> WebSearchState:
     response = web_search_llm.invoke(formatted_prompt)
     token_usage = get_token_usage(response)
 
-    logger.info(f"Web search done successfully.\nToken usage: {token_usage}")
+    logger.info("Web search done successfully.")
     return {
         "messages": [response],
         "search_query": [state["search_query"]],
@@ -166,7 +166,6 @@ def process_search_results(
     tool_msgs = recent_tool_msgs[::-1]
 
     logger.info(f"Query: \n {state['search_query']}")
-    logger.info(f"Context: \n {tool_msgs}")  # ! FATAL BUG HERE
 
     context = process_search_result(tool_msgs)
 
