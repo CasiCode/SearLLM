@@ -38,7 +38,7 @@ class APIClient:
 
     """
 
-    def __init__(self, base_url: str, timeout: int = 25):
+    def __init__(self, base_url: str, timeout: int = 60):
         self.base_url = base_url.rstrip("/")
         self.timeout = ClientTimeout(total=timeout)
         self.session: Optional[ClientSession] = None
