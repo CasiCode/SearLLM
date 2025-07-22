@@ -25,7 +25,7 @@ def get_llm(config: RunnableConfig) -> ChatOpenAI:
     """
     configuration = Configuration.from_runnable_config(config)
 
-    check_env_variables(["OPENROUTER_API_KEY", "OPENROUTER_BASE_URL", "HTTP_PROXY_URL"])
+    check_env_variables(["OPENROUTER_API_KEY", "OPENROUTER_BASE_URL", "SAFE_PROXY_URL"])
 
     llm = ChatOpenAI(
         openai_api_key=os.getenv("OPENROUTER_API_KEY"),
