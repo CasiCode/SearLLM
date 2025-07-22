@@ -6,7 +6,7 @@ from typing import Optional
 
 import yaml
 
-from langchain_core.messages import SystemMessage, AIMessage
+from langchain_core.messages import AIMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
@@ -19,7 +19,7 @@ from backend.agent.state import (
     WebSearchState,
     ReflectionState,
 )
-from backend.agent.tools import search
+from backend.agent.tools.web_search import search, process_search_result
 from backend.agent.utils import get_current_date, get_research_topic
 from backend.agent.configuration import Configuration
 from backend.agent.prompts.loader import PromptLoader
@@ -89,8 +89,8 @@ def generate_queries(
 
     return {
         "query_list": query_list.query,
-        "input_tokens_used": token_usage["prompt_tokens"],
-        "output_tokens_used": token_usage["completion_tokens"],
+        "input_tokens_used": token_usage["input_tokens"],
+        "output_tokens_used": token_usage["output_tokens"],
     }
 
 
@@ -102,7 +102,13 @@ def initialize_web_search(state: QueryGenerationState):
         state (QueryGenerationState): state of an according graph stream
     """
     return [
-        Send("web_search", {"search_query": query, "id": int(idx)})
+        Send(
+            "web_search",
+            {
+                "search_query": query,
+                "id": int(idx),
+            },
+        )
         for idx, query in enumerate(state["query_list"])
     ]
 
@@ -128,12 +134,13 @@ def web_search(state: WebSearchState, config: RunnableConfig) -> WebSearchState:
 
     response = web_search_llm.invoke(formatted_prompt)
     token_usage = get_token_usage(response)
-    logger.info("Web search done successfully.")
+
+    logger.info(f"Web search done successfully.\nToken usage: {token_usage}")
     return {
         "messages": [response],
         "search_query": [state["search_query"]],
-        "input_tokens_used": token_usage["prompt_tokens"],
-        "output_tokens_used": token_usage["completion_tokens"],
+        "input_tokens_used": token_usage["input_tokens"],
+        "output_tokens_used": token_usage["output_tokens"],
     }
 
 
@@ -152,22 +159,26 @@ def process_search_results(
     """
     recent_tool_msgs = []
     for message in reversed(state["messages"]):
-        if message.type == "tool" and message.artifact is not None:
+        if message.type == "tool":
             recent_tool_msgs.append(message)
         else:
             break
     tool_msgs = recent_tool_msgs[::-1]
 
+    logger.info(f"Query: \n {state['search_query']}")
     logger.info(f"Context: \n {tool_msgs}")  # ! FATAL BUG HERE
 
+    context = process_search_result(tool_msgs)
+
     prompt_template = PromptLoader("search_result_proccessor.md").load_prompt()
-    system_message_content = prompt_template.format(search_query=state["search_query"])
-    prompt = [SystemMessage(system_message_content)] + tool_msgs
+    formatted_prompt = prompt_template.format(
+        search_query=state["search_query"], web_search_results=context
+    )
 
     llm = get_llm(config)
     processor_llm = llm.with_structured_output(ConductedSearchResults, include_raw=True)
 
-    response = processor_llm.invoke(prompt)
+    response = processor_llm.invoke(formatted_prompt)
     if response["parsing_error"] is not None:
         logger.warning(
             msg="Response returned a parsing error. Falling back to raw text.",
@@ -184,8 +195,8 @@ def process_search_results(
     logger.info("Processed the results successfully.\n%s", summary.model_dump())
     return {
         "web_research_result": [summary.model_dump()] if summary else [],
-        "input_tokens_used": token_usage["prompt_tokens"],
-        "output_tokens_used": token_usage["completion_tokens"],
+        "input_tokens_used": token_usage["input_tokens"],
+        "output_tokens_used": token_usage["output_tokens"],
     }
 
 
@@ -241,8 +252,8 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
         "follow_up_queries": reflection.follow_up_queries,
         "research_loops_count": state["research_loops_count"],
         "number_of_ran_queries": len(state["search_query"]),
-        "input_tokens_used": token_usage["prompt_tokens"],
-        "output_tokens_used": token_usage["completion_tokens"],
+        "input_tokens_used": token_usage["input_tokens"],
+        "output_tokens_used": token_usage["output_tokens"],
     }
 
 
@@ -313,8 +324,8 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
     return {
         "messages": [AIMessage(content=response.content)],
         "sources_gathered": list(unique_sources),
-        "input_tokens_used": token_usage["prompt_tokens"],
-        "output_tokens_used": token_usage["completion_tokens"],
+        "input_tokens_used": token_usage["input_tokens"],
+        "output_tokens_used": token_usage["output_tokens"],
     }
 
 
