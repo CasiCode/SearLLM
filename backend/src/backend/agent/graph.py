@@ -351,46 +351,51 @@ def process_input_message(input_message: str, config: Optional[dict[str, any]] =
     Returns:
       model answer, sources, session_id, user_id. Aligns with pydantic-model for output messages.
     """
+    try:
+        graph = workflow.compile()
 
-    graph = workflow.compile()
-
-    abs_path = os.path.join(DIRNAME, "config.yml")
-    config_dict = {}
-    if config:
-        config_dict = config()
-    else:
-        try:
-            with open(abs_path, "r", encoding="utf-8") as f:
-                config_dict = yaml.safe_load(f) or {}
-        except FileNotFoundError:
-            logger.warning("Config file not found, loading empty config.", stacklevel=1)
-
-    config = RunnableConfig(configurable=config_dict.get("configurable", {}))
-
-    response = graph.invoke(
-        {"messages": [{"role": "user", "content": input_message}]},
-        stream_mode="values",
-        config=config,
-    )
-
-    src = []
-    if response.get("sources_gathered") and len(response["sources_gathered"]) > 0:
-        for source in response["sources_gathered"]:
-            if isinstance(source, dict):
-                src.append({"source": source["link"], "snippet": source["snippet"]})
-            else:
-                src.append(
-                    {
-                        "source": "unknown",
-                        "snippet": f"Unexpected search data recieved: {type(source)}",
-                    }
+        abs_path = os.path.join(DIRNAME, "config.yml")
+        config_dict = {}
+        if config:
+            config_dict = config()
+        else:
+            try:
+                with open(abs_path, "r", encoding="utf-8") as f:
+                    config_dict = yaml.safe_load(f) or {}
+            except FileNotFoundError:
+                logger.warning(
+                    "Config file not found, loading empty config.", stacklevel=1
                 )
 
-    return {
-        "message": response["messages"][-1].content
-        if response.get("messages")
-        else "Oops, we couldn't proccess your message, sorry!",
-        "source_documents": src,
-        "input_tokens_used": response["input_tokens_used"],
-        "output_tokens_used": response["output_tokens_used"],
-    }
+        config = RunnableConfig(configurable=config_dict.get("configurable", {}))
+
+        response = graph.invoke(
+            {"messages": [{"role": "user", "content": input_message}]},
+            stream_mode="values",
+            config=config,
+        )
+
+        src = []
+        if response.get("sources_gathered") and len(response["sources_gathered"]) > 0:
+            for source in response["sources_gathered"]:
+                if isinstance(source, str):
+                    src.append(source)
+                else:
+                    src.append("An unknown source")
+
+        return {
+            "message": response["messages"][-1].content
+            if response.get("messages")
+            else "Oops, we couldn't proccess your message, sorry!",
+            "source_documents": src,
+            "input_tokens_used": response["input_tokens_used"],
+            "output_tokens_used": response["output_tokens_used"],
+        }
+
+    except Exception as e:
+        return {
+            "message": f"Oops, we couldn't proccess your message, sorry! {e}",
+            "source_documents": [""],
+            "input_tokens_used": 0,  # 0 tokens to be taken from user's limit as compensation
+            "output_tokens_used": 0,
+        }
