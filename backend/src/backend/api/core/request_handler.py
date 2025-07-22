@@ -47,5 +47,5 @@ class RequestHandler:
             return self._process_func(input_message)
         except Exception as e:
             raise ExternalAPIException(
-                f"Unexpected error: {type(e).__name__} - {str(e)}"
+                details=f"Unexpected error: {type(e).__name__} - {str(e)}"
             ) from e
