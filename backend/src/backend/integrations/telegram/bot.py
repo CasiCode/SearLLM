@@ -1,5 +1,7 @@
 import logging
 import os
+import asyncio
+import uuid
 
 from dotenv import load_dotenv
 from telegram import Update
@@ -25,9 +27,7 @@ TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
-
 logging.getLogger("httpx").setLevel(logging.WARNING)
-
 logger = logging.getLogger(__name__)
 
 
@@ -50,47 +50,60 @@ api_client = APIClient(base_url=api_url)
 bot_config = get_config("integrations/telegram/config.yml")
 
 
-# *So far in Russian
 async def searx_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     message = update.message.text
     session_id = update.update_id
 
     # Update.message.text includes the command itself (/searx@SearXTG_bot or /searx)
-    message = message.replace(
-        f"/{bot_config.bot.search_command}@{bot_config.bot.bot_tag}", ""
-    )
     message = message.replace(f"/{bot_config.bot.search_command}", "")
+    message = message.replace(f"@{bot_config.bot.bot_tag}", "")
+
     # If there are only spaces after the command, they are not passed.
     message = message.strip()
     if len(message) == 0:
-        await update.message.reply_text("Вы не ввели запрос")
+        await update.message.reply_text(
+            "You haven't queried anything"
+        )  # TODO: Add localization
         return
 
     query = {
-        "session_id": update.update_id,
+        "session_id": uuid.uuid4(),
         "message": message,
         "user_id": update.effective_user.id,
     }
-
-    response_json = await api_client.post(f"{api_url}/dev", data=query)
-    if response_json is None:
-        update.message.reply_text(
-            "При обработке запроса произошла ошибка. Превышен лимит запросов."
-        )
-    else:
+    async with APIClient(base_url=api_url) as client:
         try:
-            response = OutputMessage.model_validate_json(response_json)
-            if session_id == response.session_id:
-                await update.message.reply_text(
-                    f"На запрос {message} В интернете найдено ЭТО: {response.message}"
+            response_json = await asyncio.wait_for(
+                client.post("queries/query", data=query), timeout=60
+            )
+        except asyncio.TimeoutError:
+            update.message.reply_text(
+                "Oops, sorry! Our server couldn't process your request in time."
+            )
+        if response_json is None:
+            update.message.reply_text(
+                "Oops, sorry! We encountered an error trying to process your request."
+            )
+        else:
+            try:
+                response = OutputMessage.model_validate_json(response_json)
+                if session_id == response.session_id:
+                    await update.message.reply_text(
+                        text="{}\n\nSources:\n{}".format(
+                            response.message, "\n".join(response.source_documents)
+                        )
+                    )
+                else:
+                    await update.message.reply_text(
+                        "Oops, sorry! Our server couldn't catch the correct session for your request."
+                    )  # TODO: Change error handling
+            except ValidationError as e:
+                logger.warning(
+                    msg=f"Error validating the API response: {e}", stacklevel=3
                 )
-            else:
-                await update.message.reply_text(
-                    f"На запрос {message} Произошла ошибка"
-                )  # TODO: Change error handling
-        except ValidationError as e:
-            logger.warning(msg=f"Error validating the API response: {e}", stacklevel=3)
-            update.message.reply_text("При обработке запроса произошла ошибка.")
+                update.message.reply_text(
+                    "Oops, sorry! We encountered an error trying to process your request."
+                )
 
 
 async def chat_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
