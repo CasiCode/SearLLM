@@ -2,7 +2,7 @@
 
 import datetime
 
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.orm import Session
 
 from backend.database.base import Base
