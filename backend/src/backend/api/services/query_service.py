@@ -1,22 +1,17 @@
 """Query manager. Creates, sends and adds to DB both the requests and the responses to the API"""
 
-import logging
-
 from sqlalchemy.orm import Session
 
-from backend.database.models.user import User
+from backend.api.core.exceptions import InsufficientTokensException
+from backend.api.core.request_handler import RequestHandler
+from backend.api.core.structs import InputMessage, OutputMessage
 from backend.database.models.query import Query
 from backend.database.models.response import Response
-from backend.api.core.exceptions import InsufficientTokensException
-from backend.api.core.structs import InputMessage, OutputMessage
-from backend.api.core.request_handler import RequestHandler
+from backend.database.models.user import User
+from backend.utils import get_logger
 
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-
-logger = logging.getLogger(__name__)
+logger = get_logger(name=__name__)
 
 
 class QueryService:
