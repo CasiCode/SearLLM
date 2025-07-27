@@ -6,7 +6,7 @@ from typing import List, TypedDict
 from langgraph.graph import add_messages
 from typing_extensions import Annotated
 
-from backend.agent.structs import ConductedSearchResults
+from backend.agent.structs import FinalizedAnswer
 
 
 class BaseState(TypedDict):
@@ -59,7 +59,7 @@ class OverallState(BaseState):
     max_research_loops: int
     research_loops_count: int
     reasoning_model: str
-    final_response: ConductedSearchResults
+    final_response: FinalizedAnswer
 
 
 class Query(TypedDict):  # ? Isn't it supposed to be in structs?
