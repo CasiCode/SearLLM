@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Any, Dict, List
 
 import tiktoken
-from langchain_core.messages import BaseMessage, AIMessage, AnyMessage, HumanMessage
+from langchain_core.messages import AIMessage, AnyMessage, BaseMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 
 from backend.agent.configuration import Configuration
