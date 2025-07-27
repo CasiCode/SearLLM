@@ -1,11 +1,10 @@
 """Database core"""
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
 from backend.utils import get_config
-
 
 config = get_config("database/config.yml")
 
