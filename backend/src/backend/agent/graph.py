@@ -27,6 +27,7 @@ from backend.agent.structs import (
     ConductedSearchResults,
     SearchQueryList,
     ReflectionResults,
+    FinalizedAnswer,
 )
 from backend.agent.utils import get_token_usage
 
@@ -313,15 +314,29 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
     )
 
     llm = get_llm(config)
+    llm = llm.with_structured_output(FinalizedAnswer, include_raw=True)
+
     response = llm.invoke(formatted_prompt)
-    token_usage = get_token_usage(response)
+    if response["parsing_error"] is not None:
+        logger.warning(
+            msg="Response returned a parsing error. Falling back to raw text.",
+            stacklevel=1,
+        )
+        answer = FinalizedAnswer(
+            text="", highlight=""
+        )  # ? Might be better to construct a real text and highlight from corrupted raw output
+    else:
+        answer = response["parsed"]
+
+    token_usage = get_token_usage(response["raw"])
 
     unique_sources = {source for summary in summaries for source in summary["sources"]}
 
     logger.info("Answer finalized successfully.")
 
     return {
-        "messages": [AIMessage(content=response.content)],
+        "messages": [AIMessage(content=answer.text)],
+        "final_response": answer,
         "sources_gathered": list(unique_sources),
         "input_tokens_used": token_usage["input_tokens"],
         "output_tokens_used": token_usage["output_tokens"],
@@ -394,9 +409,12 @@ def process_input_message(input_message: str, config: Optional[dict[str, any]] =
                     src.append("An unknown source")
 
         return {
-            "message": response["messages"][-1].content
-            if response.get("messages")
+            "message": response["final_response"].text
+            if response.get("final_response")
             else "Oops, we couldn't proccess your message, sorry!",
+            "highlight": response["final_response"].highlight
+            if response.get("final_response")
+            else "",
             "source_documents": src,
             "input_tokens_used": response["input_tokens_used"],
             "output_tokens_used": response["output_tokens_used"],
