@@ -60,6 +60,7 @@ class QueryService:
 
         return OutputMessage(
             message=response["message"],
+            highlight=response["highlight"],
             source_documents=response["source_documents"],
             session_id=input_message.session_id,
             input_tokens_used=response["input_tokens_used"],
