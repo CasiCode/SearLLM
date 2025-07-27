@@ -74,7 +74,7 @@ Currently, the API provides JSON responses according to this exact schema:
 
 ## Getting started
 
-Current version of the project is still in active development and is not intended to be run in production yet, although you can deploy the app locally in a few steps.
+Current version of the project is still in active development and is **not** intended to be run in production yet, although you can deploy the app locally in a few steps.
 
 - Firstly, create a ```.env``` file (use ```.env.examle```) as a template;
 - Add your Openrouter API key and base url to the .env
