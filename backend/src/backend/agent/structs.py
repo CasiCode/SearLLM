@@ -55,6 +55,33 @@ class ReflectionResults(BaseModel):
     )
 
 
+class FinalizedAnswer(BaseModel):
+    """Finalized answer for the original query
+
+    Attributes
+    ----------
+    text : str
+        Full text of a high-quality answer to the user's question
+        based on the provided summaries and the user's question.
+    highlight : str
+        A highlight, which summarizes the full text
+        into 1 or 2 short and straight-forward sentences
+    """
+
+    text: str = Field(
+        description=(
+            "Full text of a high-quality answer to the user's question "
+            "based on the provided summaries and the user's question."
+        )
+    )
+    highlight: str = Field(
+        description=(
+            "A highlight, which summarizes the full text "
+            "into 1 or 2 short and straight-forward sentences"
+        )
+    )
+
+
 class SearchArgs(BaseModel):
     """Arguments schema for the search tool
 
