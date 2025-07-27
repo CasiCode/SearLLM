@@ -43,11 +43,10 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 
 api_config = get_config("api/config.yml")
-api_url = f"{api_config.api.host}:{str(api_config.api.port)}"
-
-api_client = APIClient(base_url=api_url)
-
 bot_config = get_config("integrations/telegram/config.yml")
+
+api_url = f"{api_config.api.host}:{str(api_config.api.port)}"
+api_client = APIClient(base_url=api_url)
 
 
 async def searx_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
