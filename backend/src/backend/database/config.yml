@@ -1,2 +1,6 @@
 database:
   url: 'sqlite:///./app.db'
+
+user:
+  input_token_limit: 50000
+  output_token_limit: 15000
