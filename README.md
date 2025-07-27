@@ -45,3 +45,33 @@ docker compose up --build
 
 docker exec -it <"app" container name> python ./tests/test.py
 ```
+
+An example of the test output:
+
+```javascript
+{'message': 'Michael Jackson received a remarkable number of awards throughout '
+            'his career. He was awarded 13 Grammy Awards, including '
+            'prestigious honors such as the Grammy Legend Award and the Grammy '
+            'Lifetime Achievement Award '
+            '(https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson). '
+            'In addition, he earned 6 Brit Awards and was honored with the '
+            'Diamond Award at the 2006 World Music Awards for selling over 100 '
+            'million albums, with his album "Thriller" alone surpassing 104 '
+            'million copies sold worldwide '
+            '(https://simple.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson). '
+            'Overall, Michael Jackson accumulated at least 90 wins and 82 '
+            'nominations across various awards from multiple organizations '
+            '(https://tylerturneymjhdp.weebly.com/achievementsawards.html; '
+            'https://michael-jackson.fandom.com/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson; '
+            'https://www.imdb.com/name/nm0001391/awards/).',
+ 'highlight': 'Michael Jackson won at least 90 awards during his career, '
+              'including 13 Grammys and 6 Brit Awards.',
+ 'source_documents': ['https://tylerturneymjhdp.weebly.com/achievementsawards.html',
+                      'https://michael-jackson.fandom.com/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson',
+                      'https://simple.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson',
+                      'https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson',
+                      'https://www.imdb.com/name/nm0001391/awards/'],
+ 'session_id': '38cf5463-baca-4cf4-bd27-694757def148',
+ 'input_tokens_used': 2874,
+ 'output_tokens_used': 511}
+```
