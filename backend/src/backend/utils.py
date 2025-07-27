@@ -1,6 +1,7 @@
 """A collection of utils used in numerous submodules"""
 
 import os
+import logging
 from typing import Union
 
 import yaml
@@ -39,3 +40,12 @@ def check_env_variables(names: Union[str, list[str]]):
     for name in names:
         if os.getenv(name) is None:
             raise ValueError(f"{name} is not set")
+
+
+def get_logger(name: str = "") -> logging.Logger:
+    logging.basicConfig(
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        level=logging.INFO,
+    )
+
+    return logging.getLogger(name)
