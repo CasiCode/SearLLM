@@ -1,42 +1,36 @@
 """Contains main Langgraph logic"""
 
 import os
-import logging
 from typing import Optional
 
 import yaml
-
 from langchain_core.messages import AIMessage
 from langchain_core.runnables import RunnableConfig
-from langgraph.graph import StateGraph, END
+from langgraph.graph import END, StateGraph
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Send
 
+from backend.agent.configuration import Configuration
 from backend.agent.llm import get_llm
+from backend.agent.prompts.loader import PromptLoader
 from backend.agent.state import (
     OverallState,
     QueryGenerationState,
-    WebSearchState,
     ReflectionState,
+    WebSearchState,
 )
-from backend.agent.tools.web_search import search, process_search_result
-from backend.agent.utils import get_current_date, get_research_topic
-from backend.agent.configuration import Configuration
-from backend.agent.prompts.loader import PromptLoader
 from backend.agent.structs import (
     ConductedSearchResults,
-    SearchQueryList,
-    ReflectionResults,
     FinalizedAnswer,
+    ReflectionResults,
+    SearchQueryList,
 )
-from backend.agent.utils import get_token_usage
+from backend.agent.tools.web_search import process_search_result, search
+from backend.agent.utils import get_current_date, get_research_topic, get_token_usage
+from backend.utils import get_logger
 
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-
-logger = logging.getLogger(__name__)
+logger = get_logger(name=__name__)
 
 
 DIRNAME = os.path.dirname(__file__)
