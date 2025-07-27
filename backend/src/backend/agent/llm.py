@@ -1,7 +1,6 @@
 """Contains the logic for LLM's used in the graph"""
 
 import os
-import logging
 
 import httpx
 from dotenv import load_dotenv
@@ -9,14 +8,12 @@ from langchain_core.runnables import RunnableConfig
 from langchain_openai.chat_models import ChatOpenAI
 
 from backend.agent.configuration import Configuration
-from backend.utils import check_env_variables
+from backend.utils import check_env_variables, get_logger
+
 
 load_dotenv()
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(__name__)
+logger = get_logger(name=__name__)
 
 
 def get_llm(config: RunnableConfig) -> ChatOpenAI:
