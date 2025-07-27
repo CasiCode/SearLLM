@@ -72,7 +72,7 @@ Currently, the API provides JSON responses according to this exact schema:
 }
 ```
 
-## Getting started:
+## Getting started
 
 Current version of the project is still in active development and is not intended to be run in production yet, although you can deploy the app locally in a few steps.
 
@@ -122,3 +122,11 @@ An example of the test output:
  'input_tokens_used': 2874,
  'output_tokens_used': 511}
 ```
+
+## Roadmap
+
+As mentioned before, the project is still in active development. Currently, it is planned to implement these features:
+
+- Telegram bot integration (WIP as of end of July 2025)
+- Simple web page with a chat
+- More complex user authorization
