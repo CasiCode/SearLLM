@@ -85,6 +85,7 @@ async def response(input_message: InputMessage):
 
     return OutputMessage(
         message="This is a dev message, yaaaay!",
+        highlight="YAAAAAAY!",
         source_documents=["https://some-url.com"],
         session_id=input_message.session_id,
         user_id=input_message.user_id,
