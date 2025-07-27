@@ -4,13 +4,10 @@ import logging
 
 from backend.database.models import user, query, response  # pylint: disable=unused-import
 from backend.database.base import Base, engine
+from backend.utils import get_logger
 
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-
-logger = logging.getLogger(__name__)
+logger = get_logger(name=__name__)
 
 
 Base.metadata.create_all(bind=engine)
