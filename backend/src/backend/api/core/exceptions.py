@@ -1,10 +1,9 @@
 """Exceptions and exception handlers specific to the API"""
 
-from typing import Optional, Any
+from typing import Any, Optional
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-
 from sqlalchemy.exc import SQLAlchemyError
 
 
