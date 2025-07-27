@@ -17,7 +17,7 @@ api_url = f"{config.api.host}:{str(config.api.port)}"
 
 query = {
     "session_id": str(uuid.uuid4()),
-    "user_id": 12372396423847234,
+    "user_id": 1234567890123,
     "message": "How many awards did Michael Jackson win throughout his entire carrer?",
 }
 
