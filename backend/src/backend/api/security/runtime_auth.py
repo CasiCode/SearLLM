@@ -1,7 +1,7 @@
 """Runtime authentification with API token"""
 
 import os
-from typing import Optional, Dict
+from typing import Dict, Optional
 
 from dotenv import load_dotenv
 from fastapi import Depends
@@ -9,6 +9,7 @@ from fastapi.security import APIKeyHeader
 
 from backend.api.core.exceptions import InvalidKeyException
 from backend.utils import check_env_variables
+
 
 load_dotenv()
 
