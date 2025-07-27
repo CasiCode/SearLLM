@@ -1,7 +1,5 @@
 """API Routers processing user queries"""
 
-import logging
-
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -12,12 +10,10 @@ from backend.api.core.structs import InputMessage, OutputMessage
 from backend.api.security.runtime_auth import require_api_token
 from backend.api.services.query_service import QueryService
 from backend.database.base import get_db
+from backend.utils import get_logger
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
 
-logger = logging.getLogger(__name__)
+logger = get_logger(name=__name__)
 
 
 request_handler = RequestHandler()
