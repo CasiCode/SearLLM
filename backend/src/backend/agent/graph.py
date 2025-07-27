@@ -166,7 +166,7 @@ def process_search_results(
             break
     tool_msgs = recent_tool_msgs[::-1]
 
-    logger.info(f"Query: \n {state['search_query']}")
+    logger.info("Query: \n %s", state["search_query"])
 
     context = process_search_result(tool_msgs)
 
@@ -420,7 +420,7 @@ def process_input_message(input_message: str, config: Optional[dict[str, any]] =
             "output_tokens_used": response["output_tokens_used"],
         }
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
         return {
             "message": f"Oops, we couldn't proccess your message, sorry! {e}",
             "source_documents": [""],
