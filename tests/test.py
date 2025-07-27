@@ -9,8 +9,8 @@ from backend.api.client import APIClient
 from backend.utils import get_config, check_env_variables
 
 load_dotenv()
-check_env_variables("SEARXTG_API_TOKEN")
-API_KEY = os.getenv("SEARXTG_API_TOKEN")
+check_env_variables("SEARLLM_API_TOKEN")
+API_KEY = os.getenv("SEARLLM_API_TOKEN")
 
 config = get_config("api/config.yml")
 api_url = f"{config.api.host}:{str(config.api.port)}"

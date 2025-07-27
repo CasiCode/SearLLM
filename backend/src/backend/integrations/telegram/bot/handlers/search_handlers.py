@@ -18,7 +18,7 @@ async def searx_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     message = update.message.text
     session_id = update.update_id
 
-    # Update.message.text includes the command itself (/searx@SearXTG_bot or /searx)
+    # Update.message.text includes the command itself (/searx@SearLLM_bot or /searx)
     message = message.replace(
         f"/{bot_config.bot.search_command}@{bot_config.bot.bot_tag}", ""
     )

@@ -1,6 +1,6 @@
-# SearXTG
+# SearLLM
 
-SearXTG is a backend application that conducts in-depth research on user queries by dynamically generating search terms, utilizing a private SearXNG instance to search the web, analyzing the results to identify knowledge gaps, and iteratively refining its searches until it can deliver a thoroughly supported answer with citations.
+SearLLM is a backend application that conducts in-depth research on user queries by dynamically generating search terms, utilizing a private SearXNG instance to search the web, analyzing the results to identify knowledge gaps, and iteratively refining its searches until it can deliver a thoroughly supported answer with citations.
 
 ## Architecture overview
 
@@ -81,7 +81,7 @@ Current version of the project is still in active development and is **not** int
 - Add HTTP and HTTPS proxy urls (with inline auth) if you want to use a proxy
 - Change standard agent parameters if needed
 - Add any strong string of your choice as a SearXNG key
-- Add any strong string of your choince as a SearXTG API token. After you build the app, you will be able to generate a production-standard token via:
+- Add any strong string of your choince as a SearLLM API token. After you build the app, you will be able to generate a production-standard token via:
 ```sh
 docker exec -it <"app" container name> python ./tests/generate_token.py
 ```
