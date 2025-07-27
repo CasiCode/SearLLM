@@ -4,6 +4,10 @@ from sqlalchemy import Column, Integer
 from sqlalchemy.orm import Session
 
 from backend.database.base import Base
+from backend.utils import get_config
+
+
+config = get_config("database/config.yml")
 
 
 class User(Base):
@@ -32,9 +36,9 @@ class User(Base):
         id: int,
         input_tokens_used: int = 0,
         output_tokens_used=0,
-        input_token_limit: int = 40000,
-        output_token_limit: int = 10000,
-    ):  # TODO: Calculate optimal ammount, add to config
+        input_token_limit: int = config.user.input_token_limit,
+        output_token_limit: int = config.user.output_token_limit,
+    ):
         new_user = cls(
             id=id,
             input_tokens_used=input_tokens_used,
