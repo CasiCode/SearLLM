@@ -11,6 +11,7 @@ class InputMessage(BaseModel):
 
 class OutputMessage(BaseModel):
     message: str
+    highlight: str
     source_documents: list[str]
     session_id: str
     input_tokens_used: int
