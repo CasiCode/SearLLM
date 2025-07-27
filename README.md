@@ -7,7 +7,7 @@ SearXTG is a backend application that conducts in-depth research on user queries
 This application follows a hybrid multiservice architecture:
 
 - **Modular Monolith**:
-    The core of the application is a modular monolith, where related features are organized into distinct, well-encapsulated modules within a single codebase and deployment unit. This allows for clear separation of concerns and easier maintainability, while benefiting from the performance and simplicity of a monolithic deployment. All the modules are ready for standalone deployment as they are communicating via a middleware RESTful API powered by FastAPI framework.
+    The core of the application is a modular monolith, where related features are organized into modules within a single codebase and deployment unit. All the modules are ready for standalone deployment as they are communicating via a middleware RESTful API powered by FastAPI framework.
     The list of monolith modules includes:
     - **api** - a monolith core. Acts as a middleware FastAPI service which orchestrates all the other modules.
     - **agent** - a Langgraph powered agentic backend for question-answering.
@@ -24,11 +24,13 @@ This application follows a hybrid multiservice architecture:
     - **Redis\Valkey** - SearXNG dependency used for rate limiting and security measures.
 
 
-## How the Backend Agent Works (High-Level)
+## How the answer generation works
 
 The core of the backend is a LangGraph agent defined in `backend/src/agent/graph.py`. It follows these steps:
 
+<p align="center">
 <img src="./agent-diagram.png" title="Agent Flow" alt="Agent Flow" width="75%">
+</p>
 
 1.  **Generate Initial Queries:** Based on your input, it generates a set of initial search queries using an OpenAI GPT model.
 2.  **Web Research:** For each query, it uses the Gemini model with a local instanse of SearXNG host to find relevant web pages.
@@ -37,9 +39,54 @@ The core of the backend is a LangGraph agent defined in `backend/src/agent/graph
 5.  **Finalize Answer:** Once the research is deemed sufficient, the agent synthesizes the gathered information into a coherent answer, including citations from the web sources, using the same OpenAI GPT model.
 
 
+## How to work with this API
+
+To query the API directly via HTTP, you need to send a POST request on ```queries/query``` endpoint with a payload following this exact schema:
+```yml
+{
+    "session_id": (str) intended to be a UUID
+    "user_id": (int) unique user id
+    "message": (str) full query text
+}
+```
+
+For example:
+```python
+query = {
+    "session_id": str(uuid.uuid4()),
+    "user_id": 1234567890123,
+    "message": "How many awards did Michael Jackson win throughout his entire carrer?",
+}
+```
+
+Currently, the API provides JSON responses according to this exact schema:
+
+```yml
+{
+    'message': (str) a full response text
+    'highlight': (str) a short highlight of the full text
+    'source_documents': (list of str) a list of links and references
+    'session_id': (str) matches the query's session_id
+    'input_tokens_used': (int) number of input tokens used by the query
+    'output_tokens_used': (int) number of output tokens used by the query
+}
+```
+
 ## Getting started:
 
-To deploy and test the app you can simply run:
+Current version of the project is still in active development and is not intended to be run in production yet, although you can deploy the app locally in a few steps.
+
+- Firstly, create a ```.env``` file (use ```.env.examle```) as a template;
+- Add your Openrouter API key and base url to the .env
+- Add HTTP and HTTPS proxy urls (with inline auth) if you want to use a proxy
+- Change standard agent parameters if needed
+- Add any strong string of your choice as a SearXNG key
+- Add any strong string of your choince as a SearXTG API token. After you build the app, you will be able to generate a production-standard token via:
+```sh
+docker exec -it <"app" container name> python ./tests/generate_token.py
+```
+
+After editing ```.env``` you can deploy and test the app locally via:
 ```sh
 docker compose up --build
 
