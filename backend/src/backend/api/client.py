@@ -2,15 +2,16 @@
 
 import datetime
 import json
-import logging
 from typing import Dict, Optional
 
-from aiohttp import ClientSession, ClientTimeout, ClientError
+from aiohttp import ClientError, ClientSession, ClientTimeout
 
 from backend.api.core.exceptions import APIError
 from backend.api.security.runtime_auth import get_service_token_header
+from backend.utils import get_logger
 
-logger = logging.getLogger(__name__)
+
+logger = get_logger(name=__name__)
 
 
 class APIClient:
