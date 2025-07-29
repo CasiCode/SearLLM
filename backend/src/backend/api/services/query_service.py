@@ -15,6 +15,22 @@ logger = get_logger(name=__name__)
 
 
 class QueryService:
+    """Query Service managing incoming user queries caught by the API
+
+    Attributes
+    ----------
+    db : sqlalchemy.orm.Session
+        The session that will store both user data
+        and the request-response entries
+    handler : RequestHandler
+        A request handler that will process the incoming requets
+
+    Methods
+    -------
+    create_query(input_message: InputMessage):
+        Creates and manages a query accordingly to given InputMessage
+    """
+
     def __init__(self, db: Session, handler: RequestHandler):
         self.db = db
         self.handler = handler
