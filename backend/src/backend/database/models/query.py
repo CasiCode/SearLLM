@@ -9,6 +9,19 @@ from backend.database.base import Base
 
 
 class Query(Base):
+    """
+    Anonimized Query database model.
+
+    Attributes
+    ----------
+    id : Integer
+        id primary key, indexed in the table, not nullable and unique
+    made_at : DateTime
+        date and time of the query, defaults to current UTC datetime, not nullable
+    text : String
+        full text of the query
+    """
+
     __tablename__ = "queries"
 
     id = Column(Integer, primary_key=True, index=True, nullable=False, unique=True)
@@ -23,6 +36,7 @@ class Query(Base):
 
     @classmethod
     def create(cls, db: Session, text: str):
+        """A Query model factory"""
         new_query = cls(text=text)
         db.add(new_query)
         db.commit()
