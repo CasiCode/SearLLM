@@ -9,6 +9,25 @@ from backend.database.base import Base
 
 
 class Response(Base):
+    """
+    Anonimized Response database model.
+
+    Attributes
+    ----------
+    id : Integer
+        id primary key, indexed in the table, not nullable and unique
+    query_id : Integer
+        Foreign key linking to a Query entry, not nullable, indexed in the table
+    made_at : DateTime
+        date and time of the response, defaults to current UTC datetime, not nullable
+    input_tokens_used : Integer
+        numeber of input token used in response generation
+    output_tokens_used : Integer
+        numeber of output token used in response generation
+    text : String
+        full text of the response
+    """
+
     __tablename__ = "responses"
 
     id = Column(Integer, primary_key=True, index=True, nullable=False, unique=True)
@@ -42,6 +61,7 @@ class Response(Base):
         output_tokens_used: int,
         text: str,
     ):
+        """A Response model factory"""
         new_response = cls(
             query_id=query_id,
             input_tokens_used=input_tokens_used,
