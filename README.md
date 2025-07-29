@@ -6,6 +6,10 @@ SearLLM is a backend application that conducts in-depth research on user queries
 
 This application follows a hybrid multiservice architecture:
 
+<p align="center">
+<img src="./architecture-diagram.png" title="Architecture Flow" alt="Architecture Flow" width="90%">
+</p>
+
 - **Modular Monolith**:
     The core of the application is a modular monolith, where related features are organized into modules within a single codebase and deployment unit. All the modules are ready for standalone deployment as they are communicating via a middleware RESTful API powered by FastAPI framework.
     The list of monolith modules includes:
