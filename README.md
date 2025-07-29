@@ -15,8 +15,8 @@ This application follows a hybrid multiservice architecture:
     The list of monolith modules includes:
     - **api** - a monolith core. Acts as a middleware FastAPI service which orchestrates all the other modules.
     - **agent** - a Langgraph powered agentic backend for question-answering.
-    - **database** - an SQLAlchemy powered database storing anonymized requests and responses and plain user data for token limit tracking.
-    - **integrations** - the application currently supports and focuses on the telegram bot integration to provide messager users with this tool.
+    - **database** - an SQLAlchemy powered database access module managing anonymized requests and responses, and plain user data for token limit tracking.
+    - **integrations** - the application currently supports and focuses on the telegram bot integration to provide messager users with this tool, there is also a handy little CLI tool.
     - **security** - a collection of security utilities used in the application.
 
 
