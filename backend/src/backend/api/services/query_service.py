@@ -24,6 +24,9 @@ class QueryService:
         and the request-response entries
     handler : RequestHandler
         A request handler that will process the incoming requets
+    save_data: bool
+        A flag indicating if the service should save
+        the requests and responses to the DB
 
     Methods
     -------
@@ -31,17 +34,16 @@ class QueryService:
         Creates and manages a query accordingly to given InputMessage
     """
 
-    def __init__(self, db: Session, handler: RequestHandler):
+    def __init__(self, db: Session, handler: RequestHandler, save_data: bool = False):
         self.db = db
         self.handler = handler
+        self.save_data = save_data
 
     def create_query(self, input_message: InputMessage):
         user = self.db.query(User).get(input_message.user_id)
 
         if not user:
             user = User.create(self.db, id=input_message.user_id)
-
-        query = Query.create(self.db, input_message.message)
 
         if user.input_tokens_used >= user.input_token_limit:
             raise InsufficientTokensException(
@@ -58,13 +60,15 @@ class QueryService:
         user.input_tokens_used += response["input_tokens_used"]
         user.output_tokens_used += response["output_tokens_used"]
 
-        Response.create(
-            self.db,
-            query_id=query.id,
-            text=response["message"],
-            input_tokens_used=response["input_tokens_used"],
-            output_tokens_used=response["output_tokens_used"],
-        )
+        if self.save_data:
+            query = Query.create(self.db, input_message.message)
+            Response.create(
+                self.db,
+                query_id=query.id,
+                text=response["message"],
+                input_tokens_used=response["input_tokens_used"],
+                output_tokens_used=response["output_tokens_used"],
+            )
 
         self.db.commit()
         logger.info("Updating user entry:\n%s", user)
