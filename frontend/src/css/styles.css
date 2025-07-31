@@ -199,9 +199,21 @@ body {
     margin-bottom: 4px;
 }
 
+.markdown-content hr {
+    border: none;
+    height: 1px;
+    background-color: #f0f0f0;
+    margin: 20px 0;
+    border-radius: 5px;
+}
+
 .markdown-content a {
     color: #6db3f2;
     text-decoration: none;
+}
+
+.markdown-content a::after {
+    content: attr(href);
 }
 
 .markdown-content a:hover {
