@@ -13,6 +13,7 @@ searchBar.addEventListener('keypress', (e) => {
 
 async function performSearch(query) {
     searchBar.classList.add('glow');
+    searchBar.blur();
     
     await new Promise(resolve => setTimeout(resolve, 10000));
     
@@ -25,8 +26,6 @@ async function performSearch(query) {
     resetButton.classList.add('visible');
     
     updateMarkdownContent(query);
-    
-    searchBar.blur();
 }
 
 function updateMarkdownContent(query) {
