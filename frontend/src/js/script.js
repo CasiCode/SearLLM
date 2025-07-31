@@ -31,23 +31,35 @@ async function performSearch(query) {
 
 function updateMarkdownContent(query) {
     const mockResponse = `
-        <h1>Search Results for: "${query}"</h1>
-        <p>Here's what I found about <strong>${query}</strong>:</p>
+        <h3><strong>Michael Jackson won at least 90 awards during his career, including 13 Grammys and 6 Brit Awards.</h3>
+
+        <hr/>
+
+        <p>Michael Jackson received a remarkable number of awards throughout 
+        his career. He was awarded 13 Grammy Awards, including 
+        prestigious honors such as the Grammy Legend Award and the Grammy 
+        Lifetime Achievement Award (https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson). 
+        In addition, he earned 6 Brit Awards and was honored with the 
+        Diamond Award at the 2006 World Music Awards for selling over 100 
+        million albums, with his album "Thriller" alone surpassing 104 
+        million copies sold worldwide 
+        (https://simple.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson). 
+        Overall, Michael Jackson accumulated at least 90 wins and 82 
+        nominations across various awards from multiple organizations 
+        (https://tylerturneymjhdp.weebly.com/achievementsawards.html; 
+        https://michael-jackson.fandom.com/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson; 
+        https://www.imdb.com/name/nm0001391/awards/).</p>
+
+        <hr/>
         
-        <h2>Overview</h2>
-        <p>This is a comprehensive answer about your search query. In a real implementation, this content would come from your backend API or search service.</p>
-        
-        <h2>Key Points</h2>
+        <h2>Sources</h2>
         <ul>
-            <li>First important point about ${query}</li>
-            <li>Second relevant detail</li>
-            <li>Third key insight</li>
+            <li><a href=https://tylerturneymjhdp.weebly.com/achievementsawards.html></a></li>
+            <li><a href=https://michael-jackson.fandom.com/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson></a></li>
+            <li><a href=https://simple.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson></a></li>
+            <li><a href=https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson></a></li>
+            <li><a href=https://www.imdb.com/name/nm0001391/awards/></a></li>
         </ul>
-        
-        <h2>Additional Information</h2>
-        <p>You can integrate this with any search API or knowledge base to provide real answers. The animation creates a smooth transition from search to results.</p>
-        
-        <p><em>Last updated: ${new Date().toLocaleDateString()}</em></p>
     `;
     
     markdownDisplay.innerHTML = mockResponse;
