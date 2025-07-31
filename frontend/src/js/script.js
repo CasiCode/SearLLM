@@ -15,49 +15,71 @@ async function performSearch(query) {
     searchBar.classList.add('glow');
     searchBar.blur();
     
-    await new Promise(resolve => setTimeout(resolve, 10000));
-    
+    jsonResponse = await getApiResponse(
+        session_id=crypto.randomUUID(),
+        user_id=parseInt(crypto.randomUUID().replace(/-/g, ''), 16),
+        message=query,
+    );
+
     searchWrapper.classList.add('moved-up');
     
     searchBar.classList.remove('glow');
     
     markdownWrapper.classList.add('visible');
-    
     resetButton.classList.add('visible');
     
-    updateMarkdownContent(query);
+    updateMarkdownContent(jsonResponse.highlight, jsonResponse.message, jsonResponse.source_documents);
 }
 
-function updateMarkdownContent(query) {
+async function getApiResponse(session_id, user_id, message) {
+    const data = {
+        session_id: session_id,
+        user_id: user_id,
+        message: message
+    };
+
+    try {
+        const response = await fetch('http://searxng:8000/queries/query', 
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "SearLLM-API-token": process.env.SEARLLM_API_TOKEN
+                },
+                body: JSON.stringify(data)
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Network response was not OK");
+        }
+
+        const jsonResponse = await response.json();
+        return jsonResponse
+    }
+    catch (error) {
+        console.log(error)
+    }
+}
+
+function updateMarkdownContent(highlight, text, sources) {
+    let concatenatedSources = ''
+    sources.forEach(link => {
+        concatenatedSources += `<li><a href=${link}></a></li>\n`;
+    });
+
     const mockResponse = `
-        <h3><strong>Michael Jackson won at least 90 awards during his career, including 13 Grammys and 6 Brit Awards.</h3>
+        <h3>${highlight}</h3>
 
         <hr/>
 
-        <p>Michael Jackson received a remarkable number of awards throughout 
-        his career. He was awarded 13 Grammy Awards, including 
-        prestigious honors such as the Grammy Legend Award and the Grammy 
-        Lifetime Achievement Award (https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson). 
-        In addition, he earned 6 Brit Awards and was honored with the 
-        Diamond Award at the 2006 World Music Awards for selling over 100 
-        million albums, with his album "Thriller" alone surpassing 104 
-        million copies sold worldwide 
-        (https://simple.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson). 
-        Overall, Michael Jackson accumulated at least 90 wins and 82 
-        nominations across various awards from multiple organizations 
-        (https://tylerturneymjhdp.weebly.com/achievementsawards.html; 
-        https://michael-jackson.fandom.com/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson; 
-        https://www.imdb.com/name/nm0001391/awards/).</p>
+        <p>${text}</p>
 
         <hr/>
         
         <h2>Sources</h2>
         <ul>
-            <li><a href=https://tylerturneymjhdp.weebly.com/achievementsawards.html></a></li>
-            <li><a href=https://michael-jackson.fandom.com/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson></a></li>
-            <li><a href=https://simple.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson></a></li>
-            <li><a href=https://en.wikipedia.org/wiki/List_of_awards_and_nominations_received_by_Michael_Jackson></a></li>
-            <li><a href=https://www.imdb.com/name/nm0001391/awards/></a></li>
+            ${concatenatedSources}
         </ul>
     `;
     
