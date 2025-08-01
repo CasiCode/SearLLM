@@ -18,7 +18,7 @@ class InputMessage(BaseModel):
     """
 
     session_id: str
-    user_id: int
+    user_id: str
     message: str
 
 

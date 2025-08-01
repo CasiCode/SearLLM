@@ -1,0 +1,17 @@
+node_modules
+npm-debug.log
+
+*.so
+
+*.swp
+*.tmp
+*.bak
+*.orig
+
+.DS_Store
+**/.DS_Store
+
+.vscode/
+.idea/
+
+environment.yml

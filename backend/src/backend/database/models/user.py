@@ -1,6 +1,6 @@
 """A model for users"""
 
-from sqlalchemy import Column, Integer
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import Session
 
 from backend.database.base import Base
@@ -13,7 +13,7 @@ config = get_config("database/config.yml")
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True, nullable=False, unique=True)
+    id = Column(String, primary_key=True, index=True, nullable=False, unique=True)
     queries_done = Column(Integer, default=0, nullable=False)
     input_tokens_used = Column(Integer, default=0, nullable=False)
     output_tokens_used = Column(Integer, default=0, nullable=False)

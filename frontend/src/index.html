@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/images/icon.png">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>SearLLM</title>
+</head>
+<body>
+    <div class="container">
+        <div class="search-wrapper" id="searchWrapper">
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    class="search-bar" 
+                    id="searchBar"
+                    placeholder="Search..."
+                    aria-label="Search"
+                >
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+            </div>
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+
+        <div class="markdown-wrapper" id="markdownWrapper">
+            <div class="markdown-container">
+                <div class="markdown-content" id="markdownDisplay"></div>
+            </div>
+        </div>
+    </div>
+
+    <button class="reset-button" id="resetButton" onclick="resetSearch()">New Search</button>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
