@@ -2,7 +2,6 @@ const searchBar = document.getElementById('searchBar');
 const searchWrapper = document.getElementById('searchWrapper');
 const markdownWrapper = document.getElementById('markdownWrapper');
 const markdownDisplay = document.getElementById('markdownDisplay');
-const loading = document.getElementById('loading');
 const resetButton = document.getElementById('resetButton');
 
 searchBar.addEventListener('keypress', (e) => {
@@ -17,7 +16,7 @@ async function performSearch(query) {
     
     jsonResponse = await getApiResponse(
         session_id=crypto.randomUUID(),
-        user_id=parseInt(crypto.randomUUID().replace(/-/g, ''), 16),
+        user_id=crypto.randomUUID(),
         message=query,
     );
 
@@ -39,26 +38,26 @@ async function getApiResponse(session_id, user_id, message) {
     };
 
     try {
-        const response = await fetch('http://searxng:8000/queries/query', 
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "SearLLM-API-token": process.env.SEARLLM_API_TOKEN
-                },
-                body: JSON.stringify(data)
-            }
-        );
+        console.log(JSON.stringify(data));
+
+        const response = await fetch('/api/proxy-query', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
 
         if (!response.ok) {
-            throw new Error("Network response was not OK");
+            console.error('Failed to get an OK response.');
+            return;
         }
 
         const jsonResponse = await response.json();
-        return jsonResponse
+        return jsonResponse;
     }
     catch (error) {
-        console.log(error)
+        console.log(error);
     }
 }
 
