@@ -68,7 +68,7 @@ async def searx_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     query = {
         "session_id": uuid.uuid4(),
         "message": message,
-        "user_id": update.effective_user.id,
+        "user_id": update.effective_user.id,  # ! won't work as for now, str UUID needed
     }
     async with APIClient(base_url=api_url) as client:
         try:
