@@ -1,3 +1,7 @@
+<p align="center">
+<img src="./header.png" title="Architecture Flow" alt="Architecture Flow" width="100%">
+</p>
+
 # SearLLM
 
 SearLLM is a backend application that conducts in-depth research on user queries by dynamically generating search terms, utilizing a private SearXNG instance to search the web, analyzing the results to identify knowledge gaps, and iteratively refining its searches until it can deliver a thoroughly supported answer with citations.
@@ -9,6 +13,9 @@ This application follows a hybrid multiservice architecture:
 <p align="center">
 <img src="./architecture-diagram.png" title="Architecture Flow" alt="Architecture Flow" width="90%">
 </p>
+
+- **Frontend Server**:
+A project contains a simple web server powered by Express that handles interaction with the UI and uses a proxy endpoint to communicate with the API.
 
 - **Modular Monolith**:
     The core of the application is a modular monolith, where related features are organized into modules within a single codebase and deployment unit. All the modules are ready for standalone deployment as they are communicating via a middleware RESTful API powered by FastAPI framework.
@@ -80,24 +87,29 @@ Currently, the API provides JSON responses according to this exact schema:
 
 Current version of the project is still in active development and is **not** intended to be run in production yet, although you can deploy the app locally in a few steps.
 
-- Firstly, create a ```.env``` file (use ```.env.examle```) as a template;
-- Add your Openrouter API key and base url to the .env
+- Firstly, create a general env ```.env``` file and an ```.env``` file for both the frontend and the backend  (use ```.env.examle```) as a template;
+- Add your Openrouter API key and base url to the backend ```.env```
 - Add HTTP and HTTPS proxy urls (with inline auth) if you want to use a proxy
 - Change standard agent parameters if needed
-- Add any strong string of your choice as a SearXNG key
-- Add any strong string of your choince as a SearLLM API token. After you build the app, you will be able to generate a production-standard token via:
+- Add any strong string of your choice as a SearXNG key in a general ```.env```
+- Add any strong string of your choince as a SearLLM API token in both backend and frontend backend ```.env```. After you build the app, you will be able to generate a production-standard token via:
 ```sh
-docker exec -it <"app" container name> python ./tests/generate_token.py
+docker exec -it <"backend" container name> python ./tests/generate_token.py
 ```
 
-After editing ```.env``` you can deploy and test the app locally via:
+After editing ```.env``` you can deploy the app locally via:
 ```sh
 docker compose up --build
-
-docker exec -it <"app" container name> python ./tests/test.py
 ```
 
-An example of the test output:
+And test the the app using frontend UI at ```http://localhost:8888/```.
+
+Moreover, you can test the API directly with:
+```sh
+docker exec -it <"backend" container name> python ./tests/test.py
+```
+
+An example of the API test output:
 
 ```javascript
 {'message': 'Michael Jackson received a remarkable number of awards throughout '
@@ -132,5 +144,5 @@ An example of the test output:
 As mentioned before, the project is still in active development. Currently, it is planned to implement these features:
 
 - Telegram bot integration (WIP as of end of July 2025)
-- Simple web page with a chat
+- Add a serious DB integration
 - More complex user authorization
