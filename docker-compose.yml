@@ -55,12 +55,27 @@ services:
         max-size: "10m"
         max-file: "1"
 
-  app:
-    build: .
+  backend:
+    build: ./backend/.
     networks:
       - searxng
     volumes:
-      - ./:/workspace
+      - ./backend/:/workspace
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "1"
+  
+  frontend:
+    build: ./frontend/.
+    networks:
+      - searxng
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./frontend/:/workspace
+      - /workspace/node_modules
     logging:
       driver: "json-file"
       options:
