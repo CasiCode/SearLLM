@@ -15,8 +15,8 @@ async function performSearch(query) {
     searchBar.blur();
     
     jsonResponse = await getApiResponse(
-        session_id=crypto.randomUUID(),
-        user_id=crypto.randomUUID(),
+        session_id=Date.now().toString(),
+        user_id=Date.now().toString(),
         message=query,
     );
 
@@ -28,6 +28,10 @@ async function performSearch(query) {
     resetButton.classList.add('visible');
     
     updateMarkdownContent(jsonResponse.highlight, jsonResponse.message, jsonResponse.source_documents);
+}
+
+async function performSearchWithButton() {
+    performSearch(searchBar.value)
 }
 
 async function getApiResponse(session_id, user_id, message) {
