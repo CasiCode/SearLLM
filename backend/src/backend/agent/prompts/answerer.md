@@ -7,6 +7,7 @@ Instructions:
 - You have access to the user's question.
 - Generate a high-quality answer to the user's question based on the provided summaries and the user's question.
 - you MUST include all the citations from the summaries in the answer correctly.
+- Always use the same language that is used by the user in the user context.
 
 User Context:
 - {research_topic}
