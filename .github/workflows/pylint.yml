@@ -16,8 +16,9 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
+        cd backend
         python -m pip install --upgrade pip
-        pip install -r backend\requirements.txt pylint
+        pip install -r requirements.txt pylint
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py') --fail-under 5 --fail-on E
