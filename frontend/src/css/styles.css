@@ -110,8 +110,26 @@ body {
     transform: translateY(-50%);
     width: 20px;
     height: 20px;
+    background: none;
+    border: none;
     opacity: 0.5;
-    pointer-events: none;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: opacity 0.2s ease;
+}
+
+.search-icon:hover {
+    opacity: 1;
+}
+
+.search-icon:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(96, 96, 96, 0.2);
+}
+
+.search-icon svg {
+    width: 100%;
+    height: 100%;
 }
 
 .markdown-wrapper {
