@@ -70,7 +70,7 @@ async function getApiResponse(session_id, user_id, message) {
 function updateMarkdownContent(highlight, text, sources) {
     let concatenatedSources = ''
     sources.forEach(link => {
-        concatenatedSources += `<li><a href=${link}></a></li>\n`;
+        concatenatedSources += `<li><a href=${link}>${link}</a></li>\n`;
     });
 
     const mockResponse = `
