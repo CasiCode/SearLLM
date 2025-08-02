@@ -3,6 +3,8 @@ const searchWrapper = document.getElementById('searchWrapper');
 const markdownWrapper = document.getElementById('markdownWrapper');
 const markdownDisplay = document.getElementById('markdownDisplay');
 const resetButton = document.getElementById('resetButton');
+const copyButton = document.getElementById('copyButton');
+
 
 searchBar.addEventListener('keypress', (e) => {
     if (e.key === 'Enter' && searchBar.value.trim()) {
@@ -89,10 +91,31 @@ function updateMarkdownContent(highlight, text, sources) {
     markdownDisplay.innerHTML = mockResponse;
 }
 
+async function copyMarkdownContent() {
+    const copyButton = document.getElementById('copyButton');
+    const markdownContent = document.getElementById('markdownDisplay');
+    
+    const textContent = markdownContent.innerText;
+    
+    try {
+        await navigator.clipboard.writeText(textContent);
+        
+        copyButton.classList.add('copied');
+        
+        setTimeout(() => {
+            copyButton.classList.remove('copied');
+        }, 2000);
+    } catch (err) {
+        console.error('Failed to copy text: ', err);
+    }
+}
+
 function resetSearch() {
     searchWrapper.classList.remove('moved-up');
     markdownWrapper.classList.remove('visible');
     resetButton.classList.remove('visible');
+
+    copyButton.classList.remove('copied');
     
     searchBar.value = '';
     searchBar.focus();
