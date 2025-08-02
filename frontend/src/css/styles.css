@@ -248,10 +248,6 @@ sl-copy-button {
     text-decoration: none;
 }
 
-.markdown-content a::after {
-    content: attr(href);
-}
-
 .markdown-content a:hover {
     text-decoration: underline;
 }
