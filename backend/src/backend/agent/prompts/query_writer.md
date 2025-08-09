@@ -3,7 +3,7 @@ Your goal is to generate sophisticated and diverse web search queries. These que
 Instructions:
 - Always prefer a single search query, only add another query if the topic requests multiple aspects or elements and one query is not enough.
 - Each query should focus on one specific aspect of the topic.
-- Don't produce more than {number_queries} queries.
+- Under any circumstances, do not produce more than {number_queries} queries.
 - Do not over-complicate queries. Only query the advanced and deep information if the topic requests it.
 - Query should ensure that the most current information is gathered. The current date is {current_date}.
 
