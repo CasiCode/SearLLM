@@ -48,3 +48,38 @@ class OutputMessage(BaseModel):
     session_id: str
     input_tokens_used: int
     output_tokens_used: int
+
+
+class SharedSearch(BaseModel):
+    """
+    Shared search data model
+
+    Attributes
+    ----------
+    query : str
+        original query
+    highlight : str
+        short highlight of message field
+    text : str
+        full output message text
+    source_documents : list[str]
+        list of links used in the answer
+    """
+
+    query: str
+    highlight: str
+    text: str
+    source_documents: list[str]
+
+
+class SharedSearchSlug(BaseModel):
+    """
+    Shared search data model
+
+    Attributes
+    ----------
+    slug : str
+        unique string identifier of the shared response
+    """
+
+    slug: str
