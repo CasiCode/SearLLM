@@ -11,6 +11,7 @@ services:
       - caddy-data:/data:rw
       - caddy-config:/config:rw
     environment:
+      - PUBLIC_IP=193.233.171.152
       - SEARXNG_HOSTNAME=${SEARXNG_HOSTNAME:-http://localhost}
       - SEARXNG_TLS=${LETSENCRYPT_EMAIL:-internal}
     logging:
