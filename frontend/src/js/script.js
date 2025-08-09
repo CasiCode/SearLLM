@@ -157,7 +157,7 @@ function updateMarkdownContent(highlight, text, sources) {
   `;
 
   markdownDisplay.innerHTML = html;
-  if (copyBtn) {
+  if (copyButton) {
     copyButton.value = buildCopyText(highlight, text, sources);
   }
 }
