@@ -25,7 +25,7 @@ from backend.agent.structs import (
     ReflectionResults,
     SearchQueryList,
 )
-from backend.agent.tools.web_search import process_search_result, search
+from backend.agent.tools.web_search import concatenate_search_results, search
 from backend.agent.utils import get_current_date, get_research_topic, get_token_usage
 from backend.utils import get_logger
 
@@ -162,7 +162,7 @@ def process_search_results(
 
     logger.info("Query: \n %s", state["search_query"])
 
-    context = process_search_result(tool_msgs)
+    context = concatenate_search_results(tool_msgs)
 
     prompt_template = PromptLoader("search_result_proccessor.md").load_prompt()
     formatted_prompt = prompt_template.format(

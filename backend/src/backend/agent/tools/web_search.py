@@ -32,9 +32,9 @@ def search(query: str) -> List[Dict]:
     return searx.results(query=query, num_results=config.searx.num_results)
 
 
-def process_search_result(result: Union[ToolMessage, List[ToolMessage]]) -> str:
+def concatenate_search_results(result: Union[ToolMessage, List[ToolMessage]]) -> str:
     """
-    Processes a search results. Returns a concatenated string with all the valid contents included
+    Processes search results. Returns a concatenated string with all the valid contents included
 
     Args:
         result (ToolMessage | List[ToolMessage]): search results.
