@@ -4,9 +4,10 @@ from fastapi import FastAPI
 
 import backend.database.setup_db  # pylint: disable=unused-import
 from backend.api.core.exceptions import setup_exception_handlers
-from backend.api.routers import queries
+from backend.api.routers import queries, shares
 
 
 app = FastAPI()
 setup_exception_handlers(app)
 app.include_router(queries.router, prefix="/queries", tags=["queries"])
+app.include_router(shares.router, prefix="/shares", tags=["shares"])
