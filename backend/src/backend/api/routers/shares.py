@@ -36,7 +36,7 @@ async def share_search(
         return slug
     except Exception as e:
         logger.warning("Error while sharing the search: %s", e, stacklevel=3)
-        return SharedSearchSlug("")
+        return SharedSearchSlug(slug="")
 
 
 @router.get("/s/{slug}", response_model=SharedSearch)
