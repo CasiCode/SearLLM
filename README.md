@@ -31,7 +31,7 @@ A project contains a simple web server powered by Express that handles interacti
     In addition to the modular monolith, the system includes four independent services. These services are configured, deployed, and scaled separately from the monolith. They communicate with the monolith and, if necessary, with each other via HTTP/HTTPS RESTful APIs.
     The list of independent services includes:
     - **A private SearXNG instance** - a powerful open-source metasearch engine which aggregates results from various search services and databases.
-    - **Caddy** - used as a rate-limiting backward proxy for the searxng.
+    - **Caddy** - a backward proxy for frontend, creates a LetsEncrypt certificate automatically.
     - **Redis\Valkey** - SearXNG dependency used for rate limiting and security measures.
 
 
