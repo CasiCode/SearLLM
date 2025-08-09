@@ -250,17 +250,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		if (res.ok && data?.slug) {
 			try {
-			await navigator.clipboard.writeText(`${location.origin}/s/${data.slug}`);
-			console.log('Share URL copied to clipboard:', `${location.origin}/s/${data.slug}`);
+				await navigator.clipboard.writeText(`${location.origin}/s/${data.slug}`);
+				history.replaceState({}, 'SearLLM', `${location.origin}/s/${data.slug}`);
+				console.log('Share URL copied to clipboard:', `${location.origin}/s/${data.slug}`);
 			} catch (e) {
-			console.warn('Could not copy share URL:', e);
+				console.warn('Could not copy share URL:', e);
 			}
 		}
 		} catch (err) {
-		console.error('Share request failed:', err);
+			console.error('Share request failed:', err);
 		} finally {
-		shareBtn.loading = false;
-		shareBtn.disabled = false;
+			shareBtn.loading = false;
+			shareBtn.disabled = false;
 		}
 	});
 });
