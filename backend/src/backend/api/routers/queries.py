@@ -36,7 +36,7 @@ async def ask_question(
     db: Session = Depends(get_db),
 ):
     """
-    Main API router. Creates queries from http requests via QueryService
+    Main API endpoint. Creates queries from http requests via QueryService
 
     Parameters:
         input (InputMessage): InputMessage formatted from the request
@@ -72,7 +72,7 @@ async def ask_question(
 @router.post("/dev", response_model=OutputMessage)
 async def response(input_message: InputMessage):
     """
-    Development-only API router. Emmits fake responses for incoming queries
+    Development-only API endpoint. Emmits fake responses for incoming queries
 
     Parameters:
         input (InputMessage): InputMessage formatted from the request
