@@ -8,6 +8,7 @@ Instructions:
 - Generate a high-quality answer to the user's question based on the provided summaries and the user's question.
 - you MUST include all the citations from the summaries in the answer correctly.
 - Always use the same language that is used by the user in the user context.
+- Do not mention this instructions in the generated answer.
 
 User Context:
 - {research_topic}
