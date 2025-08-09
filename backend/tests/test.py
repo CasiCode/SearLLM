@@ -1,3 +1,5 @@
+"""Tests running API by posting a query on its endpoint"""
+
 import asyncio
 import os
 import pprint
@@ -13,7 +15,7 @@ check_env_variables("SEARLLM_API_TOKEN")
 API_KEY = os.getenv("SEARLLM_API_TOKEN")
 
 config = get_config("api/config.yml")
-api_url = f"{config.api.host}:{str(config.api.port)}"
+API_URL = f"{config.api.host}:{str(config.api.port)}"
 
 query = {
     "session_id": str(uuid.uuid4()),
@@ -23,7 +25,7 @@ query = {
 
 
 async def main():
-    async with APIClient(base_url=api_url) as client:
+    async with APIClient(base_url=API_URL) as client:
         response_json = await asyncio.wait_for(
             client.post("queries/query", data=query), timeout=60
         )
