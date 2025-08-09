@@ -150,7 +150,6 @@ function updateMarkdownContent(highlight, text, sources) {
 
     <hr/>
 
-    <h2>Sources</h2>
     <div class="source-buttons">
       ${sourceButtons}
     </div>
