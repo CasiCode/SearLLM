@@ -317,30 +317,80 @@ sl-button.source-btn:active::part(base) {
   font-size: 0.9em;
 }
 
-.reset-button {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 8px 16px;
-    background-color: #404040;
-    border: none;
-    border-radius: 6px;
-    color: #e0e0e0;
-    cursor: pointer;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: all 0.3s ease;
-    font-size: 14px;
+.action-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
 }
 
-.reset-button.visible {
-    opacity: 1;
-    transform: translateY(0);
+sl-button#shareButton::part(base) {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #c8c8c8;
+  padding: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  line-height: 0;
 }
 
-.reset-button:hover {
-    background-color: #505050;
+sl-button#shareButton::part(label) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
+
+sl-button#shareButton svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+sl-button#shareButton:hover::part(base),
+sl-button#shareButton:active::part(base) {
+  background: transparent !important;
+}
+
+sl-button#shareButton:focus-visible::part(base) {
+  box-shadow: 0 0 0 3px rgba(96, 96, 96, 0.2);
+}
+
+sl-button#shareButton[disabled]::part(base) {
+  opacity: 0.5;
+}
+
+.clear-icon {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: none;
+  opacity: 0.5;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: opacity 0.2s ease;
+  display: none;
+}
+.clear-icon:hover { opacity: 1; }
+.clear-icon:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(96, 96, 96, 0.2);
+}
+
+#searchContainer.has-result .search-icon { display: none; }
+#searchContainer.has-result .clear-icon { display: block; }
 
 @media (max-width: 600px) {
     .search-wrapper.moved-up {

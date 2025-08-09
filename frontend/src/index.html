@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/images/icon.png">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/dark.css" />
     <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
     <title>SearLLM</title>
@@ -12,7 +12,7 @@
 <body>
     <div class="container">
         <div class="search-wrapper" id="searchWrapper">
-            <div class="search-container">
+            <div class="search-container" id="searchContainer">
                 <input 
                     type="text" 
                     class="search-bar" 
@@ -20,10 +20,15 @@
                     placeholder="Search for anything with LLM"
                     aria-label="Search"
                 >
-                <button class="search-icon" aria-label="Search" onclick="performSearchWithButton()">
+                <button class="search-icon" id="searchBtn" aria-label="Search" onclick="performSearchWithButton()" type="button">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.35-4.35"></path>
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+                <button class="clear-icon" id="clearButton" aria-label="New search" onclick="resetSearch()" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
                 </button>
             </div>
@@ -33,17 +38,33 @@
             <div class="markdown-container">
                 <div class="markdown-content" id="markdownDisplay"></div>
             </div>
-            <sl-copy-button
+
+            <div class="action-buttons">
+                <sl-tooltip id="shareTooltip" content="Share" placement="top" distance="2">
+                <sl-button id="shareButton" size="small" variant="text" circle>
+                    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"
+                        fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <path d="M8.59 13.51 15.42 17.49"></path>
+                    <path d="M15.41 6.51 8.59 10.49"></path>
+                    </svg>
+                </sl-button>
+                </sl-tooltip>
+
+                <sl-copy-button
                 id="copyButton"
+                size="small"
                 copy-label="Click to copy"
                 success-label="Copied!"
                 error-label="Whoops, error!">
-            </sl-copy-button>
+                </sl-copy-button>
+            </div>
         </div>
     </div>
 
-    <button class="reset-button" id="resetButton" onclick="resetSearch()">New Search</button>
-
-    <script src="js/script.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 </html>
