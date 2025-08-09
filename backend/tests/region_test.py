@@ -8,14 +8,14 @@ import pprint
 
 import httpx
 from dotenv import load_dotenv
-from models import Response
+from models import IPInfoResponse
 
 load_dotenv()
 
 
 def clear_json_response(response: dict[str, str]) -> dict[str, str]:
     """Clears json response from garbage using a pydantic model"""
-    return Response(**response).model_dump()
+    return IPInfoResponse(**response).model_dump()
 
 
 def get_base_info():
