@@ -71,7 +71,8 @@ class FinalizedAnswer(BaseModel):
     text: str = Field(
         description=(
             "Full text of a high-quality answer to the user's question "
-            "based on the provided summaries and the user's question."
+            "based on the provided summaries and the user's question. "
+            "Can use HTML tags inside for formatting."
         )
     )
     highlight: str = Field(
