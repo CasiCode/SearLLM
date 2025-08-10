@@ -77,7 +77,8 @@ class FinalizedAnswer(BaseModel):
     highlight: str = Field(
         description=(
             "A highlight, which summarizes the full text "
-            "into 1 or 2 short and straight-forward sentences"
+            "into 1 or 2 short and straight-forward sentences. "
+            "It must answer the original user's question directly."
         )
     )
 
