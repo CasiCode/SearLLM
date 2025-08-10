@@ -5,7 +5,9 @@ Instructions:
 - Each query should focus on one specific aspect of the topic.
 - Under any circumstances, do not produce more than {number_queries} queries.
 - Do not over-complicate queries. Only query the advanced and deep information if the topic requests it.
-- Query should ensure that the most current information is gathered. The current date is {current_date}.
+- If the topic is a term, the query should ask for its definition.
+- If the topic is a name, the query should ask for who or what it is.
+- The current date is {current_date}.
 
 Format: 
 - Format your response as a JSON object with this one exact key:
@@ -13,22 +15,36 @@ Format:
 
 Examples:
 
-Topic: John Doe
+Topic: Albert Einstein
 ```json
 {{
-    "query": ["John Doe biography", "John Doe", "John Doe latest info as of August 2025"],
+    "query": ["Albert Einstein's biography and career", "Who is Albert Einstein?"],
 }}
 
 Topic: Transformer LLM
 ```json
 {{
-    "query": ["Trasformer architecture LLM", "What is a transformer in LLM?", "How do transformers in LLM work?"],
+    "query": ["What is a transformer in LLM?"],
 }}
 
 Topic: What revenue grew more last year apple stock or the number of people buying an iphone
 ```json
 {{
     "query": ["Apple total revenue growth fiscal year 2024", "iPhone unit sales growth fiscal year 2024", "Apple stock price growth fiscal year 2024"],
+}}
+```
+
+Topic: Latest OpenAI model
+```json
+{{
+    "query": ["What is the latest OpenAI model as of {current_date}?", "OpenAI latest news as of {current_date}"],
+}}
+```
+
+Topic: What happened in London today?
+```json
+{{
+    "query": ["Latest events in London {current_date}", "London news {current_date}"],
 }}
 ```
 
