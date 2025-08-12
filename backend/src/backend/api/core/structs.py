@@ -24,7 +24,7 @@ class InputMessage(BaseModel):
     session_id: str
     user_id: str
     message: str
-    pref_language: Optional[str] = "ru"
+    pref_language: Optional[str] = "en"
 
 
 class OutputMessage(BaseModel):
