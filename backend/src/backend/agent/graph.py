@@ -365,7 +365,7 @@ workflow.add_conditional_edges(
 workflow.add_edge("finalize_answer", END)
 
 
-def process_input_message(
+async def process_input_message(
     input_message: str, language: str, config: Optional[dict[str, any]] = None
 ):
     """
@@ -396,7 +396,7 @@ def process_input_message(
 
         config = RunnableConfig(configurable=config_dict.get("configurable", {}))
 
-        response = graph.invoke(
+        response = await graph.ainvoke(
             {
                 "messages": [{"role": "user", "content": input_message}],
                 "language": language,
