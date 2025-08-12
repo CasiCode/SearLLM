@@ -8,7 +8,7 @@ uvicorn
 pydantic
 python-dotenv
 pyyaml
-
+langcodes
 python-box
 
 sqlalchemy
