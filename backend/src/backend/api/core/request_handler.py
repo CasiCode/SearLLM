@@ -3,7 +3,6 @@
 from typing import Callable, Optional
 
 from backend.api.core.exceptions import ExternalAPIException, LocalAPIException
-from backend.api.core.structs import InputMessage
 
 
 class RequestHandler:
@@ -32,19 +31,23 @@ class RequestHandler:
             raise ValueError("Process function must be callable")
         self._process_func = func
 
-    def process_request(self, input_message: InputMessage):
+    def process_request(self, input_message: str, language: Optional[str]):
         """
         Processes incoming request and tries to run self._process_func on its data
 
         Parameters:
-            input_message (InputMessage): user message to be processed with langgraph
+            input_message (str): user message to be processed with langgraph
+            language (str): preffered language
         """
 
         if self._process_func is None:
             raise LocalAPIException(details="No process function registered on server.")
 
+        if not language:
+            language = "en"
+
         try:
-            return self._process_func(input_message)
+            return self._process_func(input_message, language)
         except Exception as e:
             raise ExternalAPIException(
                 details=f"Unexpected error: {type(e).__name__} - {str(e)}"
