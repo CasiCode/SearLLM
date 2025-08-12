@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Any, Dict, List
 
 import tiktoken
-from langchain_core.messages import AIMessage, AnyMessage, BaseMessage, HumanMessage
+from langchain_core.messages import AnyMessage, BaseMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 
 from backend.agent.configuration import Configuration
@@ -34,9 +34,7 @@ def get_research_topic(msgs: List[AnyMessage]) -> str:
     topic = ""
     for msg in msgs:
         if isinstance(msg, HumanMessage):
-            topic += f"User: {msg.content.strip()}\n"
-        elif isinstance(msg, AIMessage):
-            topic += f"Assistant: {msg.content.strip()}\n"
+            topic += f"{msg.content.strip()}\n"
     return topic
 
 
