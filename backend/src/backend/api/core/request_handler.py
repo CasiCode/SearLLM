@@ -31,9 +31,9 @@ class RequestHandler:
             raise ValueError("Process function must be callable")
         self._process_func = func
 
-    def process_request(self, input_message: str, language: Optional[str]):
+    async def process_request(self, input_message: str, language: Optional[str]):
         """
-        Processes incoming request and tries to run self._process_func on its data
+        Asyncroniously processes incoming request and tries to run self._process_func on its data
 
         Parameters:
             input_message (str): user message to be processed with langgraph
@@ -47,7 +47,7 @@ class RequestHandler:
             language = "en"
 
         try:
-            return self._process_func(input_message, language)
+            return await self._process_func(input_message, language)
         except Exception as e:
             raise ExternalAPIException(
                 details=f"Unexpected error: {type(e).__name__} - {str(e)}"

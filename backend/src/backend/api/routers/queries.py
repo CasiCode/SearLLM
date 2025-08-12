@@ -44,7 +44,7 @@ async def ask_question(
     service = QueryService(handler=handler, db=db)
 
     try:
-        response = service.create_query(input_message=input_message)
+        response = await service.create_query(input_message=input_message)
         return response
     except InsufficientTokensException:
         return OutputMessage(

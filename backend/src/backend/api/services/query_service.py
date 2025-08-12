@@ -39,7 +39,7 @@ class QueryService:
         self.handler = handler
         self.save_data = save_data
 
-    def create_query(self, input_message: InputMessage):
+    async def create_query(self, input_message: InputMessage):
         user = self.db.query(User).get(input_message.user_id)
 
         if not user:
@@ -54,7 +54,7 @@ class QueryService:
                 details=f"User {input_message.user_id} has reached their output token limit."
             )
 
-        response = self.handler.process_request(
+        response = await self.handler.process_request(
             input_message=input_message.message, language=input_message.pref_language
         )
 
