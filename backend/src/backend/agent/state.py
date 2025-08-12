@@ -37,6 +37,8 @@ class OverallState(BaseState):
         list of web search results found
     sources_gathered : Annotated[list, operator.add]
         list of gathered sources
+    language : str
+        preffered language
     initial_search_query_count : int
         number of queries generated in the first graph node
     max_research_loops : int
@@ -55,6 +57,7 @@ class OverallState(BaseState):
     sources_gathered: Annotated[
         list, operator.add
     ]  # ? Not sorted and verified in graph
+    language: str
     initial_search_query_count: int
     max_research_loops: int
     research_loops_count: int
