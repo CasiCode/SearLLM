@@ -19,7 +19,7 @@ searx = SearxSearchWrapper(searx_host=SEARX_HOST)
 
 
 @tool(args_schema=SearchArgs)
-def search(query: str) -> List[Dict]:
+async def search(query: str) -> List[Dict]:
     """
     Use this tool to get the results of a general web search.
 
@@ -29,7 +29,7 @@ def search(query: str) -> List[Dict]:
     Returns:
         A list of dictionaries with these exact keys: snippet, title, link, engines, category
     """
-    return searx.results(query=query, num_results=config.searx.num_results)
+    return await searx.aresults(query=query, num_results=config.searx.num_results)
 
 
 def concatenate_search_results(result: Union[ToolMessage, List[ToolMessage]]) -> str:
