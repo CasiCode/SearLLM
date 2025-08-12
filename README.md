@@ -58,6 +58,7 @@ To query the API directly via HTTP, you need to send a POST request on ```querie
     "session_id": (str) intended to be a UUID
     "user_id": (int) unique user id
     "message": (str) full query text
+    "pref_language": (str) an ISO 639 language code
 }
 ```
 
@@ -67,6 +68,7 @@ query = {
     "session_id": str(uuid.uuid4()),
     "user_id": 1234567890123,
     "message": "How many awards did Michael Jackson win throughout his entire carrer?",
+    "pref_language": "en",
 }
 ```
 
