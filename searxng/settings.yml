@@ -1,96 +1,18 @@
-general:
-  debug: false
-  instance_name: "SearXNG"
-
+# see https://docs.searxng.org/admin/settings/settings.html#settings-use-default-settings
+use_default_settings: true
 server:
-  bind_address: "127.0.0.1"
-  port: 8080
+  # base_url is defined in the SEARXNG_BASE_URL environment variable, see .env and docker-compose.yml
   secret_key: ${SEARXNG_KEY}
-  base_url: false
-  image_proxy: false
-  limit: 5
-  public_instance: false
-
-search:
-  safe_search: 1
-  default_lang: "en"
-  autocomplete: ""
-  default_theme: "simple"
-  formats:
-    - html
-    - json
-
-outgoing:
-  request_timeout: 4
-  max_request_timeout: 5
-  pool_connections: 6
-  pool_maxsize: 6
-  retries: 0
-  enable_http2: true
-  useragent_suffix: "SearXNG/SearLLM"
-
+  limiter: false  # enable this when running the instance for a public usage on the internet
+  image_proxy: true
+ui:
+  static_use_hash: true
 redis:
   url: redis://redis:6379/0
-
-result_proxy:
-  url: false
-
-ui:
-  query_in_title: false
-  static_use_hash: true
-  categories_as_tabs:
-    general: true
-    news: true
-    images: false
-    videos: false
-
+search:
+    formats:
+        - html
+        - json
 engines:
-  - name: duckduckgo
-    engine: duckduckgo
-    shortcut: ddg
-    categories: general
-    timeout: 4
-    disabled: false
-
-  - name: qwant
-    engine: qwant
-    shortcut: qw
-    categories: general
-    timeout: 4
-    disabled: false
-
-  - name: mojeek
-    engine: mojeek
-    shortcut: mj
-    categories: general
-    timeout: 4
-    disabled: false
-
   - name: brave
     disabled: true
-
-  - name: wikipedia
-    engine: wikipedia
-    shortcut: wp
-    categories: general
-    timeout: 4
-    disabled: false
-
-
-enabled_plugins:
-  - "Hash Plugin"
-  - "Self Information"
-  - "Search on category select"
-  - "Tracker URL remover"
-
-disabled_plugins:
-  - "Open Access DOI rewrite"
-  - "Image proxy"
-  - "NoJS"
-
-paging:
-  default: 1
-  max: 5
-
-limiter:
-  enable: false
