@@ -146,5 +146,4 @@ An example of the API test output:
 As mentioned before, the project is still in active development. Currently, it is planned to implement these features:
 
 - Telegram bot integration (WIP as of end of July 2025)
-- Add a serious DB integration
-- More complex user authorization
+- Android widget integration
