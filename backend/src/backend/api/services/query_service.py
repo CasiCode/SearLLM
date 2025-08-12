@@ -54,7 +54,9 @@ class QueryService:
                 details=f"User {input_message.user_id} has reached their output token limit."
             )
 
-        response = self.handler.process_request(input_message.message)
+        response = self.handler.process_request(
+            input_message=input_message.message, language=input_message.pref_language
+        )
 
         user.queries_done += 1
         user.input_tokens_used += response["input_tokens_used"]
