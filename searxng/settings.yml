@@ -21,8 +21,8 @@ search:
     - json
 
 outgoing:
-  request_timeout: 2.0
-  max_request_timeout: 2.2
+  request_timeout: 4
+  max_request_timeout: 5
   pool_connections: 6
   pool_maxsize: 6
   retries: 0
@@ -49,21 +49,21 @@ engines:
     engine: duckduckgo
     shortcut: ddg
     categories: general
-    timeout: 1.6
+    timeout: 4
     disabled: false
 
   - name: qwant
     engine: qwant
     shortcut: qw
     categories: general
-    timeout: 1.6
+    timeout: 4
     disabled: false
 
   - name: mojeek
     engine: mojeek
     shortcut: mj
     categories: general
-    timeout: 1.6
+    timeout: 4
     disabled: false
 
   - name: brave
@@ -73,7 +73,7 @@ engines:
     engine: wikipedia
     shortcut: wp
     categories: general
-    timeout: 1.5
+    timeout: 4
     disabled: false
 
 
