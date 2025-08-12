@@ -1,6 +1,9 @@
 """A CLI util integration"""
 
 import argparse
+import locale
+
+from langcodes import Language
 
 from langchain_core.messages import HumanMessage
 
@@ -47,7 +50,12 @@ def main() -> None:
         "model_address": args.model_address,
     }
 
-    result = process_input_message(input_message=args.question, config=config)
+    language_code = locale.getdefaultlocale()[0]
+    language = Language.make(language=language_code).display_name
+
+    result = process_input_message(
+        input_message=args.question, language=language, config=config
+    )
     print(result.get("message", ""))
 
 
