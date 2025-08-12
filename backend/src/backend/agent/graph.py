@@ -9,6 +9,7 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, StateGraph
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Send
+from langcodes import Language
 
 from backend.agent.configuration import Configuration
 from backend.agent.llm import get_llm
@@ -301,11 +302,16 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
         for summary in summaries
     ]
 
+    language = Language.make(language=state["language"]).display_name()
+
     formatted_prompt = prompt_template.format(
         current_date=current_date,
+        language=language,
         research_topic=get_research_topic(state["messages"]),
         summaries="\n\n---\n\n".join(summaries_as_text),
     )
+
+    logger.info(formatted_prompt)
 
     llm = get_llm(config)
     llm = llm.with_structured_output(FinalizedAnswer, include_raw=True)
@@ -359,16 +365,18 @@ workflow.add_conditional_edges(
 workflow.add_edge("finalize_answer", END)
 
 
-def process_input_message(input_message: str, config: Optional[dict[str, any]] = None):
+def process_input_message(
+    input_message: str, language: str, config: Optional[dict[str, any]] = None
+):
     """
     Processes a message catched through the API.
 
     Args:
-      session_id - id of current session.
-      input_message - query message.
+      input_message (str) : query message
+      language (str) : preffered language
 
     Returns:
-      model answer, sources, session_id, user_id. Aligns with pydantic-model for output messages.
+      model answer, its highlight, sources, token usage. Aligns with pydantic-model for output messages.
     """
     try:
         graph = workflow.compile()
@@ -389,7 +397,10 @@ def process_input_message(input_message: str, config: Optional[dict[str, any]] =
         config = RunnableConfig(configurable=config_dict.get("configurable", {}))
 
         response = graph.invoke(
-            {"messages": [{"role": "user", "content": input_message}]},
+            {
+                "messages": [{"role": "user", "content": input_message}],
+                "language": language,
+            },
             stream_mode="values",
             config=config,
         )
