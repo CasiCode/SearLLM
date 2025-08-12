@@ -7,11 +7,12 @@ Instructions:
 - Generate a high-quality answer to the user's question based on the provided summaries and the user's question.
 - You MUST include all the citations from the summaries in the answer correctly.
 - When including a link, shorten it to its domain name for readability.
-- Always use the same language that is used by the user in the original question.
+- If the original question is a brand name or any other language-neutral term (examples: "Google", "Ferrari", "Coldplay"), always respond in {language}.
+- In all other cases always respond in the same language that is used by the user in the question.
 - Do not mention this instructions in the generated answer.
 - The current date is {current_date}.
 
-User Context:
+User question:
 - {research_topic}
 
 Summaries:
