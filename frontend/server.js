@@ -16,7 +16,7 @@ app.get('/s/:slug', (req, res) => {
 
 
 app.post('/api/proxy-query', async (req, res) => {
-    const { session_id, user_id, message } = req.body;
+    const { session_id, user_id, message, pref_language } = req.body;
 
     try {
         const response = await fetch('http://backend:8000/queries/query', {
@@ -25,7 +25,7 @@ app.post('/api/proxy-query', async (req, res) => {
                 "Content-Type": "application/json",
                 "SearLLM-API-token": process.env.SEARLLM_API_TOKEN
             },
-            body: JSON.stringify({ session_id, user_id, message })
+            body: JSON.stringify({ session_id, user_id, message, pref_language })
         });
 
         if (!response.ok) {

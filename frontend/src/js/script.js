@@ -49,11 +49,15 @@ async function performSearchWithButton() {
 	performSearch(searchBar.value)
 }
 
+const getPreferedLanguage = () =>
+	navigator.language || navigator.browserLanguage || ( navigator.languages || [ "en" ] ) [ 0 ]
+
 async function getApiResponse(session_id, user_id, message) {
 	const data = {
 		session_id: session_id,
 		user_id: user_id,
-		message: message
+		message: message,
+		pref_language: getPreferedLanguage()
 	};
 
 	try {
