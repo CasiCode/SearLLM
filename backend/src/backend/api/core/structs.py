@@ -1,5 +1,7 @@
 """Collection of base models used for service communication and HTTP validation"""
 
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -11,15 +13,18 @@ class InputMessage(BaseModel):
     ----------
     session_id : str
         unique session id used
-    user_id: int
+    user_id: str
         unique user id
     message: str
         input message from the user
+    language: str
+        preffered language
     """
 
     session_id: str
     user_id: str
     message: str
+    pref_language: Optional[str] = "ru"
 
 
 class OutputMessage(BaseModel):
