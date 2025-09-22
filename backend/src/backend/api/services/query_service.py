@@ -1,11 +1,14 @@
 """Query manager. Creates, sends and adds to DB both the requests and the responses to the API"""
 
+from datetime import date
+
 from sqlalchemy.orm import Session
 
 from backend.api.core.exceptions import InsufficientTokensException
 from backend.api.core.request_handler import RequestHandler
 from backend.api.core.structs import InputMessage, OutputMessage
 from backend.database.models.query import Query
+from backend.database.models.activity_info import ActivityInfo
 from backend.database.models.response import Response
 from backend.database.models.user import User
 from backend.utils import get_logger
@@ -71,6 +74,15 @@ class QueryService:
                 input_tokens_used=response["input_tokens_used"],
                 output_tokens_used=response["output_tokens_used"],
             )
+
+        activity = (
+            self.db.query(ActivityInfo)
+            .filter(ActivityInfo.date == date.today())
+            .first()
+        )
+        if not activity:
+            activity = ActivityInfo.create()
+        activity.requests += 1
 
         self.db.commit()
         logger.info("Updating user entry:\n%s", user)

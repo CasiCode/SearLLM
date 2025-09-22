@@ -1,12 +1,13 @@
 """Sharing manager. Saves responses from the API on demand"""
 
+from datetime import date
 from typing import Optional
-
 
 from sqlalchemy.orm import Session
 
 from backend.api.core import structs
 from backend.database.models.shared import SharedSearch
+from backend.database.models.activity_info import ActivityInfo
 from backend.utils import get_logger
 
 
@@ -38,6 +39,15 @@ class ShareService:
             text=response.text,
             source_documents=response.source_documents,
         )
+
+        activity = (
+            self.db.query(ActivityInfo)
+            .filter(ActivityInfo.date == date.today())
+            .first()
+        )
+        if not activity:
+            activity = ActivityInfo.create()
+        activity.shares += 1
 
         self.db.commit()
         self.db.refresh(shared_search)
