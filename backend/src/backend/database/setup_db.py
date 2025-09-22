@@ -2,7 +2,7 @@
 
 import logging
 
-from backend.database.models import user, query, response, shared  # pylint: disable=unused-import
+from backend.database.models import user, query, response, shared, activity_info  # pylint: disable=unused-import
 from backend.database.base import Base, engine
 from backend.utils import get_logger
 
