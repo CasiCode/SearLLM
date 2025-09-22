@@ -52,7 +52,11 @@ class ShareService:
         self.db.commit()
         self.db.refresh(shared_search)
 
-        logger.info("Search shared:\n%s", shared_search)
+        logger.info(
+            "Search shared!\nTotal shares today: {0}\nOverall shares: {1}".format(
+                activity.shares, self.db.query(SharedSearch).count()
+            )
+        )
 
         return structs.SharedSearchSlug(slug=shared_search.slug)
 

@@ -85,6 +85,14 @@ class QueryService:
         activity.requests += 1
 
         self.db.commit()
+        logger.info(
+            "Request done!\nTotal requests today: {0}\nOverall requests: {1}".format(
+                activity.requests,
+                self.db.query(
+                    User
+                ).count(),  # ! Temporary solution for current workflow
+            )
+        )
         logger.info("Updating user entry:\n%s", user)
 
         return OutputMessage(
