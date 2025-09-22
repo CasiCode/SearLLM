@@ -46,7 +46,7 @@ class ShareService:
             .first()
         )
         if not activity:
-            activity = ActivityInfo.create()
+            activity = ActivityInfo.create(self.db)
         activity.shares += 1
 
         self.db.commit()

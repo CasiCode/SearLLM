@@ -81,7 +81,7 @@ class QueryService:
             .first()
         )
         if not activity:
-            activity = ActivityInfo.create()
+            activity = ActivityInfo.create(self.db)
         activity.requests += 1
 
         self.db.commit()
